@@ -1,0 +1,22 @@
+import AsyncStorage from '@react-native-async-storage/async-storage';
+import { createClient } from '@supabase/supabase-js';
+import { AppState, Platform } from 'react-native';
+
+const supabaseUrl = process.env.EXPO_PUBLIC_DATABASE_URL!;
+const supabaseKey = process.env.EXPO_PUBLIC_SUPABASE_PUBLISHABLE_KEY!;
+
+export const supabase = createClient(supabaseUrl, supabaseKey, {
+  auth: {
+    storage: AsyncStorage,
+  },
+});
+
+if (Platform.OS !== 'web') {
+  AppState.addEventListener('change', (state) => {
+    if (state === 'active') {
+      supabase.auth.startAutoRefresh();
+    } else {
+      supabase.auth.stopAutoRefresh();
+    }
+  });
+}
