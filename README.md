@@ -8,7 +8,39 @@
    npm install
    ```
 
-2. Start the app
+2. Configure environment variables
+
+   Create a `.env` file in the project root:
+
+   ```dotenv
+   EXPO_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
+   EXPO_PUBLIC_SUPABASE_KEY=<supabase-publishable-key>
+   DATABASE_URL=postgresql://<user>:<password>@<pooler-host>:6543/postgres?pgbouncer=true
+   DIRECT_URL=postgresql://<user>:<password>@<direct-host>:5432/postgres
+   ```
+
+   `DATABASE_URL` is the pooled URL for Prisma Client in a trusted server environment. Prisma CLI uses `DIRECT_URL` from `prisma.config.ts` for schema operations. Keep `.env` out of version control.
+
+3. Set up Prisma
+
+   ```bash
+   npx prisma generate
+   npx prisma validate
+   ```
+
+   For development database sync without migration files:
+
+   ```bash
+   npx prisma db push
+   ```
+
+   For tracked schema migrations:
+
+   ```bash
+   npx prisma migrate dev --name init
+   ```
+
+4. Start the app
 
    ```bash
    npx expo start
