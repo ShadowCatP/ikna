@@ -24,8 +24,23 @@ model Deck {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  user UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  user  UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+  cards Card[]
 
   @@index([userId])
   @@map("decks")
+}
+
+model Card {
+  id           String   @id @default(uuid())
+  deckId       String   @map("deck_id")
+  frontContent String   @map("front_content")
+  backContent  String   @map("back_content")
+  createdAt    DateTime @default(now()) @map("created_at")
+  updatedAt    DateTime @updatedAt @map("updated_at")
+
+  deck Deck @relation(fields: [deckId], references: [id], onDelete: Cascade)
+
+  @@index([deckId])
+  @@map("cards")
 }
