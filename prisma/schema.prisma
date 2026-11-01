@@ -10,7 +10,7 @@ model UserProfile {
   id        String   @id @default(uuid()) @db.Uuid
   email     String   @unique
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   decks      Deck[]
   reviewLogs ReviewLog[]
@@ -23,7 +23,7 @@ model Deck {
   userId    String   @map("user_id") @db.Uuid
   title     String
   createdAt DateTime @default(now()) @map("created_at")
-  updatedAt DateTime @updatedAt @map("updated_at")
+  updatedAt DateTime @default(now()) @updatedAt @map("updated_at")
 
   user  UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
   cards Card[]
@@ -38,7 +38,7 @@ model Card {
   frontContent String   @map("front_content")
   backContent  String   @map("back_content")
   createdAt    DateTime @default(now()) @map("created_at")
-  updatedAt    DateTime @updatedAt @map("updated_at")
+  updatedAt    DateTime @default(now()) @updatedAt @map("updated_at")
 
   deck        Deck             @relation(fields: [deckId], references: [id], onDelete: Cascade)
   reviewState CardReviewState?
