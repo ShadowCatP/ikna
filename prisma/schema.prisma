@@ -12,7 +12,8 @@ model UserProfile {
   createdAt DateTime @default(now()) @map("created_at")
   updatedAt DateTime @updatedAt @map("updated_at")
 
-  decks Deck[]
+  decks      Deck[]
+  reviewLogs ReviewLog[]
 
   @@map("user_profiles")
 }
@@ -60,4 +61,17 @@ model CardReviewState {
 
   @@index([userId, dueDate])
   @@map("card_review_states")
+}
+
+model ReviewLog {
+  id         String   @id @default(uuid())
+  userId     String   @map("user_id")
+  cardId     String   @map("card_id")
+  rating     Int // 1: Again, 2: Hard, 3: Good, 4: Easy
+  reviewedAt DateTime @default(now()) @map("reviewed_at")
+
+  user UserProfile @relation(fields: [userId], references: [id], onDelete: Cascade)
+
+  @@index([userId, reviewedAt])
+  @@map("review_logs")
 }
