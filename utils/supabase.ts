@@ -2,12 +2,32 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 import { AppState, Platform } from 'react-native';
 
+const storage =
+  Platform.OS === 'web'
+    ? {
+        getItem: async (key: string) =>
+          typeof window === 'undefined'
+            ? null
+            : window.localStorage.getItem(key),
+        setItem: async (key: string, value: string) => {
+          if (typeof window !== 'undefined') {
+            window.localStorage.setItem(key, value);
+          }
+        },
+        removeItem: async (key: string) => {
+          if (typeof window !== 'undefined') {
+            window.localStorage.removeItem(key);
+          }
+        },
+      }
+    : AsyncStorage;
+
 export const supabase = createClient(
   process.env.EXPO_PUBLIC_SUPABASE_URL!,
   process.env.EXPO_PUBLIC_SUPABASE_KEY!,
   {
     auth: {
-      storage: AsyncStorage,
+      storage,
       autoRefreshToken: true,
       persistSession: true,
       detectSessionInUrl: false,
