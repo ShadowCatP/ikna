@@ -6,7 +6,6 @@ import {
   Alert,
   Image,
   Pressable,
-  StyleSheet,
   Text,
   useWindowDimensions,
   View,
@@ -59,31 +58,36 @@ export default function Welcome() {
   }
 
   return (
-    <View style={styles.screen}>
+    <View className="flex-1 items-center overflow-hidden bg-white">
       <View
-        style={[
-          styles.canvas,
-          {
-            width: contentWidth,
-            paddingTop: Math.max(insets.top + 24, height * 0.225),
-          },
-        ]}
+        className="flex-1 items-center overflow-hidden"
+        style={{
+          width: contentWidth,
+          paddingTop: Math.max(insets.top + 24, height * 0.225),
+        }}
       >
-        <View pointerEvents="none" style={styles.greenCircle} />
-        <View pointerEvents="none" style={styles.blackCircle} />
-        <View pointerEvents="none" style={styles.pinkCircle} />
+        <View
+          pointerEvents="none"
+          className="absolute -top-[155px] -left-[134px] size-[310px] rounded-full bg-[#A8EF7C]"
+        />
+        <View
+          pointerEvents="none"
+          className="absolute top-[95px] left-[51%] size-[66px] rounded-full bg-[#111113]"
+        />
+        <View
+          pointerEvents="none"
+          className="absolute top-[108px] -right-[60px] size-[156px] rounded-full bg-[#EFA5EF]"
+        />
 
-        <View style={styles.form}>
+        <View className="w-full max-w-[440px] shrink-0 px-[32px]">
           <Text
-            style={[
-              styles.title,
-              { fontSize: 40 * scale, lineHeight: 46 * scale },
-            ]}
+            className="font-bold tracking-[-1px] text-[#111113]"
+            style={{ fontSize: 40 * scale, lineHeight: 46 * scale }}
           >
             Remember more,{'\n'}study less
           </Text>
 
-          <Text style={styles.description}>
+          <Text className="mt-[8px] mb-[16px] text-[16px] leading-[25px] text-[#111113]">
             Hi, I’m Ikna! I’ll help you learn with short daily reviews.
           </Text>
 
@@ -91,26 +95,22 @@ export default function Welcome() {
             accessibilityRole="button"
             disabled={loading}
             onPress={() => openAuth('signUp')}
-            style={({ pressed }) => [
-              styles.button,
-              styles.primaryButton,
-              pressed && styles.pressed,
-            ]}
+            className="min-h-[58px] items-center justify-center rounded-[17px] bg-[#111113] px-[16px] py-[14px] active:opacity-75"
           >
-            <Text style={styles.primaryText}>Create account</Text>
+            <Text className="text-[16px] font-medium text-white">
+              Create account
+            </Text>
           </Pressable>
 
           <Pressable
             accessibilityRole="button"
             disabled={loading}
             onPress={() => openAuth('signIn')}
-            style={({ pressed }) => [
-              styles.button,
-              styles.secondaryButton,
-              pressed && styles.pressed,
-            ]}
+            className="mt-[12px] min-h-[58px] items-center justify-center rounded-[17px] border-2 border-[#111113] bg-white px-[16px] py-[14px] active:opacity-75"
           >
-            <Text style={styles.secondaryText}>Log in</Text>
+            <Text className="text-[16px] font-medium text-[#111113]">
+              Log in
+            </Text>
           </Pressable>
 
           <Pressable
@@ -118,26 +118,30 @@ export default function Welcome() {
             accessibilityLabel="Continue as guest"
             disabled={loading}
             onPress={continueAsGuest}
-            style={styles.guestButton}
+            className="mt-[2px] min-h-[48px] items-center justify-center"
           >
             {loading ? (
               <ActivityIndicator color="#111113" />
             ) : (
-              <Text style={styles.guestText}>Continue as guest</Text>
+              <Text className="text-[16px] text-[#111113] underline">
+                Continue as guest
+              </Text>
             )}
           </Pressable>
         </View>
 
         <View
           pointerEvents="none"
-          style={[styles.art, { width: contentWidth }]}
+          className="absolute bottom-0 max-w-[440px] shrink-0 items-center"
+          style={{ width: contentWidth }}
         >
           <Image
             source={require('@/assets/images/ikna-welcome.png')}
-            style={[
-              styles.mascot,
-              { width: contentWidth, height: (contentWidth * 1066) / 1190 },
-            ]}
+            className="shrink-0"
+            style={{
+              width: contentWidth,
+              height: (contentWidth * 1066) / 1190,
+            }}
             resizeMode="contain"
             accessible={false}
           />
@@ -146,118 +150,3 @@ export default function Welcome() {
     </View>
   );
 }
-
-const styles = StyleSheet.create({
-  screen: {
-    flex: 1,
-    backgroundColor: '#FFFFFF',
-    alignItems: 'center',
-    overflow: 'hidden',
-  },
-  canvas: {
-    flex: 1,
-    width: '100%',
-    maxWidth: 440,
-    overflow: 'hidden',
-    alignItems: 'center',
-  },
-  greenCircle: {
-    position: 'absolute',
-    width: 310,
-    height: 310,
-    borderRadius: 155,
-    backgroundColor: '#A8EF7C',
-    top: -155,
-    left: -134,
-  },
-  blackCircle: {
-    position: 'absolute',
-    width: 66,
-    height: 66,
-    borderRadius: 33,
-    backgroundColor: '#111113',
-    top: 95,
-    left: '51%',
-  },
-  pinkCircle: {
-    position: 'absolute',
-    width: 156,
-    height: 156,
-    borderRadius: 78,
-    backgroundColor: '#EFA5EF',
-    top: 108,
-    right: -60,
-  },
-  form: {
-    flexShrink: 0,
-    width: '100%',
-    maxWidth: 440,
-    paddingHorizontal: 32,
-  },
-  title: {
-    fontSize: 38,
-    lineHeight: 44,
-    fontWeight: '700',
-    letterSpacing: -1,
-    color: '#111113',
-  },
-  description: {
-    fontSize: 16,
-    lineHeight: 25,
-    color: '#111113',
-    marginTop: 8,
-    marginBottom: 16,
-  },
-  button: {
-    minHeight: 58,
-    borderRadius: 17,
-    justifyContent: 'center',
-    alignItems: 'center',
-    paddingHorizontal: 16,
-    paddingVertical: 14,
-  },
-  primaryButton: {
-    backgroundColor: '#111113',
-  },
-  secondaryButton: {
-    borderWidth: 2,
-    borderColor: '#111113',
-    backgroundColor: '#FFFFFF',
-    marginTop: 12,
-  },
-  primaryText: {
-    color: '#FFFFFF',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  secondaryText: {
-    color: '#111113',
-    fontSize: 16,
-    fontWeight: '500',
-  },
-  guestButton: {
-    minHeight: 48,
-    alignItems: 'center',
-    justifyContent: 'center',
-    marginTop: 2,
-  },
-  guestText: {
-    color: '#111113',
-    fontSize: 16,
-    textDecorationLine: 'underline',
-  },
-  pressed: {
-    opacity: 0.75,
-  },
-  art: {
-    position: 'absolute',
-    bottom: 0,
-    flexShrink: 0,
-    width: '100%',
-    maxWidth: 440,
-    alignItems: 'center',
-  },
-  mascot: {
-    flexShrink: 0,
-  },
-});
