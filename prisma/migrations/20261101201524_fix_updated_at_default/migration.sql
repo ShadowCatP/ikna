@@ -1,0 +1,8 @@
+-- AlterTable
+ALTER TABLE "cards" ALTER COLUMN "updated_at" SET DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "decks" ALTER COLUMN "updated_at" SET DEFAULT CURRENT_TIMESTAMP;
+
+-- AlterTable
+ALTER TABLE "user_profiles" ALTER COLUMN "updated_at" SET DEFAULT CURRENT_TIMESTAMP;
