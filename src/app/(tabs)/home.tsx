@@ -5,17 +5,17 @@ import { Pressable, Text, View } from 'react-native';
 export default function Index() {
   const resetSession = async () => {
     await supabase.auth.signOut({ scope: 'local' });
-    router.replace('/sign-in');
+    router.replace('/welcome');
   };
 
   return (
     <View className="flex-1 items-center justify-center gap-4">
-      <Text>Edit src/app/index.tsx to edit this screen.</Text>
+      <Text>Your decks</Text>
       <Pressable
         onPress={resetSession}
         className="rounded-lg bg-black px-4 py-3"
       >
-        <Text className="text-white">Go to sign in</Text>
+        <Text className="text-white">Back to welcome</Text>
       </Pressable>
     </View>
   );
