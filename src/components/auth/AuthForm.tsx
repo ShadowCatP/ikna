@@ -17,8 +17,8 @@ export function AuthForm({
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
       {(busy) => (
-        <View className="px-[30px]">
-          <Text className="mt-[20px] mb-[16px] text-[32px] leading-[36px] font-bold tracking-[-0.5px] text-[#111113]">
+        <View className="px-8">
+          <Text className="text-foreground mt-5 mb-4 text-2xl leading-9 font-bold tracking-tight">
             {nameStep
               ? 'Nice to meet you!'
               : mode === 'signUp'
@@ -29,7 +29,7 @@ export function AuthForm({
           </Text>
           {nameStep ? (
             <>
-              <Text className="-mt-[8px] mb-[16px] text-[16px] leading-[24px] text-[#62616F]">
+              <Text className="text-muted -mt-2 mb-4 text-base leading-6">
                 Ikna will use it to greet you. Optional. You can change it later
                 in Settings.
               </Text>
@@ -37,8 +37,7 @@ export function AuthForm({
                 {(field) => (
                   <>
                     <TextInput
-                      placeholderTextColor="#62616F"
-                      className="mb-[12px] min-h-[54px] rounded-[16px] bg-[#F4F3F7] px-[16px] py-[14px] text-[16px] text-[#111113]"
+                      className="bg-surface text-foreground placeholder:text-muted mb-3 min-h-14 rounded-2xl px-4 py-3.5 text-base"
                       accessibilityLabel="Your name"
                       placeholder="Your name"
                       value={field.state.value}
@@ -51,7 +50,7 @@ export function AuthForm({
                       returnKeyType="done"
                       onSubmitEditing={() => void form.handleSubmit()}
                     />
-                    <Text className="-mt-[4px] text-right text-[12px] text-[#62616F]">
+                    <Text className="text-muted -mt-1 text-right text-xs">
                       {field.state.value.length} / 30
                     </Text>
                     <FieldError meta={field.state.meta} />
@@ -62,7 +61,7 @@ export function AuthForm({
           ) : (
             <>
               {mode === 'forgot' && (
-                <Text className="-mt-[8px] mb-[16px] text-[16px] leading-[24px] text-[#111113]">
+                <Text className="text-foreground -mt-2 mb-4 text-base leading-6">
                   {"No worries. Enter your email and we'll send a reset link."}
                 </Text>
               )}
@@ -70,8 +69,7 @@ export function AuthForm({
                 {(field) => (
                   <>
                     <TextInput
-                      placeholderTextColor="#62616F"
-                      className="mb-[12px] min-h-[54px] rounded-[16px] bg-white px-[16px] py-[14px] text-[16px] text-[#111113]"
+                      className="bg-background text-foreground placeholder:text-muted mb-3 min-h-14 rounded-2xl px-4 py-3.5 text-base"
                       accessibilityLabel="Email"
                       placeholder="Email"
                       autoCapitalize="none"
@@ -121,7 +119,7 @@ export function AuthForm({
                 </form.Field>
               )}
               {mode === 'signUp' && (
-                <Text className="mt-[8px] text-[12px] text-[#111113]">
+                <Text className="text-foreground mt-2 text-xs">
                   At least 8 characters
                 </Text>
               )}
@@ -130,9 +128,9 @@ export function AuthForm({
                   accessibilityRole="button"
                   disabled={busy}
                   onPress={() => changeMode('forgot')}
-                  className="min-h-[44px] items-end justify-center"
+                  className="min-h-11 items-end justify-center"
                 >
-                  <Text className="text-[14px] text-[#111113] underline">
+                  <Text className="text-foreground text-sm underline">
                     Forgot password?
                   </Text>
                 </Pressable>
@@ -145,7 +143,7 @@ export function AuthForm({
               return message ? (
                 <Text
                   accessibilityRole="alert"
-                  className="mt-[12px] text-[14px] leading-[20px] text-[#8B1527]"
+                  className="text-danger mt-3 text-sm leading-5"
                 >
                   {message}
                 </Text>
@@ -155,7 +153,7 @@ export function AuthForm({
           {info && (
             <Text
               accessibilityRole="text"
-              className="mt-[12px] text-[14px] leading-[20px] text-[#275E34]"
+              className="text-success mt-3 text-sm leading-5"
             >
               {info}
             </Text>
@@ -180,9 +178,9 @@ export function AuthForm({
               accessibilityRole="button"
               disabled={busy}
               onPress={() => void form.handleSubmit({ skipName: true })}
-              className="min-h-[48px] items-center justify-center"
+              className="min-h-12 items-center justify-center"
             >
-              <Text className="text-[14px] text-[#111113] underline">
+              <Text className="text-foreground text-sm underline">
                 Skip for now
               </Text>
             </Pressable>
@@ -195,9 +193,9 @@ export function AuthForm({
                   mode === 'signUp' || mode === 'forgot' ? 'signIn' : 'signUp'
                 )
               }
-              className="min-h-[48px] items-center justify-center"
+              className="min-h-12 items-center justify-center"
             >
-              <Text className="text-center text-[14px] text-[#111113]">
+              <Text className="text-foreground text-center text-sm">
                 {mode === 'signUp'
                   ? 'Already have an account? '
                   : mode === 'forgot'

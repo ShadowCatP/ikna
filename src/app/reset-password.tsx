@@ -85,7 +85,7 @@ export default function ResetPassword() {
 
   return (
     <KeyboardAvoidingView
-      className="flex-1 bg-[#ECE8FF]"
+      className="bg-primary-soft flex-1"
       behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
     >
       <ScrollView
@@ -96,20 +96,20 @@ export default function ResetPassword() {
           paddingBottom: insets.bottom + 24,
         }}
       >
-        <View className="w-full max-w-[440px] px-[30px]">
-          <Text className="mb-[12px] text-[32px] leading-[38px] font-bold text-[#111113]">
+        <View className="w-full max-w-md px-8">
+          <Text className="text-foreground mb-3 text-2xl leading-10 font-bold">
             Choose a new password
           </Text>
-          <Text className="mb-[24px] text-[16px] text-[#62616F]">
+          <Text className="text-muted mb-6 text-base">
             Use at least 8 characters.
           </Text>
           {!url && (
-            <Text className="my-[12px] text-[#8B1527]">
+            <Text className="text-danger my-3">
               Open the password reset link from your email to continue.
             </Text>
           )}
           {!!url && !ready && !currentLinkError && (
-            <ActivityIndicator color="#6C52FF" />
+            <ActivityIndicator className="text-primary" />
           )}
           <form.Subscribe selector={(state) => state.isSubmitting}>
             {(busy) => (
@@ -118,8 +118,7 @@ export default function ResetPassword() {
                   {(field) => (
                     <>
                       <TextInput
-                        placeholderTextColor="#62616F"
-                        className="mb-[12px] min-h-[54px] rounded-[16px] bg-white px-[16px] py-[14px] text-[16px] text-[#111113]"
+                        className="bg-background text-foreground placeholder:text-muted mb-3 min-h-14 rounded-2xl px-4 py-3.5 text-base"
                         accessibilityLabel="New password"
                         placeholder="New password"
                         secureTextEntry
@@ -139,8 +138,7 @@ export default function ResetPassword() {
                   {(field) => (
                     <>
                       <TextInput
-                        placeholderTextColor="#62616F"
-                        className="mb-[12px] min-h-[54px] rounded-[16px] bg-white px-[16px] py-[14px] text-[16px] text-[#111113]"
+                        className="bg-background text-foreground placeholder:text-muted mb-3 min-h-14 rounded-2xl px-4 py-3.5 text-base"
                         accessibilityLabel="Confirm password"
                         placeholder="Confirm password"
                         secureTextEntry
@@ -157,10 +155,7 @@ export default function ResetPassword() {
                   )}
                 </form.Field>
                 {currentLinkError && (
-                  <Text
-                    accessibilityRole="alert"
-                    className="my-[12px] text-[#8B1527]"
-                  >
+                  <Text accessibilityRole="alert" className="text-danger my-3">
                     {currentLinkError}
                   </Text>
                 )}
@@ -170,7 +165,7 @@ export default function ResetPassword() {
                     return message ? (
                       <Text
                         accessibilityRole="alert"
-                        className="my-[12px] text-[#8B1527]"
+                        className="text-danger my-3"
                       >
                         {message}
                       </Text>
@@ -187,9 +182,9 @@ export default function ResetPassword() {
                   accessibilityRole="button"
                   disabled={busy}
                   onPress={() => router.replace('/sign-in')}
-                  className="min-h-[48px] items-center justify-center"
+                  className="min-h-12 items-center justify-center"
                 >
-                  <Text className="text-[#111113] underline">
+                  <Text className="text-foreground underline">
                     Back to log in
                   </Text>
                 </Pressable>

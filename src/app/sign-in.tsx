@@ -21,12 +21,12 @@ export default function SignIn() {
   );
   const nameStep = mode === 'signUp' && step === 2;
   const background = nameStep
-    ? 'bg-white'
+    ? 'bg-background'
     : mode === 'signUp'
-      ? 'bg-[#A8EF7C]'
+      ? 'bg-accent'
       : mode === 'signIn'
-        ? 'bg-[#EFA5EF]'
-        : 'bg-[#ECE8FF]';
+        ? 'bg-accent-secondary'
+        : 'bg-primary-soft';
 
   return (
     <KeyboardAvoidingView
@@ -43,20 +43,20 @@ export default function SignIn() {
         }}
         showsVerticalScrollIndicator={false}
       >
-        <View className="w-full max-w-[440px]">
+        <View className="w-full max-w-md">
           {nameStep && (
             <>
               <View
                 pointerEvents="none"
-                className="absolute -top-[100px] -right-[84px] size-[240px] rounded-full bg-[#A8EF7C]"
+                className="bg-accent absolute -top-24 -right-20 size-60 rounded-full"
               />
               <View
                 pointerEvents="none"
-                className="absolute top-[264px] -left-[48px] size-[116px] rounded-full bg-[#EFA5EF]"
+                className="bg-accent-secondary absolute top-64 -left-12 size-28 rounded-full"
               />
             </>
           )}
-          <View className="z-10 flex-row items-center justify-between px-[16px]">
+          <View className="z-10 flex-row items-center justify-between px-4">
             <form.Subscribe selector={(state) => state.isSubmitting}>
               {(busy) => (
                 <Pressable
@@ -64,16 +64,18 @@ export default function SignIn() {
                   accessibilityLabel="Go back"
                   disabled={busy}
                   onPress={back}
-                  className={`size-[44px] items-center justify-center rounded-full ${nameStep ? 'bg-[#F4F3F7]' : 'bg-white'}`}
+                  className={`size-11 items-center justify-center rounded-full ${nameStep ? 'bg-surface' : 'bg-background'}`}
                 >
-                  <Ionicons name="chevron-back" size={20} color="#111113" />
+                  <Ionicons
+                    name="chevron-back"
+                    size={20}
+                    className="text-foreground"
+                  />
                 </Pressable>
               )}
             </form.Subscribe>
             {mode === 'signUp' && (
-              <Text className="mr-[4px] text-[12px] text-[#62616F]">
-                Step {step} of 2
-              </Text>
+              <Text className="text-muted mr-1 text-xs">Step {step} of 2</Text>
             )}
           </View>
           <AuthHero mode={mode} nameStep={nameStep} />
