@@ -1,10 +1,10 @@
 import { AuthButton } from '@/components/auth/AuthButton';
-import { AuthInput } from '@/components/auth/AuthInput';
 import { FieldError } from '@/components/forms/FieldError';
-import { verifyRecoveryLink } from '@/utils/auth-recovery';
+import { verifyRecoveryLink } from '@/utils/auth';
 import { resetPasswordSchema } from '@/utils/auth-schemas';
+import { errorText } from '@/utils/form';
 import { supabase } from '@/utils/supabase';
-import { useForm, useStore } from '@tanstack/react-form';
+import { useForm } from '@tanstack/react-form';
 import { useLinkingURL } from 'expo-linking';
 import { router } from 'expo-router';
 import { useEffect, useState } from 'react';
@@ -15,6 +15,7 @@ import {
   Pressable,
   ScrollView,
   Text,
+  TextInput,
   View,
 } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
@@ -28,7 +29,6 @@ export default function ResetPassword() {
     url: string;
     message: string;
   } | null>(null);
-  const [error, setError] = useState<string | null>(null);
   const currentLinkError = linkError?.url === url ? linkError.message : null;
 
   useEffect(() => {
@@ -57,24 +57,31 @@ export default function ResetPassword() {
   const form = useForm({
     defaultValues: { password: '', confirm: '' },
     validators: { onSubmit: resetPasswordSchema },
-    onSubmit: async ({ value }) => {
+    onSubmit: async ({ value, formApi }) => {
       if (!ready) return;
-      setError(null);
+      formApi.setErrorMap({ onSubmit: undefined });
       try {
         const { error: authError } = await supabase.auth.updateUser({
           password: value.password,
         });
-        if (authError) setError(authError.message);
+        if (authError)
+          formApi.setErrorMap({
+            onSubmit: { form: authError.message, fields: {} },
+          });
         else {
-          form.reset();
+          formApi.reset();
           router.replace('/home');
         }
       } catch {
-        setError('Could not connect. Please try again.');
+        formApi.setErrorMap({
+          onSubmit: {
+            form: 'Could not connect. Please try again.',
+            fields: {},
+          },
+        });
       }
     },
   });
-  const busy = useStore(form.store, (state) => state.isSubmitting);
 
   return (
     <KeyboardAvoidingView
@@ -104,66 +111,91 @@ export default function ResetPassword() {
           {!!url && !ready && !currentLinkError && (
             <ActivityIndicator color="#6C52FF" />
           )}
-          <form.Field name="password">
-            {(field) => (
+          <form.Subscribe selector={(state) => state.isSubmitting}>
+            {(busy) => (
               <>
-                <AuthInput
-                  accessibilityLabel="New password"
-                  placeholder="New password"
-                  secureTextEntry
-                  autoCapitalize="none"
-                  autoComplete="new-password"
-                  textContentType="newPassword"
-                  value={field.state.value}
-                  onChangeText={field.handleChange}
-                  onBlur={field.handleBlur}
-                  editable={ready && !busy}
+                <form.Field name="password">
+                  {(field) => (
+                    <>
+                      <TextInput
+                        placeholderTextColor="#62616F"
+                        className="mb-[12px] min-h-[54px] rounded-[16px] bg-white px-[16px] py-[14px] text-[16px] text-[#111113]"
+                        accessibilityLabel="New password"
+                        placeholder="New password"
+                        secureTextEntry
+                        autoCapitalize="none"
+                        autoComplete="new-password"
+                        textContentType="newPassword"
+                        value={field.state.value}
+                        onChangeText={field.handleChange}
+                        onBlur={field.handleBlur}
+                        editable={ready && !busy}
+                      />
+                      <FieldError meta={field.state.meta} />
+                    </>
+                  )}
+                </form.Field>
+                <form.Field name="confirm">
+                  {(field) => (
+                    <>
+                      <TextInput
+                        placeholderTextColor="#62616F"
+                        className="mb-[12px] min-h-[54px] rounded-[16px] bg-white px-[16px] py-[14px] text-[16px] text-[#111113]"
+                        accessibilityLabel="Confirm password"
+                        placeholder="Confirm password"
+                        secureTextEntry
+                        autoCapitalize="none"
+                        textContentType="newPassword"
+                        value={field.state.value}
+                        onChangeText={field.handleChange}
+                        onBlur={field.handleBlur}
+                        editable={ready && !busy}
+                        onSubmitEditing={() => void form.handleSubmit()}
+                      />
+                      <FieldError meta={field.state.meta} />
+                    </>
+                  )}
+                </form.Field>
+                {currentLinkError && (
+                  <Text
+                    accessibilityRole="alert"
+                    className="my-[12px] text-[#8B1527]"
+                  >
+                    {currentLinkError}
+                  </Text>
+                )}
+                <form.Subscribe selector={(state) => state.errorMap.onSubmit}>
+                  {(submitError) => {
+                    const message = errorText([submitError]);
+                    return message ? (
+                      <Text
+                        accessibilityRole="alert"
+                        className="my-[12px] text-[#8B1527]"
+                      >
+                        {message}
+                      </Text>
+                    ) : null;
+                  }}
+                </form.Subscribe>
+                <AuthButton
+                  title="Save password"
+                  disabled={!ready}
+                  busy={busy}
+                  onPress={() => void form.handleSubmit()}
                 />
-                <FieldError meta={field.state.meta} />
+                <Pressable
+                  accessibilityRole="button"
+                  disabled={busy}
+                  onPress={() => router.replace('/sign-in')}
+                  className="min-h-[48px] items-center justify-center"
+                >
+                  <Text className="text-[#111113] underline">
+                    Back to log in
+                  </Text>
+                </Pressable>
               </>
             )}
-          </form.Field>
-          <form.Field name="confirm">
-            {(field) => (
-              <>
-                <AuthInput
-                  accessibilityLabel="Confirm password"
-                  placeholder="Confirm password"
-                  secureTextEntry
-                  autoCapitalize="none"
-                  textContentType="newPassword"
-                  value={field.state.value}
-                  onChangeText={field.handleChange}
-                  onBlur={field.handleBlur}
-                  editable={ready && !busy}
-                  onSubmitEditing={() => void form.handleSubmit()}
-                />
-                <FieldError meta={field.state.meta} />
-              </>
-            )}
-          </form.Field>
-          {(currentLinkError || error) && (
-            <Text
-              accessibilityRole="alert"
-              className="my-[12px] text-[#8B1527]"
-            >
-              {currentLinkError || error}
-            </Text>
-          )}
-          <AuthButton
-            title="Save password"
-            disabled={!ready}
-            busy={busy}
-            onPress={() => void form.handleSubmit()}
-          />
-          <Pressable
-            accessibilityRole="button"
-            disabled={busy}
-            onPress={() => router.replace('/sign-in')}
-            className="min-h-[48px] items-center justify-center"
-          >
-            <Text className="text-[#111113] underline">Back to log in</Text>
-          </Pressable>
+          </form.Subscribe>
         </View>
       </ScrollView>
     </KeyboardAvoidingView>

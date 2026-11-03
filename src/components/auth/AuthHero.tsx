@@ -40,7 +40,7 @@ export function AuthHero({
           source={require('@/assets/images/ikna-speech-bubble.png')}
           className="absolute top-[16px] right-[11%] h-[94px] w-[132px]"
           resizeMode="contain"
-          accessibilityLabel="Hi! I’m Ikna. What should I call you?"
+          accessibilityLabel="Hi! I'm Ikna. What should I call you?"
         />
       )}
     </View>

@@ -88,7 +88,7 @@ export default function Welcome() {
           </Text>
 
           <Text className="mt-[8px] mb-[16px] text-[16px] leading-[25px] text-[#111113]">
-            Hi, I’m Ikna! I’ll help you learn with short daily reviews.
+            {"Hi, I'm Ikna! I'll help you learn with short daily reviews."}
           </Text>
 
           <Pressable

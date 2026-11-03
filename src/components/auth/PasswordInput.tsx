@@ -2,19 +2,6 @@ import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { useState } from 'react';
 import { Pressable, TextInput, View, type TextInputProps } from 'react-native';
 
-export function AuthInput({
-  soft = false,
-  ...props
-}: TextInputProps & { soft?: boolean }) {
-  return (
-    <TextInput
-      placeholderTextColor="#62616F"
-      {...props}
-      className={`mb-[12px] min-h-[54px] rounded-[16px] px-[16px] py-[14px] text-[16px] text-[#111113] ${soft ? 'bg-[#F4F3F7]' : 'bg-white'}`}
-    />
-  );
-}
-
 export function PasswordInput(props: TextInputProps) {
   const [visible, setVisible] = useState(false);
   return (

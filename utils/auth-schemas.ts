@@ -28,6 +28,6 @@ export const resetPasswordSchema = z
     confirm: z.string(),
   })
   .refine(({ password, confirm }) => password === confirm, {
-    message: 'Passwords don’t match',
+    message: "Passwords don't match",
     path: ['confirm'],
   });
