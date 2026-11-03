@@ -8,7 +8,7 @@ import { supabase } from '@/utils/supabase';
 import { useForm } from '@tanstack/react-form';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 export default function ForgotPassword() {
   const [info, setInfo] = useState<string | null>(null);
@@ -49,7 +49,7 @@ export default function ForgotPassword() {
           mode="forgot"
           busy={busy}
           onBack={() => {
-            if (!busy) router.replace('/sign-in');
+            if (!busy) router.back();
           }}
         >
           <View className="px-8">
@@ -116,16 +116,6 @@ export default function ForgotPassword() {
                 )}
               </Button>
             </View>
-            <Pressable
-              accessibilityRole="button"
-              disabled={busy}
-              onPress={() => router.push('/sign-in')}
-              className="min-h-12 items-center justify-center"
-            >
-              <Text className="text-foreground text-center text-sm">
-                Remembered it? <Text className="underline">Log in</Text>
-              </Text>
-            </Pressable>
           </View>
         </AuthScreen>
       )}

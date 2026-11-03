@@ -45,7 +45,12 @@ export default function SettingsScreen() {
       <View className="gap-6 px-5">
         <Text className="text-foreground text-2xl font-bold">Settings</Text>
 
-        <View className="bg-accent-secondary flex-row items-center rounded-2xl px-4 py-3">
+        <Pressable
+          accessibilityRole="button"
+          accessibilityLabel="Open account settings"
+          onPress={() => router.push('/account')}
+          className="bg-accent-secondary flex-row items-center rounded-2xl px-4 py-3"
+        >
           <View className="bg-background size-14 items-center justify-center rounded-full">
             <Text className="text-foreground text-xl font-medium">
               {(name || email).charAt(0).toUpperCase()}
@@ -70,7 +75,7 @@ export default function SettingsScreen() {
             size={22}
             className="text-foreground"
           />
-        </View>
+        </Pressable>
 
         <View className="gap-2">
           <Text className="text-muted text-xs font-medium tracking-wide uppercase">
