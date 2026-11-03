@@ -33,6 +33,14 @@ export default function SettingsScreen() {
     router.replace('/welcome');
   }
 
+  const handleSync = () => {
+    Alert.alert('Sync', 'To be implemented', [{ text: 'OK' }]);
+  };
+
+  const handleThemeChange = () => {
+    Alert.alert('Themes', 'To be implemented', [{ text: 'OK' }]);
+  };
+
   return (
     <ScrollView
       className="bg-background flex-1"
@@ -89,13 +97,22 @@ export default function SettingsScreen() {
             />
             <Text className="text-foreground ml-3 flex-1 text-sm">Theme</Text>
             <View className="bg-background flex-row items-center rounded-xl p-1">
-              <Pressable className="rounded-lg px-2 py-1">
+              <Pressable
+                className="rounded-lg px-2 py-1"
+                onPress={handleThemeChange}
+              >
                 <Text className="text-muted text-xs">System</Text>
               </Pressable>
-              <Pressable className="bg-foreground rounded-lg px-3 py-1">
+              <Pressable
+                className="bg-foreground rounded-lg px-3 py-1"
+                onPress={handleThemeChange}
+              >
                 <Text className="text-background text-xs">Light</Text>
               </Pressable>
-              <Pressable className="rounded-lg px-2 py-1">
+              <Pressable
+                className="rounded-lg px-2 py-1"
+                onPress={handleThemeChange}
+              >
                 <Text className="text-muted text-xs">Dark</Text>
               </Pressable>
             </View>
@@ -122,7 +139,10 @@ export default function SettingsScreen() {
               </View>
             </View>
             <View className="bg-border h-px" />
-            <Pressable className="min-h-12 flex-row items-center px-3">
+            <Pressable
+              className="min-h-12 flex-row items-center px-3"
+              onPress={handleSync}
+            >
               <Ionicons
                 name="sync-outline"
                 size={20}
