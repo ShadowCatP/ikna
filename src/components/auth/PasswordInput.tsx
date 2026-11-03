@@ -1,4 +1,4 @@
-import { Input } from '@/components/forms/input';
+import { Input } from '@/components/forms/Input';
 import { Ionicons } from '@/components/ui/Ionicons';
 import { useState } from 'react';
 import { Pressable, View, type TextInputProps } from 'react-native';

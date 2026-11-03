@@ -21,7 +21,9 @@ export default function RootLayout() {
       <Stack.Protected guard={!!session}>
         <Stack.Screen name="(tabs)" />
       </Stack.Protected>
-      <Stack.Screen name="sign-in" />
+      <Stack.Screen name="sign-in" options={{ animation: 'none' }} />
+      <Stack.Screen name="sign-up" options={{ animation: 'none' }} />
+      <Stack.Screen name="forgot-password" options={{ animation: 'none' }} />
     </Stack>
   );
 }

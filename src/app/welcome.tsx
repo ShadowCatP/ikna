@@ -19,20 +19,6 @@ export default function Welcome() {
   const scale = contentWidth / 408;
   const [loading, setLoading] = useState(false);
 
-  async function openAuth(mode: 'signIn' | 'signUp') {
-    if (mode === 'signIn') {
-      const { data } = await supabase.auth.getSession();
-      if (data.session) {
-        router.replace('/home');
-        return;
-      }
-    }
-    router.push({
-      pathname: '/sign-in',
-      params: { mode },
-    });
-  }
-
   async function continueAsGuest() {
     if (loading) return;
 
@@ -94,7 +80,7 @@ export default function Welcome() {
           <Pressable
             accessibilityRole="button"
             disabled={loading}
-            onPress={() => openAuth('signUp')}
+            onPress={() => router.push('/sign-up')}
             className="bg-foreground min-h-14 items-center justify-center rounded-2xl px-4 py-3.5 active:opacity-75"
           >
             <Text className="text-base font-medium text-white">
@@ -105,7 +91,7 @@ export default function Welcome() {
           <Pressable
             accessibilityRole="button"
             disabled={loading}
-            onPress={() => openAuth('signIn')}
+            onPress={() => router.push('/sign-in')}
             className="border-foreground bg-background mt-3 min-h-14 items-center justify-center rounded-2xl border-2 px-4 py-3.5 active:opacity-75"
           >
             <Text className="text-foreground text-base font-medium">

@@ -1,5 +1,5 @@
-import { AuthButton } from '@/components/auth/AuthButton';
 import { FieldError } from '@/components/forms/FieldError';
+import { Button } from '@/components/ui/Button';
 import { verifyRecoveryLink } from '@/utils/auth';
 import { resetPasswordSchema } from '@/utils/auth-schemas';
 import { errorText } from '@/utils/form';
@@ -172,12 +172,20 @@ export default function ResetPassword() {
                     ) : null;
                   }}
                 </form.Subscribe>
-                <AuthButton
-                  title="Save password"
-                  disabled={!ready}
-                  busy={busy}
-                  onPress={() => void form.handleSubmit()}
-                />
+                <View className="mt-7">
+                  <Button
+                    disabled={!ready || busy}
+                    onPress={() => void form.handleSubmit()}
+                  >
+                    {busy ? (
+                      <ActivityIndicator className="text-background" />
+                    ) : (
+                      <Text className="text-background text-base font-medium">
+                        Save password
+                      </Text>
+                    )}
+                  </Button>
+                </View>
                 <Pressable
                   accessibilityRole="button"
                   disabled={busy}
