@@ -1,6 +1,6 @@
 import { Ionicons } from '@/components/ui/Ionicons';
 import { useAuth } from '@/hooks/useAuth';
-import { supabase } from '@/utils/supabase';
+import { supabase, type UserMetadata } from '@/utils/supabase';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import {
@@ -17,9 +17,8 @@ export default function SettingsScreen() {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
   const [loggingOut, setLoggingOut] = useState(false);
-  const metadata = user?.user_metadata as
-    { name?: string; full_name?: string } | undefined;
-  const name = metadata?.name || metadata?.full_name || 'Guest';
+  const metadata = user?.user_metadata as UserMetadata | undefined;
+  const name = metadata?.display_name || metadata?.name || metadata?.full_name;
   const email = user?.email || 'Guest account';
 
   async function handleLogout() {
@@ -47,16 +46,24 @@ export default function SettingsScreen() {
         <Text className="text-foreground text-2xl font-bold">Settings</Text>
 
         <View className="bg-accent-secondary flex-row items-center rounded-2xl px-4 py-3">
-          <View className="bg-background size-12 items-center justify-center rounded-full">
+          <View className="bg-background size-14 items-center justify-center rounded-full">
             <Text className="text-foreground text-xl font-medium">
-              {name.charAt(0).toUpperCase()}
+              {(name || email).charAt(0).toUpperCase()}
             </Text>
           </View>
           <View className="ml-3 flex-1">
-            <Text className="text-foreground text-lg font-semibold">
-              {name}
+            {name && (
+              <Text className="text-foreground text-lg font-semibold">
+                {name}
+              </Text>
+            )}
+            <Text
+              className={
+                name ? 'text-foreground text-sm' : 'text-foreground text-lg'
+              }
+            >
+              {email}
             </Text>
-            <Text className="text-foreground text-sm">{email}</Text>
           </View>
           <Ionicons
             name="chevron-forward"
