@@ -1,11 +1,10 @@
-import { Ionicons } from '@react-native-vector-icons/ionicons';
+import { Ionicons } from '@/components/ui/Ionicons';
 import { Tabs } from 'expo-router';
 
 export default function TabLayout() {
   return (
     <Tabs
       screenOptions={{
-        tabBarActiveTintColor: '#000',
         headerShown: false,
         tabBarStyle: {
           height: 64,
@@ -27,12 +26,12 @@ export default function TabLayout() {
         }}
       />
       <Tabs.Screen
-        name="profile"
+        name="settings"
         options={{
-          title: 'Profile',
+          title: 'Settings',
           tabBarIcon: ({ color, focused }) => (
             <Ionicons
-              name={focused ? 'person' : 'person-outline'}
+              name={focused ? 'settings' : 'settings-outline'}
               size={24}
               color={color}
             />

@@ -12,9 +12,7 @@ export function AuthHero({
     <View
       pointerEvents="none"
       className={
-        nameStep
-          ? 'mt-[12px] h-[300px] items-center'
-          : '-mt-[44px] h-[220px] items-center'
+        nameStep ? 'mt-3 h-72 items-center' : '-mt-11 h-56 items-center'
       }
     >
       <Image
@@ -28,9 +26,7 @@ export function AuthHero({
                 : require('@/assets/images/ikna-excited.png')
         }
         className={
-          nameStep
-            ? 'absolute bottom-[16px] left-[18%] h-[210px] w-[190px]'
-            : 'h-[220px] w-[220px]'
+          nameStep ? 'absolute bottom-4 left-[18%] h-52 w-48' : 'h-56 w-56'
         }
         resizeMode="contain"
         accessible={false}
@@ -38,7 +34,7 @@ export function AuthHero({
       {nameStep && (
         <Image
           source={require('@/assets/images/ikna-speech-bubble.png')}
-          className="absolute top-[16px] right-[11%] h-[94px] w-[132px]"
+          className="absolute top-4 right-[11%] h-24 w-32"
           resizeMode="contain"
           accessibilityLabel="Hi! I'm Ikna. What should I call you?"
         />

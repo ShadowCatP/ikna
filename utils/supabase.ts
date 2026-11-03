@@ -2,6 +2,12 @@ import AsyncStorage from '@react-native-async-storage/async-storage';
 import { createClient } from '@supabase/supabase-js';
 import { AppState, Platform } from 'react-native';
 
+export type UserMetadata = {
+  display_name?: string;
+  name?: string;
+  full_name?: string;
+};
+
 const storage =
   Platform.OS === 'web'
     ? {
