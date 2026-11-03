@@ -1,7 +1,7 @@
 import { AuthForm } from '@/components/auth/AuthForm';
 import { AuthHero } from '@/components/auth/AuthHero';
+import { Ionicons } from '@/components/ui/Ionicons';
 import { useAuthForm } from '@/hooks/useAuthForm';
-import { Ionicons } from '@react-native-vector-icons/ionicons';
 import { useLocalSearchParams } from 'expo-router';
 import {
   KeyboardAvoidingView,

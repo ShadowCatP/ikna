@@ -1,4 +1,4 @@
-import { Ionicons } from '@react-native-vector-icons/ionicons';
+import { Ionicons } from '@/components/ui/Ionicons';
 import { useState } from 'react';
 import { Pressable, TextInput, View, type TextInputProps } from 'react-native';
 
