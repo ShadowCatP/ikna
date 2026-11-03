@@ -1,133 +1,91 @@
-import { FieldError } from '@/components/forms/FieldError';
-import { supabase } from '@/utils/supabase';
-import { useForm } from '@tanstack/react-form';
-import { useState } from 'react';
+import { AuthForm } from '@/components/auth/AuthForm';
+import { AuthHero } from '@/components/auth/AuthHero';
+import { useAuthForm } from '@/hooks/useAuthForm';
+import { Ionicons } from '@react-native-vector-icons/ionicons';
+import { useLocalSearchParams } from 'expo-router';
 import {
-  ActivityIndicator,
   KeyboardAvoidingView,
+  Platform,
   Pressable,
+  ScrollView,
   Text,
-  TextInput,
   View,
 } from 'react-native';
-import { z } from 'zod';
+import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
-const authSchema = z.object({
-  email: z.email('Email not valid'),
-  password: z.string().min(8, 'Password must be at least 8 characters long'),
-});
-
-export default function Index() {
-  const [mode, setMode] = useState<'signIn' | 'signUp'>('signIn');
-  const [serverError, setServerError] = useState<string | null>(null);
-  const [info, setInfo] = useState<string | null>(null);
-
-  const form = useForm({
-    defaultValues: { email: '', password: '' },
-    validators: { onChange: authSchema },
-    onSubmit: async ({ value }) => {
-      setServerError(null);
-      setInfo(null);
-
-      if (mode === 'signIn') {
-        const { error } = await supabase.auth.signInWithPassword(value);
-        if (error) setServerError(error.message);
-      } else {
-        const { data, error } = await supabase.auth.signUp(value);
-        if (error) setServerError(error.message);
-        else if (!data.session)
-          setInfo('Check your email to confirm your account.');
-      }
-    },
-  });
+export default function SignIn() {
+  const { mode: initialMode } = useLocalSearchParams<{ mode?: string }>();
+  const insets = useSafeAreaInsets();
+  const { form, mode, step, info, changeMode, back } = useAuthForm(
+    initialMode === 'signUp' ? 'signUp' : 'signIn'
+  );
+  const nameStep = mode === 'signUp' && step === 2;
+  const background = nameStep
+    ? 'bg-white'
+    : mode === 'signUp'
+      ? 'bg-[#A8EF7C]'
+      : mode === 'signIn'
+        ? 'bg-[#EFA5EF]'
+        : 'bg-[#ECE8FF]';
 
   return (
-    <KeyboardAvoidingView behavior="padding" className="flex-1 bg-white">
-      <View className="flex-1 justify-center gap-4 px-6">
-        <Text className="text-3xl font-bold">
-          {mode === 'signIn' ? 'Welcome back' : 'Create account'}
-        </Text>
-
-        <form.Field name="email">
-          {(field) => (
-            <View className="gap-1">
-              <TextInput
-                className="rounded-lg border border-gray-300 px-4 py-3"
-                placeholder="Email"
-                autoCapitalize="none"
-                autoComplete="email"
-                keyboardType="email-address"
-                textContentType="emailAddress"
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChangeText={field.handleChange}
+    <KeyboardAvoidingView
+      className={`flex-1 ${background}`}
+      behavior={Platform.OS === 'ios' ? 'padding' : 'height'}
+    >
+      <ScrollView
+        keyboardShouldPersistTaps="handled"
+        contentInsetAdjustmentBehavior="never"
+        contentContainerClassName="grow items-center overflow-hidden"
+        contentContainerStyle={{
+          paddingTop: insets.top + 24,
+          paddingBottom: insets.bottom + 24,
+        }}
+        showsVerticalScrollIndicator={false}
+      >
+        <View className="w-full max-w-[440px]">
+          {nameStep && (
+            <>
+              <View
+                pointerEvents="none"
+                className="absolute -top-[100px] -right-[84px] size-[240px] rounded-full bg-[#A8EF7C]"
               />
-              <FieldError meta={field.state.meta} />
-            </View>
-          )}
-        </form.Field>
-
-        <form.Field name="password">
-          {(field) => (
-            <View className="gap-1">
-              <TextInput
-                className="rounded-lg border border-gray-300 px-4 py-3"
-                placeholder="Password"
-                secureTextEntry
-                autoCapitalize="none"
-                autoComplete={
-                  mode === 'signIn' ? 'current-password' : 'new-password'
-                }
-                textContentType={mode === 'signIn' ? 'password' : 'newPassword'}
-                value={field.state.value}
-                onBlur={field.handleBlur}
-                onChangeText={field.handleChange}
-                onSubmitEditing={form.handleSubmit}
+              <View
+                pointerEvents="none"
+                className="absolute top-[264px] -left-[48px] size-[116px] rounded-full bg-[#EFA5EF]"
               />
-              <FieldError meta={field.state.meta} />
-            </View>
+            </>
           )}
-        </form.Field>
-
-        {serverError && <Text className="text-red-600">{serverError}</Text>}
-        {info && <Text className="text-green-700">{info}</Text>}
-
-        <form.Subscribe
-          selector={(s) => [s.canSubmit, s.isSubmitting] as const}
-        >
-          {([canSubmit, isSubmitting]) => (
-            <Pressable
-              onPress={form.handleSubmit}
-              disabled={!canSubmit || isSubmitting}
-              className={`items-center rounded-lg bg-black py-3 ${
-                !canSubmit || isSubmitting ? 'opacity-50' : ''
-              }`}
-            >
-              {isSubmitting ? (
-                <ActivityIndicator color="white" />
-              ) : (
-                <Text className="text-white">
-                  {mode === 'signIn' ? 'Sign in' : 'Sign up'}
-                </Text>
+          <View className="z-10 flex-row items-center justify-between px-[16px]">
+            <form.Subscribe selector={(state) => state.isSubmitting}>
+              {(busy) => (
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Go back"
+                  disabled={busy}
+                  onPress={back}
+                  className={`size-[44px] items-center justify-center rounded-full ${nameStep ? 'bg-[#F4F3F7]' : 'bg-white'}`}
+                >
+                  <Ionicons name="chevron-back" size={20} color="#111113" />
+                </Pressable>
               )}
-            </Pressable>
-          )}
-        </form.Subscribe>
-
-        <Pressable
-          onPress={() => {
-            setMode(mode === 'signIn' ? 'signUp' : 'signIn');
-            setServerError(null);
-            setInfo(null);
-          }}
-        >
-          <Text className="text-center text-gray-600">
-            {mode === 'signIn'
-              ? "Don't have an account? Sign up"
-              : 'Already have an account? Sign in'}
-          </Text>
-        </Pressable>
-      </View>
+            </form.Subscribe>
+            {mode === 'signUp' && (
+              <Text className="mr-[4px] text-[12px] text-[#62616F]">
+                Step {step} of 2
+              </Text>
+            )}
+          </View>
+          <AuthHero mode={mode} nameStep={nameStep} />
+          <AuthForm
+            form={form}
+            mode={mode}
+            step={step}
+            info={info}
+            changeMode={changeMode}
+          />
+        </View>
+      </ScrollView>
     </KeyboardAvoidingView>
   );
 }

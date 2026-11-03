@@ -29,12 +29,12 @@ export default function RootLayout() {
 
   return (
     <Stack screenOptions={{ headerShown: false }}>
+      <Stack.Screen name="index" />
+      <Stack.Screen name="welcome" />
       <Stack.Protected guard={!!session}>
         <Stack.Screen name="(tabs)" />
       </Stack.Protected>
-      <Stack.Protected guard={!session}>
-        <Stack.Screen name="sign-in" />
-      </Stack.Protected>
+      <Stack.Screen name="sign-in" />
     </Stack>
   );
 }
