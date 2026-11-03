@@ -1,7 +1,8 @@
 import { FieldError } from '@/components/forms/FieldError';
+import { Input } from '@/components/forms/input';
 import type { useAuthForm } from '@/hooks/useAuthForm';
 import { errorText } from '@/utils/form';
-import { Pressable, Text, TextInput, View } from 'react-native';
+import { Pressable, Text, View } from 'react-native';
 import { AuthButton } from './AuthButton';
 import { PasswordInput } from './PasswordInput';
 
@@ -36,8 +37,8 @@ export function AuthForm({
               <form.Field name="name">
                 {(field) => (
                   <>
-                    <TextInput
-                      className="bg-surface text-foreground placeholder:text-muted mb-3 min-h-14 rounded-2xl px-4 py-3.5 text-base"
+                    <Input
+                      className="bg-surface"
                       accessibilityLabel="Your name"
                       placeholder="Your name"
                       value={field.state.value}
@@ -65,59 +66,60 @@ export function AuthForm({
                   {"No worries. Enter your email and we'll send a reset link."}
                 </Text>
               )}
-              <form.Field name="email">
-                {(field) => (
-                  <>
-                    <TextInput
-                      className="bg-background text-foreground placeholder:text-muted mb-3 min-h-14 rounded-2xl px-4 py-3.5 text-base"
-                      accessibilityLabel="Email"
-                      placeholder="Email"
-                      autoCapitalize="none"
-                      autoCorrect={false}
-                      autoComplete="email"
-                      keyboardType="email-address"
-                      textContentType="emailAddress"
-                      value={field.state.value}
-                      onChangeText={field.handleChange}
-                      onBlur={field.handleBlur}
-                      editable={!busy && !info}
-                      returnKeyType={mode === 'forgot' ? 'send' : 'next'}
-                      onSubmitEditing={
-                        mode === 'forgot'
-                          ? () => void form.handleSubmit()
-                          : undefined
-                      }
-                    />
-                    <FieldError meta={field.state.meta} />
-                  </>
-                )}
-              </form.Field>
-              {mode !== 'forgot' && (
-                <form.Field name="password">
+              <View className="gap-3">
+                <form.Field name="email">
                   {(field) => (
                     <>
-                      <PasswordInput
-                        accessibilityLabel="Password"
-                        autoComplete={
-                          mode === 'signIn'
-                            ? 'current-password'
-                            : 'new-password'
-                        }
-                        textContentType={
-                          mode === 'signIn' ? 'password' : 'newPassword'
-                        }
+                      <Input
+                        accessibilityLabel="Email"
+                        placeholder="Email"
+                        autoCapitalize="none"
+                        autoCorrect={false}
+                        autoComplete="email"
+                        keyboardType="email-address"
+                        textContentType="emailAddress"
                         value={field.state.value}
                         onChangeText={field.handleChange}
                         onBlur={field.handleBlur}
                         editable={!busy && !info}
-                        returnKeyType="go"
-                        onSubmitEditing={() => void form.handleSubmit()}
+                        returnKeyType={mode === 'forgot' ? 'send' : 'next'}
+                        onSubmitEditing={
+                          mode === 'forgot'
+                            ? () => void form.handleSubmit()
+                            : undefined
+                        }
                       />
                       <FieldError meta={field.state.meta} />
                     </>
                   )}
                 </form.Field>
-              )}
+                {mode !== 'forgot' && (
+                  <form.Field name="password">
+                    {(field) => (
+                      <>
+                        <PasswordInput
+                          accessibilityLabel="Password"
+                          autoComplete={
+                            mode === 'signIn'
+                              ? 'current-password'
+                              : 'new-password'
+                          }
+                          textContentType={
+                            mode === 'signIn' ? 'password' : 'newPassword'
+                          }
+                          value={field.state.value}
+                          onChangeText={field.handleChange}
+                          onBlur={field.handleBlur}
+                          editable={!busy && !info}
+                          returnKeyType="go"
+                          onSubmitEditing={() => void form.handleSubmit()}
+                        />
+                        <FieldError meta={field.state.meta} />
+                      </>
+                    )}
+                  </form.Field>
+                )}
+              </View>
               {mode === 'signUp' && (
                 <Text className="text-foreground mt-2 text-xs">
                   At least 8 characters
