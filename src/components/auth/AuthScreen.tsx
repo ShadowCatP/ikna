@@ -1,4 +1,4 @@
-import { Ionicons } from '@/components/ui/Ionicons';
+import { Lucide } from '@/components/ui/icons';
 import type { AuthMode } from '@/utils/auth-schemas';
 import type { ReactNode } from 'react';
 import {
@@ -72,8 +72,8 @@ export function AuthScreen({
               onPress={onBack}
               className={`size-11 items-center justify-center rounded-full ${nameStep ? 'bg-surface' : 'bg-background'}`}
             >
-              <Ionicons
-                name="chevron-back"
+              <Lucide
+                name="chevron-left"
                 size={20}
                 className="text-foreground"
               />

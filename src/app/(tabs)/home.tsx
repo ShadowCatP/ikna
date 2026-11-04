@@ -1,5 +1,5 @@
 import { DeckCard } from '@/components/decks/DeckCard';
-import { Ionicons } from '@/components/ui/Ionicons';
+import { Lucide } from '@/components/ui/icons';
 import { mockDecks } from '@/constants/mock-decks';
 import { useAuth } from '@/hooks/useAuth';
 import type { UserMetadata } from '@/utils/supabase';
@@ -73,7 +73,7 @@ export default function HomeScreen() {
             onPress={handleStartReview}
             className="bg-foreground mt-3 mb-5 min-h-14 flex-row items-center justify-center gap-2 rounded-2xl"
           >
-            <Ionicons name="play" size={18} color="white" />
+            <Lucide name="play" size={18} color="white" />
             <Text className="text-background text-base font-medium">
               Start review
             </Text>
@@ -92,7 +92,7 @@ export default function HomeScreen() {
               onPress={handleSearch}
               className="bg-surface size-11 items-center justify-center rounded-full"
             >
-              <Ionicons name="search" size={22} />
+              <Lucide name="search" size={22} />
             </Pressable>
           </View>
         </View>

@@ -1,4 +1,4 @@
-import { Ionicons } from '@/components/ui/Ionicons';
+import { Lucide } from '@/components/ui/icons';
 import type { DeckPreview } from '@/types/deck';
 import { Pressable, Text, View } from 'react-native';
 
@@ -55,7 +55,7 @@ export function DeckCard({ deck, onPress, onReview }: DeckCardProps) {
           </View>
         </View>
         {completed ? (
-          <Ionicons name="chevron-forward" size={22} className="text-muted" />
+          <Lucide name="chevron-right" size={22} className="text-muted" />
         ) : null}
       </Pressable>
       {!completed && (
@@ -65,7 +65,7 @@ export function DeckCard({ deck, onPress, onReview }: DeckCardProps) {
           onPress={onReview}
           className="bg-foreground ml-2 size-12 items-center justify-center rounded-full"
         >
-          <Ionicons name="play" size={18} color="white" />
+          <Lucide name="play" size={18} color="white" />
         </Pressable>
       )}
     </View>

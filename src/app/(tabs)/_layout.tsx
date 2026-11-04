@@ -1,4 +1,4 @@
-import { Ionicons } from '@/components/ui/Ionicons';
+import { Lucide } from '@/components/ui/icons';
 import { Tabs } from 'expo-router';
 
 export default function TabLayout() {
@@ -16,12 +16,8 @@ export default function TabLayout() {
         name="home"
         options={{
           title: 'Decks',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? 'layers' : 'layers-outline'}
-              size={24}
-              color={color}
-            />
+          tabBarIcon: ({ color }) => (
+            <Lucide name="layers" size={24} color={color} />
           ),
         }}
       />
@@ -29,12 +25,8 @@ export default function TabLayout() {
         name="settings"
         options={{
           title: 'Settings',
-          tabBarIcon: ({ color, focused }) => (
-            <Ionicons
-              name={focused ? 'settings' : 'settings-outline'}
-              size={24}
-              color={color}
-            />
+          tabBarIcon: ({ color }) => (
+            <Lucide name="settings" size={24} color={color} />
           ),
         }}
       />

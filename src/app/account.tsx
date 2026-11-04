@@ -1,4 +1,4 @@
-import { Ionicons } from '@/components/ui/Ionicons';
+import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { type UserMetadata } from '@/utils/supabase';
 import { router } from 'expo-router';
@@ -38,11 +38,7 @@ export default function AccountScreen() {
             onPress={() => router.back()}
             className="bg-surface size-11 items-center justify-center rounded-full"
           >
-            <Ionicons
-              name="chevron-back"
-              size={22}
-              className="text-foreground"
-            />
+            <Lucide name="chevron-left" size={22} className="text-foreground" />
           </Pressable>
           <Text className="text-foreground text-2xl font-bold">Account</Text>
         </View>
@@ -54,26 +50,18 @@ export default function AccountScreen() {
             onPress={handleEditName}
             className="min-h-14 flex-row items-center px-4"
           >
-            <Ionicons
-              name="person-outline"
-              size={22}
-              className="text-foreground"
-            />
+            <Lucide name="user" size={22} className="text-foreground" />
             <Text className="text-foreground ml-3 flex-1 text-base">Name</Text>
             <Text className="text-muted text-base">{name}</Text>
-            <Ionicons
-              name="chevron-forward"
+            <Lucide
+              name="chevron-right"
               size={20}
               className="text-muted ml-3"
             />
           </Pressable>
           <View className="bg-border h-px" />
           <View className="min-h-14 flex-row items-center px-4">
-            <Ionicons
-              name="mail-outline"
-              size={22}
-              className="text-foreground"
-            />
+            <Lucide name="mail" size={22} className="text-foreground" />
             <Text className="text-foreground ml-3 flex-1 text-base">Email</Text>
             <Text className="text-muted text-base">{email}</Text>
           </View>
@@ -84,15 +72,11 @@ export default function AccountScreen() {
             onPress={() => router.push('/forgot-password')}
             className="min-h-14 flex-row items-center px-4"
           >
-            <Ionicons
-              name="lock-closed-outline"
-              size={22}
-              className="text-foreground"
-            />
+            <Lucide name="lock" size={22} className="text-foreground" />
             <Text className="text-foreground ml-3 flex-1 text-base">
               Change password
             </Text>
-            <Ionicons name="chevron-forward" size={20} className="text-muted" />
+            <Lucide name="chevron-right" size={20} className="text-muted" />
           </Pressable>
         </View>
 
@@ -103,7 +87,7 @@ export default function AccountScreen() {
             onPress={handleDeleteAccount}
             className="bg-surface min-h-12 flex-row items-center rounded-2xl px-4"
           >
-            <Ionicons name="trash-outline" size={20} className="text-danger" />
+            <Lucide name="trash-2" size={20} className="text-danger" />
             <Text className="text-danger ml-3 text-base">Delete account</Text>
           </Pressable>
         </View>
