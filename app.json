@@ -38,7 +38,8 @@
       "expo-image",
       "expo-status-bar",
       "expo-web-browser",
-      "@react-native-vector-icons/lucide"
+      "@react-native-vector-icons/lucide",
+      "expo-secure-store"
     ],
     "experiments": {
       "typedRoutes": true,
