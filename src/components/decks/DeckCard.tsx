@@ -21,11 +21,15 @@ export function DeckCard({ deck, onPress, onReview }: DeckCardProps) {
           <Text className="text-foreground text-base font-medium">
             {deck.title}
           </Text>
-          <Text className="text-muted mt-1 text-sm">
-            Updated {new Date(deck.updatedAt).toLocaleDateString()}
-          </Text>
+          <View className="mt-1 flex-row items-center gap-2">
+            <Text className="text-muted text-sm">XX cards</Text>
+            <View className="bg-accent rounded-full px-2 py-1">
+              <Text className="text-foreground text-xs font-medium">
+                XX due
+              </Text>
+            </View>
+          </View>
         </View>
-        <Lucide name="chevron-right" size={22} className="text-muted" />
       </Pressable>
       <Pressable
         accessibilityRole="button"

@@ -3,13 +3,27 @@ import { DeckCard } from '@/components/decks/DeckCard';
 import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import type { UserMetadata } from '@/utils/supabase';
-import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native';
+import {
+  Alert,
+  Image,
+  Pressable,
+  RefreshControl,
+  ScrollView,
+  Text,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
-  const { data: decks = [], isError, isPending } = useDecks();
+  const {
+    data: decks = [],
+    isError,
+    isPending,
+    isRefetching,
+    refetch,
+  } = useDecks();
   const metadata = user?.user_metadata as UserMetadata | undefined;
   const name = metadata?.display_name || metadata?.name || metadata?.full_name;
   const greetingName = name || 'there';
@@ -37,6 +51,14 @@ export default function HomeScreen() {
         paddingTop: insets.top + 16,
         paddingBottom: insets.bottom + 24,
       }}
+      refreshControl={
+        <RefreshControl
+          refreshing={isRefetching}
+          onRefresh={() => {
+            refetch();
+          }}
+        />
+      }
       showsVerticalScrollIndicator={false}
     >
       <View className="gap-7 px-4">
