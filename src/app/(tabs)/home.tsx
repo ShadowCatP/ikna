@@ -1,6 +1,6 @@
+import { useDecks } from '@/api/decks';
 import { DeckCard } from '@/components/decks/DeckCard';
 import { Lucide } from '@/components/ui/icons';
-import { mockDecks } from '@/constants/mock-decks';
 import { useAuth } from '@/hooks/useAuth';
 import type { UserMetadata } from '@/utils/supabase';
 import { Alert, Image, Pressable, ScrollView, Text, View } from 'react-native';
@@ -9,9 +9,12 @@ import { useSafeAreaInsets } from 'react-native-safe-area-context';
 export default function HomeScreen() {
   const insets = useSafeAreaInsets();
   const { user } = useAuth();
+  const { data: decks = [], isError, isPending } = useDecks();
   const metadata = user?.user_metadata as UserMetadata | undefined;
   const name = metadata?.display_name || metadata?.name || metadata?.full_name;
   const greetingName = name || 'there';
+  const dueCardCount = decks.reduce((total, deck) => total + deck.dueCount, 0);
+  const dueDeckCount = decks.filter((deck) => deck.dueCount > 0).length;
 
   function handleStartReview() {
     Alert.alert('Start review', 'To be implemented', [{ text: 'OK' }]);
@@ -54,10 +57,10 @@ export default function HomeScreen() {
                 </Text>
               </View>
               <Text className="text-foreground mt-3 text-4xl font-bold">
-                18 cards
+                {dueCardCount} cards
               </Text>
               <Text className="text-foreground mt-1 text-base">
-                due today in 2 decks about 9 min
+                due today in {dueDeckCount} decks about 9 min
               </Text>
             </View>
             <Image
@@ -83,9 +86,7 @@ export default function HomeScreen() {
         <View className="flex-row items-center justify-between">
           <Text className="text-foreground text-2xl font-bold">Your decks</Text>
           <View className="flex-row items-center gap-4">
-            <Text className="text-muted text-base">
-              {mockDecks.length} decks
-            </Text>
+            <Text className="text-muted text-base">{decks.length} decks</Text>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Search decks"
@@ -97,16 +98,22 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        <View className="gap-3">
-          {mockDecks.map((deck) => (
-            <DeckCard
-              key={deck.id}
-              deck={deck}
-              onPress={() => handleDeckPress(deck.title)}
-              onReview={() => handleDeckReview(deck.title)}
-            />
-          ))}
-        </View>
+        {isPending ? (
+          <Text className="text-muted text-base">Loading decks...</Text>
+        ) : isError ? (
+          <Text className="text-muted text-base">Could not load decks.</Text>
+        ) : (
+          <View className="gap-3">
+            {decks.map((deck) => (
+              <DeckCard
+                key={deck.id}
+                deck={deck}
+                onPress={() => handleDeckPress(deck.title)}
+                onReview={() => handleDeckReview(deck.title)}
+              />
+            ))}
+          </View>
+        )}
       </View>
     </ScrollView>
   );
