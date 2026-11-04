@@ -13,8 +13,6 @@ export default function HomeScreen() {
   const metadata = user?.user_metadata as UserMetadata | undefined;
   const name = metadata?.display_name || metadata?.name || metadata?.full_name;
   const greetingName = name || 'there';
-  const dueCardCount = decks.reduce((total, deck) => total + deck.dueCount, 0);
-  const dueDeckCount = decks.filter((deck) => deck.dueCount > 0).length;
 
   function handleStartReview() {
     Alert.alert('Start review', 'To be implemented', [{ text: 'OK' }]);
@@ -57,10 +55,10 @@ export default function HomeScreen() {
                 </Text>
               </View>
               <Text className="text-foreground mt-3 text-4xl font-bold">
-                {dueCardCount} cards
+                {decks.length} decks
               </Text>
               <Text className="text-foreground mt-1 text-base">
-                due today in {dueDeckCount} decks about 9 min
+                Ready for your next study session
               </Text>
             </View>
             <Image

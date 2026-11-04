@@ -4,7 +4,4 @@ export type DeckPreview = {
   title: string;
   createdAt: string;
   updatedAt: string;
-  cardCount: number;
-  dueCount: number;
-  accent: 'lavender' | 'pink' | 'green';
 };
