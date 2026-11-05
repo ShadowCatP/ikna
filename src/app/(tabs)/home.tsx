@@ -1,11 +1,12 @@
 import { useDecks } from '@/client/decks';
 import { DeckCard } from '@/components/decks/DeckCard';
+import { StudySummaryCard } from '@/components/StudySummaryCard';
 import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
+import { formatDeckCount } from '@/utils/plural';
 import type { UserMetadata } from '@/utils/supabase';
 import {
   Alert,
-  Image,
   Pressable,
   RefreshControl,
   ScrollView,
@@ -68,45 +69,17 @@ export default function HomeScreen() {
           </Text>
         </View>
 
-        <View className="bg-accent overflow-hidden rounded-3xl px-5 pt-5">
-          <View className="flex-row items-start justify-between">
-            <View className="w-1/2">
-              <View className="bg-primary self-start rounded-full px-4 py-2">
-                <Text className="text-background text-sm font-medium">
-                  Today
-                </Text>
-              </View>
-              <Text className="text-foreground mt-3 text-4xl font-bold">
-                {decks.length} decks
-              </Text>
-              <Text className="text-foreground mt-1 text-base">
-                Ready for your next study session
-              </Text>
-            </View>
-            <Image
-              source={require('@/assets/images/ikna-happy.png')}
-              className="mt-1 -mr-2 h-32 w-32"
-              resizeMode="contain"
-              accessible={false}
-            />
-          </View>
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Start review"
-            onPress={handleStartReview}
-            className="bg-foreground mt-3 mb-5 min-h-14 flex-row items-center justify-center gap-2 rounded-2xl"
-          >
-            <Lucide name="play" size={18} color="white" />
-            <Text className="text-background text-base font-medium">
-              Start review
-            </Text>
-          </Pressable>
-        </View>
+        <StudySummaryCard
+          deckCount={decks.length}
+          onStartReview={handleStartReview}
+        />
 
         <View className="flex-row items-center justify-between">
           <Text className="text-foreground text-2xl font-bold">Your decks</Text>
           <View className="flex-row items-center gap-4">
-            <Text className="text-muted text-base">{decks.length} decks</Text>
+            <Text className="text-muted text-base">
+              {formatDeckCount(decks.length)}
+            </Text>
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Search decks"
