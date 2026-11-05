@@ -1,4 +1,4 @@
-import { useDecks } from '@/api/decks';
+import { useDecks } from '@/client/decks';
 import { DeckCard } from '@/components/decks/DeckCard';
 import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
