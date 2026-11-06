@@ -1,7 +1,6 @@
+import { Modal } from '@/components/ui/Modal';
 import { Lucide } from '@/components/ui/icons';
-import { useEffect, useState } from 'react';
-import { Animated, Modal, Pressable, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Pressable, Text, View } from 'react-native';
 
 type AddMenuSheetProps = {
   visible: boolean;
@@ -9,72 +8,14 @@ type AddMenuSheetProps = {
 };
 
 export function AddMenuModal({ visible, onClose }: AddMenuSheetProps) {
-  const insets = useSafeAreaInsets();
-  const [isClosing, setIsClosing] = useState(false);
-  const [backdropOpacity] = useState(() => new Animated.Value(0));
-  const [sheetOffset] = useState(() => new Animated.Value(1));
-
-  function handleClose() {
-    setIsClosing(true);
-    onClose();
-  }
-
-  useEffect(() => {
-    Animated.parallel([
-      Animated.timing(backdropOpacity, {
-        toValue: visible ? 1 : 0,
-        duration: 250,
-        useNativeDriver: true,
-      }),
-      Animated.timing(sheetOffset, {
-        toValue: visible ? 0 : 1,
-        duration: 250,
-        useNativeDriver: true,
-      }),
-    ]).start(({ finished }) => {
-      if (finished && !visible) {
-        setIsClosing(false);
-      }
-    });
-  }, [backdropOpacity, sheetOffset, visible]);
-
-  if (!visible && !isClosing) {
-    return null;
-  }
-
   return (
-    <Modal visible transparent onRequestClose={handleClose}>
-      <View className="flex-1 justify-end">
-        <Animated.View
-          pointerEvents="none"
-          className="absolute inset-0 bg-black"
-          style={{
-            opacity: backdropOpacity.interpolate({
-              inputRange: [0, 1],
-              outputRange: [0, 0.4],
-            }),
-          }}
-        />
-        <Pressable
-          accessibilityRole="button"
-          accessibilityLabel="Close add menu"
-          onPress={handleClose}
-          className="absolute inset-0"
-        />
-        <Animated.View
-          className="bg-background rounded-t-3xl px-5 pt-5"
-          style={{
-            paddingBottom: insets.bottom + 24,
-            transform: [
-              {
-                translateY: sheetOffset.interpolate({
-                  inputRange: [0, 1],
-                  outputRange: [0, 600],
-                }),
-              },
-            ],
-          }}
-        >
+    <Modal
+      visible={visible}
+      onClose={onClose}
+      closeAccessibilityLabel="Close add menu"
+    >
+      {(handleClose) => (
+        <>
           <Text className="text-foreground mb-4 text-2xl font-bold">
             What do you want to add?
           </Text>
@@ -104,8 +45,8 @@ export function AddMenuModal({ visible, onClose }: AddMenuSheetProps) {
               <Text className="text-xl font-medium">Create a deck</Text>
             </Pressable>
           </View>
-        </Animated.View>
-      </View>
+        </>
+      )}
     </Modal>
   );
 }
