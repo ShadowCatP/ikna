@@ -1,7 +1,7 @@
 import { AuthScreen } from '@/components/auth/AuthScreen';
 import { FieldError } from '@/components/forms/FieldError';
 import { Input } from '@/components/forms/Input';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/common/Button';
 import { getAuthSchema } from '@/utils/auth-schemas';
 import { errorText } from '@/utils/form';
 import { supabase } from '@/utils/supabase';

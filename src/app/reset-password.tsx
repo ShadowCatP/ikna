@@ -1,5 +1,5 @@
 import { FieldError } from '@/components/forms/FieldError';
-import { Button } from '@/components/ui/Button';
+import { Button } from '@/components/ui/common/Button';
 import { verifyRecoveryLink } from '@/utils/auth';
 import { resetPasswordSchema } from '@/utils/auth-schemas';
 import { errorText } from '@/utils/form';
