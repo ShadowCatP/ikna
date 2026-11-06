@@ -1,5 +1,5 @@
 import { Input } from '@/components/forms/Input';
-import { Ionicons } from '@/components/ui/Ionicons';
+import { Lucide } from '@/components/ui/icons';
 import { useState } from 'react';
 import { Pressable, View, type TextInputProps } from 'react-native';
 
@@ -21,8 +21,8 @@ export function PasswordInput(props: TextInputProps) {
         onPress={() => setVisible(!visible)}
         className="absolute right-0 min-h-14 w-12 items-center justify-center"
       >
-        <Ionicons
-          name={visible ? 'eye-outline' : 'eye-off-outline'}
+        <Lucide
+          name={visible ? 'eye' : 'eye-off'}
           size={20}
           className="text-muted"
         />

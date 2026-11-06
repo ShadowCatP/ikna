@@ -1,4 +1,4 @@
-import { Ionicons } from '@/components/ui/Ionicons';
+import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase, type UserMetadata } from '@/utils/supabase';
 import { router } from 'expo-router';
@@ -78,11 +78,7 @@ export default function SettingsScreen() {
               {email}
             </Text>
           </View>
-          <Ionicons
-            name="chevron-forward"
-            size={22}
-            className="text-foreground"
-          />
+          <Lucide name="chevron-right" size={22} className="text-foreground" />
         </Pressable>
 
         <View className="gap-2">
@@ -90,11 +86,7 @@ export default function SettingsScreen() {
             Appearance
           </Text>
           <View className="bg-surface flex-row items-center rounded-2xl px-3 py-2">
-            <Ionicons
-              name="eye-outline"
-              size={20}
-              className="text-foreground"
-            />
+            <Lucide name="eye" size={20} className="text-foreground" />
             <Text className="text-foreground ml-3 flex-1 text-sm">Theme</Text>
             <View className="bg-background flex-row items-center rounded-xl p-1">
               <Pressable
@@ -125,11 +117,7 @@ export default function SettingsScreen() {
           </Text>
           <View className="bg-surface overflow-hidden rounded-2xl">
             <View className="min-h-12 flex-row items-center px-3">
-              <Ionicons
-                name="cloud-outline"
-                size={20}
-                className="text-foreground"
-              />
+              <Lucide name="cloud" size={20} className="text-foreground" />
               <Text className="text-foreground ml-3 flex-1 text-sm">
                 Synced
               </Text>
@@ -143,11 +131,7 @@ export default function SettingsScreen() {
               className="min-h-12 flex-row items-center px-3"
               onPress={handleSync}
             >
-              <Ionicons
-                name="sync-outline"
-                size={20}
-                className="text-foreground"
-              />
+              <Lucide name="refresh-cw" size={20} className="text-foreground" />
               <Text className="text-foreground ml-3 text-sm">Sync now</Text>
             </Pressable>
           </View>
@@ -163,11 +147,7 @@ export default function SettingsScreen() {
           {loggingOut ? (
             <ActivityIndicator className="text-danger" />
           ) : (
-            <Ionicons
-              name="log-out-outline"
-              size={20}
-              className="text-danger"
-            />
+            <Lucide name="log-out" size={20} className="text-danger" />
           )}
           <Text className="text-danger ml-3 text-sm">Log out</Text>
         </Pressable>
