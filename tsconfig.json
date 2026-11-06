@@ -4,6 +4,8 @@
     "strict": true,
     "paths": {
       "@/*": ["./src/*"],
+      "@/server/*": ["./src/server/*"],
+      "@/server/api": ["./src/server/api.ts"],
       "@/utils/*": ["./utils/*"],
       "@/assets/*": ["./assets/*"]
     }
