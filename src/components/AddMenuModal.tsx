@@ -8,7 +8,7 @@ type AddMenuSheetProps = {
   onClose: () => void;
 };
 
-export function AddMenuSheet({ visible, onClose }: AddMenuSheetProps) {
+export function AddMenuModal({ visible, onClose }: AddMenuSheetProps) {
   const insets = useSafeAreaInsets();
   const [isClosing, setIsClosing] = useState(false);
   const [backdropOpacity] = useState(() => new Animated.Value(0));

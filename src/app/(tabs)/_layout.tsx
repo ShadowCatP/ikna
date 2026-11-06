@@ -1,4 +1,4 @@
-import { AddMenuSheet } from '@/components/AddMenuSheet';
+import { AddMenuModal } from '@/components/AddMenuModal';
 import { TabBar } from '@/components/navigation/TabBar';
 import { Lucide } from '@/components/ui/icons';
 import { Tabs } from 'expo-router';
@@ -40,7 +40,7 @@ export default function TabLayout() {
         />
       </Tabs>
 
-      <AddMenuSheet
+      <AddMenuModal
         visible={isAddMenuVisible}
         onClose={() => setIsAddMenuVisible(false)}
       />
