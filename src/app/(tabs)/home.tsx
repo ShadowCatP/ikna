@@ -1,6 +1,6 @@
 import { useDecks } from '@/client/decks';
-import { DeckCard } from '@/components/decks/DeckCard';
-import { StudySummaryCard } from '@/components/StudySummaryCard';
+import { DeckCard } from '@/components/ui/cards/DeckCard';
+import { StudySummaryCard } from '@/components/ui/cards/StudySummaryCard';
 import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { formatDeckCount } from '@/utils/plural';

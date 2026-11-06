@@ -1,6 +1,6 @@
-import { AddMenuModal } from '@/components/AddMenuModal';
 import { TabBar } from '@/components/navigation/TabBar';
 import { Lucide } from '@/components/ui/icons';
+import { AddMenuModal } from '@/components/ui/modals/AddMenuModal';
 import { Tabs } from 'expo-router';
 import { useState } from 'react';
 

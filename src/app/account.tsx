@@ -1,7 +1,9 @@
 import { Lucide } from '@/components/ui/icons';
+import { EditNameModal } from '@/components/ui/modals/EditNameModal';
 import { useAuth } from '@/hooks/useAuth';
 import { type UserMetadata } from '@/utils/supabase';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
@@ -11,13 +13,14 @@ export default function AccountScreen() {
   const metadata = user?.user_metadata as UserMetadata | undefined;
   const name = metadata?.display_name || metadata?.name || metadata?.full_name;
   const email = user?.email || 'Guest account';
+  const [isNameModalVisible, setIsNameModalVisible] = useState(false);
 
   function handleDeleteAccount() {
     Alert.alert('Delete account', 'To be implemented', [{ text: 'OK' }]);
   }
 
   function handleEditName() {
-    Alert.alert('Edit name', 'To be implemented', [{ text: 'OK' }]);
+    setIsNameModalVisible(true);
   }
 
   return (
@@ -92,6 +95,12 @@ export default function AccountScreen() {
           </Pressable>
         </View>
       </View>
+
+      <EditNameModal
+        visible={isNameModalVisible}
+        initialName={name ?? ''}
+        onClose={() => setIsNameModalVisible(false)}
+      />
     </ScrollView>
   );
 }

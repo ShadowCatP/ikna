@@ -3,7 +3,7 @@ import { Animated, Modal as NativeModal, Pressable, View } from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 type ModalProps = {
-  children: ReactNode | ((onClose: () => void) => ReactNode);
+  children: ReactNode;
   visible: boolean;
   onClose: () => void;
   closeAccessibilityLabel?: string;
@@ -16,16 +16,20 @@ export function Modal({
   closeAccessibilityLabel = 'Close modal',
 }: ModalProps) {
   const insets = useSafeAreaInsets();
-  const [isClosing, setIsClosing] = useState(false);
+  const [mounted, setMounted] = useState(visible);
   const [backdropOpacity] = useState(() => new Animated.Value(0));
   const [sheetOffset] = useState(() => new Animated.Value(1));
 
   function handleClose() {
-    setIsClosing(true);
     onClose();
   }
 
   useEffect(() => {
+    if (visible && !mounted) {
+      const frame = requestAnimationFrame(() => setMounted(true));
+      return () => cancelAnimationFrame(frame);
+    }
+
     Animated.parallel([
       Animated.timing(backdropOpacity, {
         toValue: visible ? 1 : 0,
@@ -39,12 +43,12 @@ export function Modal({
       }),
     ]).start(({ finished }) => {
       if (finished && !visible) {
-        setIsClosing(false);
+        setMounted(false);
       }
     });
-  }, [backdropOpacity, sheetOffset, visible]);
+  }, [backdropOpacity, mounted, sheetOffset, visible]);
 
-  if (!visible && !isClosing) {
+  if (!mounted) {
     return null;
   }
 
@@ -81,7 +85,7 @@ export function Modal({
             ],
           }}
         >
-          {typeof children === 'function' ? children(handleClose) : children}
+          {children}
         </Animated.View>
       </View>
     </NativeModal>
