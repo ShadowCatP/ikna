@@ -4,11 +4,18 @@ import { TextInput, View, type TextInputProps } from 'react-native';
 
 type InputProps = TextInputProps & {
   label?: string;
+  containerClassName?: string;
 };
 
-export function Input({ className, label, style, ...props }: InputProps) {
+export function Input({
+  className,
+  containerClassName,
+  label,
+  style,
+  ...props
+}: InputProps) {
   return (
-    <View className={cn(label && 'gap-2')}>
+    <View className={cn(label && 'gap-2', containerClassName)}>
       {label && <Label>{label}</Label>}
       <View
         className={cn(

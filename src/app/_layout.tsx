@@ -41,7 +41,11 @@ export default function RootLayout() {
       <QueryClientProvider client={queryClient}>
         <Stack screenOptions={{ headerShown: false, animation: 'none' }}>
           <Stack.Screen name="index" />
-          <Stack.Screen name="welcome" />
+          <Stack.Screen name="auth/welcome" />
+          <Stack.Screen name="auth/sign-in" />
+          <Stack.Screen name="auth/sign-up" />
+          <Stack.Screen name="auth/forgot-password" />
+          <Stack.Screen name="auth/reset-password" />
           <Stack.Protected guard={!!session}>
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="account" />
@@ -50,9 +54,6 @@ export default function RootLayout() {
             <Stack.Screen name="deck/[id]" />
             <Stack.Screen name="deck/[id]/edit" />
           </Stack.Protected>
-          <Stack.Screen name="sign-in" />
-          <Stack.Screen name="sign-up" />
-          <Stack.Screen name="forgot-password" />
         </Stack>
       </QueryClientProvider>
     </GestureHandlerRootView>

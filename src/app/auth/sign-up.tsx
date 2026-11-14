@@ -60,7 +60,7 @@ export default function SignUp() {
       setStep(1);
       form.setErrorMap({ onSubmit: undefined });
     } else {
-      router.push('/welcome');
+      router.push('/auth/welcome');
     }
   }
 
@@ -206,7 +206,7 @@ export default function SignUp() {
               <Pressable
                 accessibilityRole="button"
                 disabled={busy}
-                onPress={() => router.push('/sign-in')}
+                onPress={() => router.push('/auth/sign-in')}
                 className="min-h-12 items-center justify-center"
               >
                 <Text className="text-foreground text-center text-sm">

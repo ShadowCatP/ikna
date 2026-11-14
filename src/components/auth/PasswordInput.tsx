@@ -8,6 +8,7 @@ export function PasswordInput(props: TextInputProps) {
   return (
     <View className="relative min-h-14 flex-row items-center">
       <Input
+        containerClassName="flex-1"
         placeholder="Password"
         autoCapitalize="none"
         autoCorrect={false}

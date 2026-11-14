@@ -80,7 +80,7 @@ export default function Welcome() {
           <Pressable
             accessibilityRole="button"
             disabled={loading}
-            onPress={() => router.push('/sign-up')}
+            onPress={() => router.push('/auth/sign-up')}
             className="bg-foreground min-h-14 items-center justify-center rounded-2xl px-4 py-3.5 active:opacity-75"
           >
             <Text className="text-base font-medium text-white">
@@ -91,7 +91,7 @@ export default function Welcome() {
           <Pressable
             accessibilityRole="button"
             disabled={loading}
-            onPress={() => router.push('/sign-in')}
+            onPress={() => router.push('/auth/sign-in')}
             className="border-foreground bg-background mt-3 min-h-14 items-center justify-center rounded-2xl border-2 px-4 py-3.5 active:opacity-75"
           >
             <Text className="text-foreground text-base font-medium">

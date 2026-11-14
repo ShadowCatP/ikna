@@ -22,7 +22,7 @@ export default function SettingsScreen() {
       setLoggingOut(false);
       return;
     }
-    router.replace('/welcome');
+    router.replace('/auth/welcome');
   }
 
   const handleSync = () => {

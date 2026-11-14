@@ -40,7 +40,7 @@ export default function SignIn() {
   });
 
   function goBack() {
-    if (!form.state.isSubmitting) router.replace('/welcome');
+    if (!form.state.isSubmitting) router.replace('/auth/welcome');
   }
 
   return (
@@ -108,7 +108,7 @@ export default function SignIn() {
             <Pressable
               accessibilityRole="button"
               disabled={busy}
-              onPress={() => router.push('/forgot-password')}
+              onPress={() => router.push('/auth/forgot-password')}
               className="my-4 items-end justify-center"
             >
               <Text className="text-foreground text-sm underline">
@@ -129,7 +129,7 @@ export default function SignIn() {
             <Pressable
               accessibilityRole="button"
               disabled={busy}
-              onPress={() => router.push('/sign-up')}
+              onPress={() => router.push('/auth/sign-up')}
               className="min-h-12 items-center justify-center"
             >
               <Text className="text-foreground text-center text-sm">

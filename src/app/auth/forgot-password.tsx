@@ -20,7 +20,7 @@ export default function ForgotPassword() {
       try {
         const { error } = await supabase.auth.resetPasswordForEmail(
           value.email.trim(),
-          { redirectTo: 'ikna://reset-password' }
+          { redirectTo: 'ikna://auth/reset-password' }
         );
         if (error) {
           formApi.setErrorMap({

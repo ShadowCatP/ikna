@@ -189,7 +189,7 @@ export default function ResetPassword() {
                 <Pressable
                   accessibilityRole="button"
                   disabled={busy}
-                  onPress={() => router.replace('/sign-in')}
+                  onPress={() => router.replace('/auth/sign-in')}
                   className="min-h-12 items-center justify-center"
                 >
                   <Text className="text-foreground underline">

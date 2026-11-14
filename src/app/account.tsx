@@ -56,7 +56,7 @@ export default function AccountScreen() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Change password"
-            onPress={() => router.push('/forgot-password')}
+            onPress={() => router.push('/auth/forgot-password')}
             className="min-h-14 flex-row items-center px-4"
           >
             <Lucide name="lock" size={22} className="text-foreground" />

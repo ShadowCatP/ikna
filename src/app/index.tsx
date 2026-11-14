@@ -6,5 +6,5 @@ export default function Index() {
 
   if (!ready) return null;
 
-  return <Redirect href={session ? '/home' : '/welcome'} />;
+  return <Redirect href={session ? '/home' : '/auth/welcome'} />;
 }
