@@ -1,5 +1,6 @@
+import { Label } from '@/components/forms/Label';
 import { cn } from '@/utils/cn';
-import { Text, TextInput, View, type TextInputProps } from 'react-native';
+import { TextInput, View, type TextInputProps } from 'react-native';
 
 type InputProps = TextInputProps & {
   label?: string;
@@ -8,11 +9,7 @@ type InputProps = TextInputProps & {
 export function Input({ className, label, style, ...props }: InputProps) {
   return (
     <View className={cn(label && 'gap-2')}>
-      {label && (
-        <Text className="text-muted text-xs font-medium tracking-wide uppercase">
-          {label}
-        </Text>
-      )}
+      {label && <Label>{label}</Label>}
       <View
         className={cn(
           'bg-background border-border min-h-14 flex-row items-center rounded-2xl border px-2 py-1',

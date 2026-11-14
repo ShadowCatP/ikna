@@ -26,6 +26,7 @@ export async function GET(request: Request, { id }: { id: string }) {
         userId: true,
         title: true,
         description: true,
+        _count: { select: { cards: true } },
         createdAt: true,
         updatedAt: true,
       },
@@ -35,7 +36,9 @@ export async function GET(request: Request, { id }: { id: string }) {
       return Response.json({ error: 'Deck not found' }, { status: 404 });
     }
 
-    return Response.json(deck);
+    const { _count, ...deckPreview } = deck;
+
+    return Response.json({ ...deckPreview, cardCount: _count.cards });
   } catch {
     return internalServerError();
   }
@@ -77,12 +80,15 @@ export async function PATCH(request: Request, { id }: { id: string }) {
         userId: true,
         title: true,
         description: true,
+        _count: { select: { cards: true } },
         createdAt: true,
         updatedAt: true,
       },
     });
 
-    return Response.json(deck);
+    const { _count, ...deckPreview } = deck;
+
+    return Response.json({ ...deckPreview, cardCount: _count.cards });
   } catch {
     return internalServerError();
   }
