@@ -26,6 +26,21 @@ export async function createDeck({
   });
 }
 
+export async function updateDeck({
+  id,
+  title,
+  description,
+}: {
+  id: string;
+  title: string;
+  description: string;
+}): Promise<DeckPreview> {
+  return apiFetch<DeckPreview>(`/api/decks/${id}`, {
+    method: 'PATCH',
+    body: { title, description },
+  });
+}
+
 export function useDecks() {
   return useQuery({
     queryKey: decksQueryKey,
@@ -46,6 +61,17 @@ export function useCreateDeck() {
     mutationFn: createDeck,
     onSuccess: () => {
       return queryClient.invalidateQueries({ queryKey: decksQueryKey });
+    },
+  });
+}
+
+export function useUpdateDeck() {
+  return useMutation({
+    mutationFn: updateDeck,
+    onSuccess: (_deck, variables) => {
+      return queryClient.invalidateQueries({
+        queryKey: [...decksQueryKey, variables.id],
+      });
     },
   });
 }

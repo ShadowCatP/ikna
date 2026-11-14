@@ -13,7 +13,14 @@ export default function DeckScreen() {
   const { data: deck, isPending, isError, refetch } = useDeck(id);
 
   function handleEdit() {
-    Alert.alert('Edit deck', 'To be implemented', [{ text: 'OK' }]);
+    router.push({
+      pathname: '/deck/[id]/edit',
+      params: {
+        id,
+        title: deck?.title,
+        description: deck?.description ?? '',
+      },
+    });
   }
 
   function handleAddCard() {
