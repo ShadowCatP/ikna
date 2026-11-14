@@ -10,7 +10,7 @@ import { Lucide } from '@/components/ui/icons';
 import { formatCardCount } from '@/utils/plural';
 import { useForm } from '@tanstack/react-form';
 import { useState } from 'react';
-import { Alert, Pressable, Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import { z } from 'zod';
 
 const MAX_FRONT_LENGTH = 150;
@@ -173,19 +173,17 @@ export function AddCardForm() {
       </View>
 
       <View className="mt-auto gap-3 pt-8">
-        <Button onPress={() => void form.handleSubmit()}>
-          <Text className="text-background font-medium">
-            Save and add another
+        <Button variant="outline" onPress={() => void form.handleSubmit()}>
+          <Text className="text-foreground font-medium">
+            Create card and add another
           </Text>
         </Button>
-        <Pressable
-          accessibilityRole="button"
+        <Button
           accessibilityLabel="Save card"
           onPress={() => void form.handleSubmit()}
-          className="border-foreground min-h-14 items-center justify-center rounded-2xl border-2 px-4 py-3.5 active:opacity-60"
         >
-          <Text className="text-foreground font-medium">Save</Text>
-        </Pressable>
+          <Text className="text-background font-medium">Create card</Text>
+        </Button>
       </View>
     </>
   );

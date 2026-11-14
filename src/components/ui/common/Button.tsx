@@ -7,11 +7,12 @@ const buttonBaseClasses =
 const buttonVariantClasses = {
   default: 'bg-foreground',
   destructive: 'bg-danger',
+  outline: 'bg-background border-foreground border-2',
 } as const;
 
 type ButtonProps = PressableProps & {
   className?: string;
-  variant?: 'default' | 'destructive';
+  variant?: keyof typeof buttonVariantClasses;
 };
 
 export function Button({
