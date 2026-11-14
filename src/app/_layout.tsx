@@ -46,6 +46,7 @@ export default function RootLayout() {
             <Stack.Screen name="(tabs)" />
             <Stack.Screen name="account" />
             <Stack.Screen name="add-deck" />
+            <Stack.Screen name="card/[id]/edit" />
             <Stack.Screen name="deck/[id]" />
             <Stack.Screen name="deck/[id]/edit" />
           </Stack.Protected>

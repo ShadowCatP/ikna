@@ -46,6 +46,13 @@ export default function DeckScreen() {
     Alert.alert('Search cards', 'To be implemented', [{ text: 'OK' }]);
   }
 
+  function handleEditCard(cardId: string) {
+    router.push({
+      pathname: '/card/[id]/edit',
+      params: { id: cardId },
+    });
+  }
+
   return (
     <Screen contentContainerClassName="grow">
       <ScreenHeader onBack={() => router.back()}>
@@ -84,6 +91,7 @@ export default function DeckScreen() {
           onStartReview={handleStartReview}
           onSearch={handleSearch}
           onAddCard={handleAddCard}
+          onEditCard={handleEditCard}
         />
       )}
     </Screen>

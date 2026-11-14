@@ -13,6 +13,7 @@ type DeckCardsScreenProps = {
   onStartReview: () => void;
   onSearch: () => void;
   onAddCard: () => void;
+  onEditCard: (cardId: string) => void;
 };
 
 export function DeckCardsScreen({
@@ -21,6 +22,7 @@ export function DeckCardsScreen({
   onStartReview,
   onSearch,
   onAddCard,
+  onEditCard,
 }: DeckCardsScreenProps) {
   const deleteCardMutation = useDeleteCard();
 
@@ -70,6 +72,7 @@ export function DeckCardsScreen({
             <SwipeableCard
               key={card.id}
               card={card}
+              onPress={() => onEditCard(card.id)}
               onDelete={() => deleteCardMutation.mutateAsync({ id: card.id })}
             />
           ))}

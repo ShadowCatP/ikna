@@ -1,6 +1,6 @@
 import type { Card } from '@/types/card';
 import { useState } from 'react';
-import { Alert, Dimensions, Text, View } from 'react-native';
+import { Alert, Dimensions, Pressable, Text, View } from 'react-native';
 import { GestureDetector, usePanGesture } from 'react-native-gesture-handler';
 import Animated, {
   LinearTransition,
@@ -17,9 +17,10 @@ const DISMISS_DISTANCE = Dimensions.get('window').width;
 type SwipeableCardProps = {
   card: Card;
   onDelete: () => Promise<void>;
+  onPress: () => void;
 };
 
-export function SwipeableCard({ card, onDelete }: SwipeableCardProps) {
+export function SwipeableCard({ card, onDelete, onPress }: SwipeableCardProps) {
   const translateX = useSharedValue(0);
   const [isDeleting, setIsDeleting] = useState(false);
 
@@ -74,14 +75,20 @@ export function SwipeableCard({ card, onDelete }: SwipeableCardProps) {
         </View>
       </View>
       <GestureDetector gesture={panGesture}>
-        <Animated.View
-          style={animatedStyle}
-          className="bg-surface rounded-2xl px-4 py-4"
-        >
-          <Text className="text-foreground text-lg font-medium">
-            {card.frontContent}
-          </Text>
-          <Text className="text-muted mt-2 text-base">{card.backContent}</Text>
+        <Animated.View style={animatedStyle} className="rounded-2xl">
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel={`Edit ${card.frontContent}`}
+            onPress={onPress}
+            className="bg-surface rounded-2xl px-4 py-4"
+          >
+            <Text className="text-foreground text-lg font-medium">
+              {card.frontContent}
+            </Text>
+            <Text className="text-muted mt-2 text-base">
+              {card.backContent}
+            </Text>
+          </Pressable>
         </Animated.View>
       </GestureDetector>
     </Animated.View>

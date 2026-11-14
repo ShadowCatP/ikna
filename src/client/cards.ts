@@ -10,6 +10,10 @@ export function cardsQueryKey(deckId: string) {
   return [...cardsQueryRootKey, deckId] as const;
 }
 
+export function cardQueryKey(cardId: string) {
+  return [...cardsQueryRootKey, 'detail', cardId] as const;
+}
+
 export async function fetchCards(deckId: string): Promise<Card[]> {
   return apiFetch<Card[]>(`/api/decks/${deckId}/cards`);
 }
@@ -19,6 +23,18 @@ export function useCards(deckId: string) {
     queryKey: cardsQueryKey(deckId),
     queryFn: () => fetchCards(deckId),
     enabled: Boolean(deckId),
+  });
+}
+
+export async function fetchCard(cardId: string): Promise<Card> {
+  return apiFetch<Card>(`/api/cards/${cardId}`);
+}
+
+export function useCard(cardId: string) {
+  return useQuery({
+    queryKey: cardQueryKey(cardId),
+    queryFn: () => fetchCard(cardId),
+    enabled: Boolean(cardId),
   });
 }
 
@@ -53,6 +69,37 @@ export function useCreateCard() {
   });
 }
 
+export async function updateCard({
+  id,
+  front,
+  back,
+}: {
+  id: string;
+  front: string;
+  back: string;
+}): Promise<Card> {
+  return apiFetch<Card>(`/api/cards/${id}`, {
+    method: 'PATCH',
+    body: {
+      frontContent: front,
+      backContent: back,
+    },
+  });
+}
+
+export function useUpdateCard() {
+  return useMutation({
+    mutationFn: updateCard,
+    onSuccess: (_card, variables) => {
+      return Promise.all([
+        queryClient.invalidateQueries({ queryKey: cardQueryKey(variables.id) }),
+        queryClient.invalidateQueries({ queryKey: cardsQueryRootKey }),
+        queryClient.invalidateQueries({ queryKey: decksQueryKey }),
+      ]);
+    },
+  });
+}
+
 export async function deleteCard({ id }: { id: string }): Promise<void> {
   await apiFetch<{ success: boolean }>(`/api/cards/${id}`, {
     method: 'DELETE',
@@ -82,10 +129,11 @@ export function useDeleteCard() {
         queryClient.setQueryData(queryKey, cards);
       });
     },
-    onSettled: () => {
+    onSettled: (_data, _error, variables) => {
       return Promise.all([
         queryClient.invalidateQueries({ queryKey: decksQueryKey }),
         queryClient.invalidateQueries({ queryKey: cardsQueryRootKey }),
+        queryClient.removeQueries({ queryKey: cardQueryKey(variables.id) }),
       ]);
     },
   });
