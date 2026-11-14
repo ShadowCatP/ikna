@@ -2,7 +2,21 @@ import { apiFetch } from '@/client/api';
 import { decksQueryKey } from '@/client/decks';
 import { queryClient } from '@/lib/queryClient';
 import type { Card } from '@/types/card';
-import { useMutation } from '@tanstack/react-query';
+import { useMutation, useQuery } from '@tanstack/react-query';
+
+const cardsQueryKey = ['cards'] as const;
+
+export async function fetchCards(deckId: string): Promise<Card[]> {
+  return apiFetch<Card[]>(`/api/decks/${deckId}/cards`);
+}
+
+export function useCards(deckId: string) {
+  return useQuery({
+    queryKey: [...cardsQueryKey, deckId],
+    queryFn: () => fetchCards(deckId),
+    enabled: Boolean(deckId),
+  });
+}
 
 export async function createCard({
   deckId,
@@ -27,7 +41,10 @@ export function useCreateCard() {
   return useMutation({
     mutationFn: createCard,
     onSuccess: () => {
-      return queryClient.invalidateQueries({ queryKey: decksQueryKey });
+      return Promise.all([
+        queryClient.invalidateQueries({ queryKey: decksQueryKey }),
+        queryClient.invalidateQueries({ queryKey: cardsQueryKey }),
+      ]);
     },
   });
 }

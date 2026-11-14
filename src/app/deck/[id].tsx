@@ -1,16 +1,24 @@
+import { useCards } from '@/client/cards';
 import { useDeck } from '@/client/decks';
-import { Button } from '@/components/ui/common/Button';
+import { DeckCardsScreen } from '@/components/screens/DeckCardsScreen';
+import { EmptyDeckState } from '@/components/screens/EmptyDeckScreen';
 import { Screen } from '@/components/ui/common/Screen';
 import { ScreenError } from '@/components/ui/common/ScreenError';
 import { ScreenHeader } from '@/components/ui/common/ScreenHeader';
 import { ScreenLoading } from '@/components/ui/common/ScreenLoading';
 import { Lucide } from '@/components/ui/icons';
 import { router, useLocalSearchParams } from 'expo-router';
-import { Alert, Image, Pressable, Text, View } from 'react-native';
+import { Alert, Pressable, Text, View } from 'react-native';
 
 export default function DeckScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: deck, isPending, isError, refetch } = useDeck(id);
+  const {
+    data: cards = [],
+    isPending: areCardsPending,
+    isError: areCardsError,
+    refetch: refetchCards,
+  } = useCards(id);
 
   function handleEdit() {
     router.push({
@@ -24,7 +32,18 @@ export default function DeckScreen() {
   }
 
   function handleAddCard() {
-    Alert.alert('Add card', 'To be implemented', [{ text: 'OK' }]);
+    router.push({
+      pathname: '/add-card',
+      params: { deckId: id },
+    });
+  }
+
+  function handleStartReview() {
+    Alert.alert('Start review', 'To be implemented', [{ text: 'OK' }]);
+  }
+
+  function handleSearch() {
+    Alert.alert('Search cards', 'To be implemented', [{ text: 'OK' }]);
   }
 
   return (
@@ -52,33 +71,20 @@ export default function DeckScreen() {
         <ScreenLoading message="Loading deck..." />
       ) : isError || !deck ? (
         <ScreenError onRetry={() => void refetch()} />
+      ) : areCardsPending ? (
+        <ScreenLoading message="Loading cards..." />
+      ) : areCardsError ? (
+        <ScreenError onRetry={() => void refetchCards()} />
+      ) : cards.length === 0 ? (
+        <EmptyDeckState onAddCard={handleAddCard} />
       ) : (
-        <View className="flex-1 items-center justify-center py-8">
-          <View className="relative mb-6 size-60 items-center justify-center">
-            <View className="bg-accent absolute inset-0 rounded-full" />
-            <Image
-              accessibilityIgnoresInvertColors
-              source={require('@/assets/images/ikna-waving.png')}
-              className="size-64"
-              resizeMode="contain"
-            />
-          </View>
-          <Text className="text-foreground text-center text-3xl font-bold">
-            No cards yet
-          </Text>
-          <Text className="text-muted mt-3 max-w-sm text-center text-base leading-6">
-            {deck.description ||
-              'Add your first card: a word on the front, its meaning on the back. It will show up in your daily review.'}
-          </Text>
-          <Button className="mt-8 w-full" onPress={handleAddCard}>
-            <View className="flex-row items-center gap-2">
-              <Lucide name="plus" size={22} color="white" />
-              <Text className="text-background text-base font-medium">
-                Add a card
-              </Text>
-            </View>
-          </Button>
-        </View>
+        <DeckCardsScreen
+          deck={deck}
+          cards={cards}
+          onStartReview={handleStartReview}
+          onSearch={handleSearch}
+          onAddCard={handleAddCard}
+        />
       )}
     </Screen>
   );

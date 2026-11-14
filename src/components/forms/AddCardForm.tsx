@@ -38,13 +38,17 @@ const addCardSchema = z.object({
     ),
 });
 
-export function AddCardForm() {
+export function AddCardForm({
+  initialDeckId = '',
+}: {
+  initialDeckId?: string;
+}) {
   const { data: decks = [], isPending, isError } = useDecks();
   const createCardMutation = useCreateCard();
   const [isDeckModalVisible, setIsDeckModalVisible] = useState(false);
   const form = useForm({
     defaultValues: {
-      deckId: '',
+      deckId: initialDeckId,
       front: '',
       back: '',
     },
