@@ -41,6 +41,12 @@ export async function updateDeck({
   });
 }
 
+export async function deleteDeck(id: string): Promise<void> {
+  await apiFetch<{ success: boolean }>(`/api/decks/${id}`, {
+    method: 'DELETE',
+  });
+}
+
 export function useDecks() {
   return useQuery({
     queryKey: decksQueryKey,
@@ -72,6 +78,16 @@ export function useUpdateDeck() {
       return queryClient.invalidateQueries({
         queryKey: [...decksQueryKey, variables.id],
       });
+    },
+  });
+}
+
+export function useDeleteDeck() {
+  return useMutation({
+    mutationFn: deleteDeck,
+    onSuccess: (_result, id) => {
+      queryClient.removeQueries({ queryKey: [...decksQueryKey, id] });
+      return queryClient.invalidateQueries({ queryKey: decksQueryKey });
     },
   });
 }

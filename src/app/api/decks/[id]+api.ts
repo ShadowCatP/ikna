@@ -87,3 +87,28 @@ export async function PATCH(request: Request, { id }: { id: string }) {
     return internalServerError();
   }
 }
+
+export async function DELETE(request: Request, { id }: { id: string }) {
+  try {
+    const user = await getAuthenticatedUser(request);
+
+    if (!user) {
+      return unauthorizedError();
+    }
+
+    const existingDeck = await prisma.deck.findFirst({
+      where: { id, userId: user.id },
+      select: { id: true },
+    });
+
+    if (!existingDeck) {
+      return Response.json({ error: 'Deck not found' }, { status: 404 });
+    }
+
+    await prisma.deck.delete({ where: { id: existingDeck.id } });
+
+    return Response.json({ success: true });
+  } catch {
+    return internalServerError();
+  }
+}
