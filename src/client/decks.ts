@@ -3,7 +3,7 @@ import { queryClient } from '@/lib/queryClient';
 import type { DeckPreview } from '@/types/deck';
 import { useMutation, useQuery } from '@tanstack/react-query';
 
-const decksQueryKey = ['decks'] as const;
+export const decksQueryKey = ['decks'] as const;
 
 export async function fetchDecks(): Promise<DeckPreview[]> {
   return apiFetch<DeckPreview[]>('/api/decks');

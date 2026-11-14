@@ -1,3 +1,4 @@
+import { useCreateCard } from '@/client/cards';
 import { useDecks } from '@/client/decks';
 import { FieldError } from '@/components/forms/FieldError';
 import { Input } from '@/components/forms/Input';
@@ -9,6 +10,7 @@ import {
 import { Lucide } from '@/components/ui/icons';
 import { formatCardCount } from '@/utils/plural';
 import { useForm } from '@tanstack/react-form';
+import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 import { z } from 'zod';
@@ -38,6 +40,7 @@ const addCardSchema = z.object({
 
 export function AddCardForm() {
   const { data: decks = [], isPending, isError } = useDecks();
+  const createCardMutation = useCreateCard();
   const [isDeckModalVisible, setIsDeckModalVisible] = useState(false);
   const form = useForm({
     defaultValues: {
@@ -46,12 +49,29 @@ export function AddCardForm() {
       back: '',
     },
     validators: { onSubmit: addCardSchema },
-    onSubmit: async () => {
-      Alert.alert('Coming soon', 'Saving cards is not available yet.', [
-        { text: 'OK' },
-      ]);
+    onSubmit: async ({ value }) => {
+      try {
+        await createCardMutation.mutateAsync(value);
+      } catch (error) {
+        Alert.alert(
+          'Could not create card',
+          error instanceof Error ? error.message : 'Please try again.',
+          [{ text: 'OK' }]
+        );
+      }
     },
   });
+
+  async function handleSubmit() {
+    await form.handleSubmit();
+    router.back();
+  }
+
+  async function handleSubmitAndAddAnother() {
+    await form.handleSubmit();
+    form.setFieldValue('front', '');
+    form.setFieldValue('back', '');
+  }
 
   return (
     <>
@@ -173,14 +193,19 @@ export function AddCardForm() {
       </View>
 
       <View className="mt-auto gap-3 pt-8">
-        <Button variant="outline" onPress={() => void form.handleSubmit()}>
+        <Button
+          variant="outline"
+          disabled={createCardMutation.isPending}
+          onPress={() => void handleSubmitAndAddAnother()}
+        >
           <Text className="text-foreground font-medium">
             Create card and add another
           </Text>
         </Button>
         <Button
+          disabled={createCardMutation.isPending}
           accessibilityLabel="Save card"
-          onPress={() => void form.handleSubmit()}
+          onPress={() => void handleSubmit()}
         >
           <Text className="text-background font-medium">Create card</Text>
         </Button>
