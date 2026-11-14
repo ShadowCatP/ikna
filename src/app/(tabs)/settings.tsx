@@ -1,20 +1,12 @@
+import { Screen } from '@/components/ui/common/Screen';
 import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase, type UserMetadata } from '@/utils/supabase';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import {
-  ActivityIndicator,
-  Alert,
-  Pressable,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
 
 export default function SettingsScreen() {
-  const insets = useSafeAreaInsets();
   const { user } = useAuth();
   const [loggingOut, setLoggingOut] = useState(false);
   const metadata = user?.user_metadata as UserMetadata | undefined;
@@ -42,15 +34,8 @@ export default function SettingsScreen() {
   };
 
   return (
-    <ScrollView
-      className="bg-background flex-1"
-      contentContainerStyle={{
-        paddingTop: insets.top + 16,
-        paddingBottom: insets.bottom + 24,
-      }}
-      showsVerticalScrollIndicator={false}
-    >
-      <View className="gap-6 px-5">
+    <Screen contentContainerClassName="px-5">
+      <View className="gap-6">
         <Text className="text-foreground text-2xl font-bold">Settings</Text>
 
         <Pressable
@@ -152,6 +137,6 @@ export default function SettingsScreen() {
           <Text className="text-danger ml-3 text-sm">Log out</Text>
         </Pressable>
       </View>
-    </ScrollView>
+    </Screen>
   );
 }

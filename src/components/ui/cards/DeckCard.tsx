@@ -1,5 +1,6 @@
 import { Lucide } from '@/components/ui/icons';
 import type { DeckPreview } from '@/types/deck';
+import { formatCardCount } from '@/utils/plural';
 import { Pressable, Text, View } from 'react-native';
 
 type DeckCardProps = {
@@ -22,7 +23,9 @@ export function DeckCard({ deck, onPress, onReview }: DeckCardProps) {
             {deck.title}
           </Text>
           <View className="mt-1 flex-row items-center gap-2">
-            <Text className="text-muted text-sm">XX cards</Text>
+            <Text className="text-muted text-sm">
+              {formatCardCount(deck.cardCount)}
+            </Text>
             <View className="bg-accent rounded-full px-2 py-1">
               <Text className="text-foreground text-xs font-medium">
                 XX due

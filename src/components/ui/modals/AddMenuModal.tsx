@@ -1,5 +1,6 @@
 import { Modal } from '@/components/ui/common/Modal';
 import { Lucide } from '@/components/ui/icons';
+import { router } from 'expo-router';
 import { Pressable, Text, View } from 'react-native';
 
 type AddMenuSheetProps = {
@@ -22,7 +23,10 @@ export function AddMenuModal({ visible, onClose }: AddMenuSheetProps) {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Add a card"
-          onPress={onClose}
+          onPress={() => {
+            onClose();
+            router.push('/add-card');
+          }}
           className="bg-surface flex-row items-center gap-5 rounded-2xl px-5 py-2"
         >
           <View className="bg-accent size-14 items-center justify-center rounded-full">
@@ -34,7 +38,10 @@ export function AddMenuModal({ visible, onClose }: AddMenuSheetProps) {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Create a deck"
-          onPress={onClose}
+          onPress={() => {
+            onClose();
+            router.push('/add-deck');
+          }}
           className="bg-surface flex-row items-center gap-5 rounded-2xl px-5 py-2"
         >
           <View className="bg-accent-secondary size-14 items-center justify-center rounded-full">

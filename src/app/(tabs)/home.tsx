@@ -1,22 +1,17 @@
 import { useDecks } from '@/client/decks';
 import { DeckCard } from '@/components/ui/cards/DeckCard';
 import { StudySummaryCard } from '@/components/ui/cards/StudySummaryCard';
+import { Screen } from '@/components/ui/common/Screen';
+import { ScreenError } from '@/components/ui/common/ScreenError';
+import { ScreenLoading } from '@/components/ui/common/ScreenLoading';
 import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { formatDeckCount } from '@/utils/plural';
 import type { UserMetadata } from '@/utils/supabase';
-import {
-  Alert,
-  Pressable,
-  RefreshControl,
-  ScrollView,
-  Text,
-  View,
-} from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { router } from 'expo-router';
+import { Alert, Pressable, RefreshControl, Text, View } from 'react-native';
 
 export default function HomeScreen() {
-  const insets = useSafeAreaInsets();
   const { user } = useAuth();
   const {
     data: decks = [],
@@ -33,10 +28,6 @@ export default function HomeScreen() {
     Alert.alert('Start review', 'To be implemented', [{ text: 'OK' }]);
   }
 
-  function handleDeckPress(title: string) {
-    Alert.alert(title, 'To be implemented', [{ text: 'OK' }]);
-  }
-
   function handleDeckReview(title: string) {
     Alert.alert(`Review ${title}`, 'To be implemented', [{ text: 'OK' }]);
   }
@@ -46,12 +37,7 @@ export default function HomeScreen() {
   }
 
   return (
-    <ScrollView
-      className="bg-background flex-1"
-      contentContainerStyle={{
-        paddingTop: insets.top + 16,
-        paddingBottom: insets.bottom + 24,
-      }}
+    <Screen
       refreshControl={
         <RefreshControl
           refreshing={isRefetching}
@@ -60,9 +46,8 @@ export default function HomeScreen() {
           }}
         />
       }
-      showsVerticalScrollIndicator={false}
     >
-      <View className="gap-7 px-4">
+      <View className="gap-7">
         <View className="flex-row items-center justify-between">
           <Text className="text-foreground text-2xl font-bold">
             Hi, {greetingName}!
@@ -92,22 +77,27 @@ export default function HomeScreen() {
         </View>
 
         {isPending ? (
-          <Text className="text-muted text-base">Loading decks...</Text>
+          <ScreenLoading message="Loading decks..." />
         ) : isError ? (
-          <Text className="text-muted text-base">Could not load decks.</Text>
+          <ScreenError onRetry={() => void refetch()} />
         ) : (
           <View className="gap-3">
             {decks.map((deck) => (
               <DeckCard
                 key={deck.id}
                 deck={deck}
-                onPress={() => handleDeckPress(deck.title)}
+                onPress={() =>
+                  router.push({
+                    pathname: '/deck/[id]',
+                    params: { id: deck.id },
+                  })
+                }
                 onReview={() => handleDeckReview(deck.title)}
               />
             ))}
           </View>
         )}
       </View>
-    </ScrollView>
+    </Screen>
   );
 }

@@ -1,14 +1,14 @@
+import { Screen } from '@/components/ui/common/Screen';
+import { ScreenHeader } from '@/components/ui/common/ScreenHeader';
 import { Lucide } from '@/components/ui/icons';
 import { EditNameModal } from '@/components/ui/modals/EditNameModal';
 import { useAuth } from '@/hooks/useAuth';
 import { type UserMetadata } from '@/utils/supabase';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { Alert, Pressable, ScrollView, Text, View } from 'react-native';
-import { useSafeAreaInsets } from 'react-native-safe-area-context';
+import { Alert, Pressable, Text, View } from 'react-native';
 
 export default function AccountScreen() {
-  const insets = useSafeAreaInsets();
   const { user } = useAuth();
   const metadata = user?.user_metadata as UserMetadata | undefined;
   const name = metadata?.display_name || metadata?.name || metadata?.full_name;
@@ -24,27 +24,11 @@ export default function AccountScreen() {
   }
 
   return (
-    <ScrollView
-      className="bg-background flex-1"
-      contentContainerStyle={{
-        minHeight: '100%',
-        paddingTop: insets.top + 16,
-        paddingBottom: insets.bottom + 24,
-      }}
-      showsVerticalScrollIndicator={false}
-    >
-      <View className="flex-1 px-4">
-        <View className="mb-7 flex-row items-center gap-3">
-          <Pressable
-            accessibilityRole="button"
-            accessibilityLabel="Go back"
-            onPress={() => router.back()}
-            className="bg-surface size-11 items-center justify-center rounded-full"
-          >
-            <Lucide name="chevron-left" size={22} className="text-foreground" />
-          </Pressable>
+    <Screen contentContainerStyle={{ minHeight: '100%' }}>
+      <View className="flex-1">
+        <ScreenHeader onBack={() => router.back()}>
           <Text className="text-foreground text-2xl font-bold">Account</Text>
-        </View>
+        </ScreenHeader>
 
         <View className="bg-surface overflow-hidden rounded-2xl">
           <Pressable
@@ -101,6 +85,6 @@ export default function AccountScreen() {
         initialName={name ?? ''}
         onClose={() => setIsNameModalVisible(false)}
       />
-    </ScrollView>
+    </Screen>
   );
 }
