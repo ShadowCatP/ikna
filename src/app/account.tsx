@@ -1,9 +1,12 @@
+import { useDeleteAccount } from '@/client/account';
 import { Screen } from '@/components/screens/Screen';
 import { ScreenHeader } from '@/components/screens/ScreenHeader';
+import { Button } from '@/components/ui/common/Button';
+import { Modal } from '@/components/ui/common/Modal';
 import { Lucide } from '@/components/ui/icons';
 import { EditNameModal } from '@/components/ui/modals/EditNameModal';
 import { useAuth } from '@/hooks/useAuth';
-import { type UserMetadata } from '@/utils/supabase';
+import { supabase, type UserMetadata } from '@/utils/supabase';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
@@ -13,10 +16,27 @@ export default function AccountScreen() {
   const metadata = user?.user_metadata as UserMetadata | undefined;
   const name = metadata?.display_name || metadata?.name || metadata?.full_name;
   const email = user?.email || 'Guest account';
+  const deleteAccountMutation = useDeleteAccount();
   const [isNameModalVisible, setIsNameModalVisible] = useState(false);
+  const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   function handleDeleteAccount() {
-    Alert.alert('Delete account', 'To be implemented', [{ text: 'OK' }]);
+    setIsDeleteModalVisible(true);
+  }
+
+  async function handleConfirmDeleteAccount() {
+    try {
+      await deleteAccountMutation.mutateAsync();
+      setIsDeleteModalVisible(false);
+      await supabase.auth.signOut();
+      router.replace('/auth/welcome');
+    } catch (error) {
+      Alert.alert(
+        'Could not delete account',
+        error instanceof Error ? error.message : 'Please try again.',
+        [{ text: 'OK' }]
+      );
+    }
   }
 
   function handleEditName() {
@@ -72,6 +92,7 @@ export default function AccountScreen() {
             accessibilityRole="button"
             accessibilityLabel="Delete account"
             onPress={handleDeleteAccount}
+            disabled={deleteAccountMutation.isPending}
             className="bg-surface min-h-12 flex-row items-center rounded-2xl px-4"
           >
             <Lucide name="trash-2" size={20} className="text-danger" />
@@ -85,6 +106,41 @@ export default function AccountScreen() {
         initialName={name ?? ''}
         onClose={() => setIsNameModalVisible(false)}
       />
+
+      <Modal
+        visible={isDeleteModalVisible}
+        onClose={() => setIsDeleteModalVisible(false)}
+        closeAccessibilityLabel="Cancel delete account"
+      >
+        <Text className="text-foreground mb-2 text-2xl font-bold">
+          Delete account?
+        </Text>
+        <Text className="text-muted mb-6 text-base leading-6">
+          This action cannot be undone.
+        </Text>
+        <View className="gap-3">
+          <Button
+            variant="destructive"
+            disabled={deleteAccountMutation.isPending}
+            onPress={() => void handleConfirmDeleteAccount()}
+          >
+            <Text className="text-background text-base font-medium">
+              Delete account
+            </Text>
+          </Button>
+          <Pressable
+            accessibilityRole="button"
+            accessibilityLabel="Cancel delete account"
+            onPress={() => setIsDeleteModalVisible(false)}
+            disabled={deleteAccountMutation.isPending}
+            className="bg-surface min-h-14 items-center justify-center rounded-2xl"
+          >
+            <Text className="text-foreground text-base font-medium">
+              Cancel
+            </Text>
+          </Pressable>
+        </View>
+      </Modal>
     </Screen>
   );
 }

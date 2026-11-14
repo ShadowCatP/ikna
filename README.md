@@ -15,6 +15,7 @@
    ```dotenv
    EXPO_PUBLIC_SUPABASE_URL=https://<project-ref>.supabase.co
    EXPO_PUBLIC_SUPABASE_KEY=<supabase-publishable-key>
+   SUPABASE_SECRET_KEY=<supabase-secret-key>
    DATABASE_URL=postgresql://<user>:<password>@<pooler-host>:6543/postgres?pgbouncer=true
    DIRECT_URL=postgresql://<user>:<password>@<direct-host>:5432/postgres
    ```

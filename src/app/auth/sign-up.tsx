@@ -101,7 +101,7 @@ export default function SignUp() {
                         returnKeyType="done"
                         onSubmitEditing={() => void form.handleSubmit()}
                       />
-                      <Text className="text-muted -mt-1 text-right text-xs">
+                      <Text className="text-muted mt-2 text-right text-xs">
                         {field.state.value.length} / 30
                       </Text>
                       <FieldError meta={field.state.meta} />
