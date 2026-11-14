@@ -1,11 +1,30 @@
+import { Screen } from '@/components/ui/common/Screen';
+import { ScreenError } from '@/components/ui/common/ScreenError';
+import { ScreenLoading } from '@/components/ui/common/ScreenLoading';
 import { useAuth } from '@/hooks/useAuth';
 import { QueryClientProvider } from '@tanstack/react-query';
-import { SplashScreen, Stack } from 'expo-router';
+import { SplashScreen, Stack, type ErrorBoundaryProps } from 'expo-router';
 import { useEffect } from 'react';
 import '../global.css';
 import { queryClient } from '../lib/queryClient';
 
 SplashScreen.preventAutoHideAsync();
+
+export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
+  return (
+    <Screen>
+      <ScreenError message={error.message} onRetry={retry} />
+    </Screen>
+  );
+}
+
+export function SuspenseFallback() {
+  return (
+    <Screen>
+      <ScreenLoading />
+    </Screen>
+  );
+}
 
 export default function RootLayout() {
   const { session, ready } = useAuth();

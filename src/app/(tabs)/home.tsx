@@ -2,6 +2,8 @@ import { useDecks } from '@/client/decks';
 import { DeckCard } from '@/components/ui/cards/DeckCard';
 import { StudySummaryCard } from '@/components/ui/cards/StudySummaryCard';
 import { Screen } from '@/components/ui/common/Screen';
+import { ScreenError } from '@/components/ui/common/ScreenError';
+import { ScreenLoading } from '@/components/ui/common/ScreenLoading';
 import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { formatDeckCount } from '@/utils/plural';
@@ -75,9 +77,9 @@ export default function HomeScreen() {
         </View>
 
         {isPending ? (
-          <Text className="text-muted text-base">Loading decks...</Text>
+          <ScreenLoading message="Loading decks..." />
         ) : isError ? (
-          <Text className="text-muted text-base">Could not load decks.</Text>
+          <ScreenError onRetry={() => void refetch()} />
         ) : (
           <View className="gap-3">
             {decks.map((deck) => (

@@ -1,15 +1,16 @@
-import { useDecks } from '@/client/decks';
+import { useDeck } from '@/client/decks';
 import { Button } from '@/components/ui/common/Button';
 import { Screen } from '@/components/ui/common/Screen';
+import { ScreenError } from '@/components/ui/common/ScreenError';
 import { ScreenHeader } from '@/components/ui/common/ScreenHeader';
+import { ScreenLoading } from '@/components/ui/common/ScreenLoading';
 import { Lucide } from '@/components/ui/icons';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Alert, Image, Pressable, Text, View } from 'react-native';
 
 export default function DeckScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data: decks = [], isPending, isError } = useDecks();
-  const deck = decks.find((item) => item.id === id);
+  const { data: deck, isPending, isError, refetch } = useDeck(id);
 
   function handleEdit() {
     Alert.alert('Edit deck', 'To be implemented', [{ text: 'OK' }]);
@@ -41,13 +42,9 @@ export default function DeckScreen() {
       </ScreenHeader>
 
       {isPending ? (
-        <View className="flex-1 items-center justify-center">
-          <Text className="text-muted text-base">Loading deck...</Text>
-        </View>
+        <ScreenLoading message="Loading deck..." />
       ) : isError || !deck ? (
-        <View className="flex-1 items-center justify-center">
-          <Text className="text-muted text-base">Could not load deck.</Text>
-        </View>
+        <ScreenError onRetry={() => void refetch()} />
       ) : (
         <View className="flex-1 items-center justify-center py-8">
           <View className="relative mb-6 size-60 items-center justify-center">
