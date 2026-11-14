@@ -23,7 +23,10 @@ export function AddMenuModal({ visible, onClose }: AddMenuSheetProps) {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Add a card"
-          onPress={onClose}
+          onPress={() => {
+            onClose();
+            router.push('/add-card');
+          }}
           className="bg-surface flex-row items-center gap-5 rounded-2xl px-5 py-2"
         >
           <View className="bg-accent size-14 items-center justify-center rounded-full">

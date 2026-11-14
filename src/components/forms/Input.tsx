@@ -23,7 +23,7 @@ export function Input({ className, label, style, ...props }: InputProps) {
           {...props}
           className="text-foreground flex-1"
           style={[style, { alignSelf: 'stretch' }]}
-          textAlignVertical="center"
+          textAlignVertical={props.textAlignVertical ?? 'center'}
         />
       </View>
     </View>
