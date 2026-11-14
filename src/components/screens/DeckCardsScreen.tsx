@@ -1,3 +1,5 @@
+import { useDeleteCard } from '@/client/cards';
+import { SwipeableCard } from '@/components/ui/cards/SwipeableCard';
 import { Button } from '@/components/ui/common/Button';
 import { Lucide } from '@/components/ui/icons';
 import type { Card } from '@/types/card';
@@ -20,6 +22,8 @@ export function DeckCardsScreen({
   onSearch,
   onAddCard,
 }: DeckCardsScreenProps) {
+  const deleteCardMutation = useDeleteCard();
+
   return (
     <View className="gap-6">
       <Text className="text-muted text-base">
@@ -63,14 +67,11 @@ export function DeckCardsScreen({
 
         <View className="gap-3">
           {cards.map((card) => (
-            <View key={card.id} className="bg-surface rounded-2xl px-4 py-4">
-              <Text className="text-foreground text-lg font-medium">
-                {card.frontContent}
-              </Text>
-              <Text className="text-muted mt-2 text-base">
-                {card.backContent}
-              </Text>
-            </View>
+            <SwipeableCard
+              key={card.id}
+              card={card}
+              onDelete={() => deleteCardMutation.mutateAsync({ id: card.id })}
+            />
           ))}
         </View>
       </View>
