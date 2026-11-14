@@ -1,9 +1,9 @@
 import { useDecks } from '@/client/decks';
+import { Screen } from '@/components/screens/Screen';
+import { ScreenError } from '@/components/screens/ScreenError';
+import { ScreenLoading } from '@/components/screens/ScreenLoading';
 import { DeckCard } from '@/components/ui/cards/DeckCard';
 import { StudySummaryCard } from '@/components/ui/cards/StudySummaryCard';
-import { Screen } from '@/components/ui/common/Screen';
-import { ScreenError } from '@/components/ui/common/ScreenError';
-import { ScreenLoading } from '@/components/ui/common/ScreenLoading';
 import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { formatDeckCount } from '@/utils/plural';

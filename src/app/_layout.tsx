@@ -1,6 +1,6 @@
-import { Screen } from '@/components/ui/common/Screen';
-import { ScreenError } from '@/components/ui/common/ScreenError';
-import { ScreenLoading } from '@/components/ui/common/ScreenLoading';
+import { Screen } from '@/components/screens/Screen';
+import { ScreenError } from '@/components/screens/ScreenError';
+import { ScreenLoading } from '@/components/screens/ScreenLoading';
 import { useAuth } from '@/hooks/useAuth';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { SplashScreen, Stack, type ErrorBoundaryProps } from 'expo-router';

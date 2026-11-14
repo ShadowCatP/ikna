@@ -1,4 +1,4 @@
-import { Screen } from '@/components/ui/common/Screen';
+import { Screen } from '@/components/screens/Screen';
 import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { supabase, type UserMetadata } from '@/utils/supabase';

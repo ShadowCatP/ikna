@@ -1,5 +1,5 @@
-import { Screen } from '@/components/ui/common/Screen';
-import { ScreenHeader } from '@/components/ui/common/ScreenHeader';
+import { Screen } from '@/components/screens/Screen';
+import { ScreenHeader } from '@/components/screens/ScreenHeader';
 import { Lucide } from '@/components/ui/icons';
 import { EditNameModal } from '@/components/ui/modals/EditNameModal';
 import { useAuth } from '@/hooks/useAuth';

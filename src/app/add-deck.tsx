@@ -1,6 +1,6 @@
 import { AddDeckForm } from '@/components/forms/AddDeckForm';
-import { Screen } from '@/components/ui/common/Screen';
-import { ScreenHeader } from '@/components/ui/common/ScreenHeader';
+import { Screen } from '@/components/screens/Screen';
+import { ScreenHeader } from '@/components/screens/ScreenHeader';
 import { router } from 'expo-router';
 import { Text } from 'react-native';
 

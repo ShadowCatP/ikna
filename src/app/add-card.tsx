@@ -1,6 +1,6 @@
 import { AddCardForm } from '@/components/forms/AddCardForm';
-import { Screen } from '@/components/ui/common/Screen';
-import { ScreenHeader } from '@/components/ui/common/ScreenHeader';
+import { Screen } from '@/components/screens/Screen';
+import { ScreenHeader } from '@/components/screens/ScreenHeader';
 import { router, useLocalSearchParams } from 'expo-router';
 import { KeyboardAvoidingView, Platform, Text } from 'react-native';
 

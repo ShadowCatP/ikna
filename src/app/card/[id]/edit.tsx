@@ -1,9 +1,9 @@
 import { useCard } from '@/client/cards';
 import { EditCardForm } from '@/components/forms/EditCardForm';
-import { Screen } from '@/components/ui/common/Screen';
-import { ScreenError } from '@/components/ui/common/ScreenError';
-import { ScreenHeader } from '@/components/ui/common/ScreenHeader';
-import { ScreenLoading } from '@/components/ui/common/ScreenLoading';
+import { Screen } from '@/components/screens/Screen';
+import { ScreenError } from '@/components/screens/ScreenError';
+import { ScreenHeader } from '@/components/screens/ScreenHeader';
+import { ScreenLoading } from '@/components/screens/ScreenLoading';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Text } from 'react-native';
 
