@@ -1,3 +1,4 @@
+import { useCreateDeck } from '@/client/decks';
 import { FieldError } from '@/components/forms/FieldError';
 import { Input } from '@/components/forms/Input';
 import { Button } from '@/components/ui/common/Button';
@@ -12,7 +13,7 @@ const MAX_DECK_NAME_LENGTH = 50;
 const MAX_DECK_DESCRIPTION_LENGTH = 150;
 
 const addDeckSchema = z.object({
-  name: z
+  title: z
     .string()
     .trim()
     .min(1, 'Name cannot be empty')
@@ -30,14 +31,24 @@ const addDeckSchema = z.object({
 });
 
 export default function AddDeckScreen() {
+  const createDeckMutation = useCreateDeck();
   const form = useForm({
     defaultValues: {
-      name: '',
+      title: '',
       description: '',
     },
     validators: { onSubmit: addDeckSchema },
-    onSubmit: () => {
-      Alert.alert('Create deck', 'To be implemented', [{ text: 'OK' }]);
+    onSubmit: async ({ value }) => {
+      try {
+        await createDeckMutation.mutateAsync(value);
+        router.back();
+      } catch (error) {
+        Alert.alert(
+          'Could not create deck',
+          error instanceof Error ? error.message : 'Please try again.',
+          [{ text: 'OK' }]
+        );
+      }
     },
   });
 
@@ -51,7 +62,7 @@ export default function AddDeckScreen() {
       </ScreenHeader>
 
       <View className="gap-6">
-        <form.Field name="name">
+        <form.Field name="title">
           {(field) => (
             <View>
               <Input
@@ -101,7 +112,10 @@ export default function AddDeckScreen() {
       </View>
 
       <View className="mt-auto">
-        <Button onPress={() => void form.handleSubmit()}>
+        <Button
+          disabled={createDeckMutation.isPending}
+          onPress={() => void form.handleSubmit()}
+        >
           <Text className="text-background font-medium">Create deck</Text>
         </Button>
       </View>
