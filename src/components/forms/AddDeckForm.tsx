@@ -1,0 +1,115 @@
+import { useCreateDeck } from '@/client/decks';
+import { FieldError } from '@/components/forms/FieldError';
+import { Input } from '@/components/forms/Input';
+import { Button } from '@/components/ui/common/Button';
+import { useForm } from '@tanstack/react-form';
+import { router } from 'expo-router';
+import { Alert, Text, View } from 'react-native';
+import { z } from 'zod';
+
+const MAX_DECK_NAME_LENGTH = 50;
+const MAX_DECK_DESCRIPTION_LENGTH = 150;
+
+const addDeckSchema = z.object({
+  title: z
+    .string()
+    .trim()
+    .min(1, 'Name cannot be empty')
+    .max(
+      MAX_DECK_NAME_LENGTH,
+      `Name should be less than ${MAX_DECK_NAME_LENGTH} characters`
+    ),
+  description: z
+    .string()
+    .trim()
+    .max(
+      MAX_DECK_DESCRIPTION_LENGTH,
+      `Description should be less than ${MAX_DECK_DESCRIPTION_LENGTH} characters`
+    ),
+});
+
+export function AddDeckForm() {
+  const createDeckMutation = useCreateDeck();
+  const form = useForm({
+    defaultValues: {
+      title: '',
+      description: '',
+    },
+    validators: { onSubmit: addDeckSchema },
+    onSubmit: async ({ value }) => {
+      try {
+        await createDeckMutation.mutateAsync(value);
+        router.back();
+      } catch (error) {
+        Alert.alert(
+          'Could not create deck',
+          error instanceof Error ? error.message : 'Please try again.',
+          [{ text: 'OK' }]
+        );
+      }
+    },
+  });
+
+  return (
+    <>
+      <View className="gap-6">
+        <form.Field name="title">
+          {(field) => (
+            <View>
+              <Input
+                label="Name"
+                accessibilityLabel="Deck name"
+                placeholder="What is your deck name?"
+                value={field.state.value}
+                onChangeText={field.handleChange}
+                onBlur={field.handleBlur}
+                maxLength={MAX_DECK_NAME_LENGTH}
+              />
+              <View className="mt-2 min-h-6 flex-row justify-between">
+                <View className="flex-1">
+                  <FieldError meta={field.state.meta} />
+                </View>
+                <Text className="text-muted shrink-0 text-xs">
+                  {field.state.value.length} / {MAX_DECK_NAME_LENGTH}
+                </Text>
+              </View>
+            </View>
+          )}
+        </form.Field>
+
+        <form.Field name="description">
+          {(field) => (
+            <View>
+              <Input
+                label="Description"
+                accessibilityLabel="Deck description"
+                placeholder="What is this deck about? (optional)"
+                value={field.state.value}
+                onChangeText={field.handleChange}
+                onBlur={field.handleBlur}
+                maxLength={MAX_DECK_DESCRIPTION_LENGTH}
+              />
+              <View className="mt-2 min-h-6 flex-row justify-between">
+                <View className="flex-1">
+                  <FieldError meta={field.state.meta} />
+                </View>
+                <Text className="text-muted shrink-0 text-xs">
+                  {field.state.value.length} / {MAX_DECK_DESCRIPTION_LENGTH}
+                </Text>
+              </View>
+            </View>
+          )}
+        </form.Field>
+      </View>
+
+      <View className="mt-auto">
+        <Button
+          disabled={createDeckMutation.isPending}
+          onPress={() => void form.handleSubmit()}
+        >
+          <Text className="text-background font-medium">Create deck</Text>
+        </Button>
+      </View>
+    </>
+  );
+}
