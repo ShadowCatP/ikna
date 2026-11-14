@@ -6,6 +6,7 @@ import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { formatDeckCount } from '@/utils/plural';
 import type { UserMetadata } from '@/utils/supabase';
+import { router } from 'expo-router';
 import { Alert, Pressable, RefreshControl, Text, View } from 'react-native';
 
 export default function HomeScreen() {
@@ -23,10 +24,6 @@ export default function HomeScreen() {
 
   function handleStartReview() {
     Alert.alert('Start review', 'To be implemented', [{ text: 'OK' }]);
-  }
-
-  function handleDeckPress(title: string) {
-    Alert.alert(title, 'To be implemented', [{ text: 'OK' }]);
   }
 
   function handleDeckReview(title: string) {
@@ -87,7 +84,12 @@ export default function HomeScreen() {
               <DeckCard
                 key={deck.id}
                 deck={deck}
-                onPress={() => handleDeckPress(deck.title)}
+                onPress={() =>
+                  router.push({
+                    pathname: '/deck/[id]',
+                    params: { id: deck.id },
+                  })
+                }
                 onReview={() => handleDeckReview(deck.title)}
               />
             ))}
