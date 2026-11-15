@@ -37,8 +37,21 @@ export async function GET(request: Request, { id }: { id: string }) {
     }
 
     const { _count, ...deckPreview } = deck;
+    const dueCardCount = await prisma.card.count({
+      where: {
+        deckId: deck.id,
+        OR: [
+          { reviewState: null },
+          { reviewState: { is: { dueDate: { lte: new Date() } } } },
+        ],
+      },
+    });
 
-    return Response.json({ ...deckPreview, cardCount: _count.cards });
+    return Response.json({
+      ...deckPreview,
+      cardCount: _count.cards,
+      dueCardCount,
+    });
   } catch {
     return internalServerError();
   }
@@ -87,8 +100,21 @@ export async function PATCH(request: Request, { id }: { id: string }) {
     });
 
     const { _count, ...deckPreview } = deck;
+    const dueCardCount = await prisma.card.count({
+      where: {
+        deckId: deck.id,
+        OR: [
+          { reviewState: null },
+          { reviewState: { is: { dueDate: { lte: new Date() } } } },
+        ],
+      },
+    });
 
-    return Response.json({ ...deckPreview, cardCount: _count.cards });
+    return Response.json({
+      ...deckPreview,
+      cardCount: _count.cards,
+      dueCardCount,
+    });
   } catch {
     return internalServerError();
   }

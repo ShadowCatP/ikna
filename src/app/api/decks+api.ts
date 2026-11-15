@@ -29,11 +29,27 @@ export async function GET(request: Request) {
       },
       orderBy: { updatedAt: 'desc' },
     });
+    const now = new Date();
+    const dueCards = await prisma.card.groupBy({
+      by: ['deckId'],
+      where: {
+        deck: { userId: user.id },
+        OR: [
+          { reviewState: null },
+          { reviewState: { is: { dueDate: { lte: now } } } },
+        ],
+      },
+      _count: { _all: true },
+    });
+    const dueCountByDeckId = new Map(
+      dueCards.map((group) => [group.deckId, group._count._all])
+    );
 
     return Response.json(
       decks.map(({ _count, ...deck }) => ({
         ...deck,
         cardCount: _count.cards,
+        dueCardCount: dueCountByDeckId.get(deck.id) ?? 0,
       }))
     );
   } catch {
@@ -79,7 +95,7 @@ export async function POST(request: Request) {
     const { _count, ...deckPreview } = deck;
 
     return Response.json(
-      { ...deckPreview, cardCount: _count.cards },
+      { ...deckPreview, cardCount: _count.cards, dueCardCount: 0 },
       { status: 201 }
     );
   } catch {

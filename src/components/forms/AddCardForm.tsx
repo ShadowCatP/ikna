@@ -1,6 +1,5 @@
 import { useCreateCard } from '@/client/cards';
 import { useDecks } from '@/client/decks';
-import { FieldError } from '@/components/forms/FieldError';
 import { Input } from '@/components/forms/Input';
 import { Button } from '@/components/ui/common/Button';
 import {
@@ -14,6 +13,7 @@ import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 import { z } from 'zod';
+import { FieldError } from './FieldError';
 
 const MAX_FRONT_LENGTH = 150;
 const MAX_BACK_LENGTH = 300;
@@ -155,15 +155,9 @@ export function AddCardForm({
                 multiline
                 textAlignVertical="top"
                 className="bg-surface min-h-32 border-0 px-4"
+                maxCharacterLimit={MAX_FRONT_LENGTH}
+                error={field.state.meta}
               />
-              <View className="mt-2 min-h-5 flex-row justify-between">
-                <View className="flex-1">
-                  <FieldError meta={field.state.meta} />
-                </View>
-                <Text className="text-muted shrink-0 text-xs">
-                  {field.state.value.length} / {MAX_FRONT_LENGTH}
-                </Text>
-              </View>
             </View>
           )}
         </form.Field>
@@ -182,15 +176,9 @@ export function AddCardForm({
                 multiline
                 textAlignVertical="top"
                 className="bg-surface min-h-32 border-0 px-4"
+                maxCharacterLimit={MAX_BACK_LENGTH}
+                error={field.state.meta}
               />
-              <View className="mt-2 min-h-5 flex-row justify-between">
-                <View className="flex-1">
-                  <FieldError meta={field.state.meta} />
-                </View>
-                <Text className="text-muted shrink-0 text-xs">
-                  {field.state.value.length} / {MAX_BACK_LENGTH}
-                </Text>
-              </View>
             </View>
           )}
         </form.Field>

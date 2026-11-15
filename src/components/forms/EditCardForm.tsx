@@ -1,5 +1,4 @@
 import { useDeleteCard, useUpdateCard } from '@/client/cards';
-import { FieldError } from '@/components/forms/FieldError';
 import { Input } from '@/components/forms/Input';
 import { Button } from '@/components/ui/common/Button';
 import { Modal } from '@/components/ui/common/Modal';
@@ -87,15 +86,9 @@ export function EditCardForm({ card }: { card: Card }) {
                 multiline
                 textAlignVertical="top"
                 className="bg-surface min-h-32 border-0 px-4"
+                maxCharacterLimit={MAX_FRONT_LENGTH}
+                error={field.state.meta}
               />
-              <View className="mt-2 min-h-5 flex-row justify-between">
-                <View className="flex-1">
-                  <FieldError meta={field.state.meta} />
-                </View>
-                <Text className="text-muted shrink-0 text-xs">
-                  {field.state.value.length} / {MAX_FRONT_LENGTH}
-                </Text>
-              </View>
             </View>
           )}
         </form.Field>
@@ -113,15 +106,9 @@ export function EditCardForm({ card }: { card: Card }) {
                 multiline
                 textAlignVertical="top"
                 className="bg-surface min-h-32 border-0 px-4"
+                maxCharacterLimit={MAX_BACK_LENGTH}
+                error={field.state.meta}
               />
-              <View className="mt-2 min-h-5 flex-row justify-between">
-                <View className="flex-1">
-                  <FieldError meta={field.state.meta} />
-                </View>
-                <Text className="text-muted shrink-0 text-xs">
-                  {field.state.value.length} / {MAX_BACK_LENGTH}
-                </Text>
-              </View>
             </View>
           )}
         </form.Field>

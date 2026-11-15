@@ -1,5 +1,4 @@
 import { useDeleteDeck, useUpdateDeck } from '@/client/decks';
-import { FieldError } from '@/components/forms/FieldError';
 import { Input } from '@/components/forms/Input';
 import { Button } from '@/components/ui/common/Button';
 import { Modal } from '@/components/ui/common/Modal';
@@ -80,7 +79,7 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
 
   return (
     <>
-      <View className="gap-6">
+      <View className="">
         <form.Field name="title">
           {(field) => (
             <View>
@@ -91,15 +90,9 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
                 onChangeText={field.handleChange}
                 onBlur={field.handleBlur}
                 maxLength={MAX_DECK_NAME_LENGTH}
+                maxCharacterLimit={MAX_DECK_NAME_LENGTH}
+                error={field.state.meta}
               />
-              <View className="mt-2 min-h-6 flex-row justify-between">
-                <View className="flex-1">
-                  <FieldError meta={field.state.meta} />
-                </View>
-                <Text className="text-muted shrink-0 text-xs">
-                  {field.state.value.length} / {MAX_DECK_NAME_LENGTH}
-                </Text>
-              </View>
             </View>
           )}
         </form.Field>
@@ -114,15 +107,9 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
                 onChangeText={field.handleChange}
                 onBlur={field.handleBlur}
                 maxLength={MAX_DECK_DESCRIPTION_LENGTH}
+                maxCharacterLimit={MAX_DECK_DESCRIPTION_LENGTH}
+                error={field.state.meta}
               />
-              <View className="mt-2 min-h-6 flex-row justify-between">
-                <View className="flex-1">
-                  <FieldError meta={field.state.meta} />
-                </View>
-                <Text className="text-muted shrink-0 text-xs">
-                  {field.state.value.length} / {MAX_DECK_DESCRIPTION_LENGTH}
-                </Text>
-              </View>
             </View>
           )}
         </form.Field>
