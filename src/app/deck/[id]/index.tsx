@@ -53,6 +53,38 @@ export default function DeckScreen() {
     });
   }
 
+  if (isPending) {
+    return (
+      <Screen contentContainerClassName="grow">
+        <ScreenLoading message="Loading deck..." />
+      </Screen>
+    );
+  }
+
+  if (isError || !deck) {
+    return (
+      <Screen contentContainerClassName="grow">
+        <ScreenError onRetry={() => void refetch()} />
+      </Screen>
+    );
+  }
+
+  if (areCardsPending) {
+    return (
+      <Screen contentContainerClassName="grow">
+        <ScreenLoading message="Loading cards..." />
+      </Screen>
+    );
+  }
+
+  if (areCardsError) {
+    return (
+      <Screen contentContainerClassName="grow">
+        <ScreenError onRetry={() => void refetchCards()} />
+      </Screen>
+    );
+  }
+
   return (
     <Screen contentContainerClassName="grow">
       <ScreenHeader onBack={() => router.back()}>
@@ -74,15 +106,7 @@ export default function DeckScreen() {
         </View>
       </ScreenHeader>
 
-      {isPending ? (
-        <ScreenLoading message="Loading deck..." />
-      ) : isError || !deck ? (
-        <ScreenError onRetry={() => void refetch()} />
-      ) : areCardsPending ? (
-        <ScreenLoading message="Loading cards..." />
-      ) : areCardsError ? (
-        <ScreenError onRetry={() => void refetchCards()} />
-      ) : cards.length === 0 ? (
+      {cards.length === 0 ? (
         <EmptyDeckState onAddCard={handleAddCard} />
       ) : (
         <DeckCardsScreen

@@ -4,6 +4,7 @@ export type DeckPreview = {
   title: string;
   description: string | null;
   cardCount: number;
+  dueCardCount: number;
   createdAt: string;
   updatedAt: string;
 };

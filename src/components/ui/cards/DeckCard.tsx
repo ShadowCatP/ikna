@@ -28,7 +28,7 @@ export function DeckCard({ deck, onPress, onReview }: DeckCardProps) {
             </Text>
             <View className="bg-accent rounded-full px-2 py-1">
               <Text className="text-foreground text-xs font-medium">
-                XX due
+                {deck.dueCardCount} due
               </Text>
             </View>
           </View>

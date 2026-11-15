@@ -29,7 +29,7 @@ export function DeckCardsScreen({
   return (
     <View className="gap-6">
       <Text className="text-muted text-base">
-        0 due of {formatCardCount(deck.cardCount)}
+        {deck.dueCardCount} due of {formatCardCount(deck.cardCount)}
       </Text>
 
       <Button onPress={onStartReview}>

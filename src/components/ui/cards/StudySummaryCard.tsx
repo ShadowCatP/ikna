@@ -1,14 +1,16 @@
 import { Lucide } from '@/components/ui/icons';
-import { formatDeckCount } from '@/utils/plural';
+import { formatCardCount, formatDeckCount } from '@/utils/plural';
 import { Image, Pressable, Text, View } from 'react-native';
 
 type StudySummaryCardProps = {
   deckCount: number;
+  dueCardCount: number;
   onStartReview: () => void;
 };
 
 export function StudySummaryCard({
   deckCount,
+  dueCardCount,
   onStartReview,
 }: StudySummaryCardProps) {
   return (
@@ -19,10 +21,10 @@ export function StudySummaryCard({
             <Text className="text-background text-sm font-medium">Today</Text>
           </View>
           <Text className="text-foreground mt-3 text-4xl font-bold">
-            {formatDeckCount(deckCount)}
+            {formatCardCount(dueCardCount)}
           </Text>
           <Text className="text-foreground mt-1 text-base">
-            Ready for your next study session
+            due today in {formatDeckCount(deckCount)}
           </Text>
         </View>
         <View className="-mr-2 aspect-square self-stretch">

@@ -36,6 +36,27 @@ export default function HomeScreen() {
     Alert.alert('Search decks', 'To be implemented', [{ text: 'OK' }]);
   }
 
+  if (isPending) {
+    return (
+      <Screen contentContainerClassName="grow">
+        <ScreenLoading message="Loading decks..." />
+      </Screen>
+    );
+  }
+
+  if (isError) {
+    return (
+      <Screen contentContainerClassName="grow">
+        <ScreenError onRetry={() => void refetch()} />
+      </Screen>
+    );
+  }
+
+  const dueCardCount = decks.reduce(
+    (total, deck) => total + deck.dueCardCount,
+    0
+  );
+
   return (
     <Screen
       refreshControl={
@@ -56,6 +77,7 @@ export default function HomeScreen() {
 
         <StudySummaryCard
           deckCount={decks.length}
+          dueCardCount={dueCardCount}
           onStartReview={handleStartReview}
         />
 
@@ -76,27 +98,21 @@ export default function HomeScreen() {
           </View>
         </View>
 
-        {isPending ? (
-          <ScreenLoading message="Loading decks..." />
-        ) : isError ? (
-          <ScreenError onRetry={() => void refetch()} />
-        ) : (
-          <View className="gap-3">
-            {decks.map((deck) => (
-              <DeckCard
-                key={deck.id}
-                deck={deck}
-                onPress={() =>
-                  router.push({
-                    pathname: '/deck/[id]',
-                    params: { id: deck.id },
-                  })
-                }
-                onReview={() => handleDeckReview(deck.title)}
-              />
-            ))}
-          </View>
-        )}
+        <View className="gap-3">
+          {decks.map((deck) => (
+            <DeckCard
+              key={deck.id}
+              deck={deck}
+              onPress={() =>
+                router.push({
+                  pathname: '/deck/[id]',
+                  params: { id: deck.id },
+                })
+              }
+              onReview={() => handleDeckReview(deck.title)}
+            />
+          ))}
+        </View>
       </View>
     </Screen>
   );
