@@ -9,7 +9,7 @@ import { supabase } from '@/utils/supabase';
 import { useForm } from '@tanstack/react-form';
 import { router } from 'expo-router';
 import { useState } from 'react';
-import { ActivityIndicator, Pressable, Text, View } from 'react-native';
+import { ActivityIndicator, Text, View } from 'react-native';
 
 export default function SignUp() {
   const [step, setStep] = useState<AuthStep>(1);
@@ -95,16 +95,14 @@ export default function SignUp() {
                         onChangeText={field.handleChange}
                         onBlur={field.handleBlur}
                         maxLength={30}
+                        maxCharacterLimit={30}
+                        error={field.state.meta}
                         autoComplete="given-name"
                         textContentType="givenName"
                         editable={!busy && !info}
                         returnKeyType="done"
                         onSubmitEditing={() => void form.handleSubmit()}
                       />
-                      <Text className="text-muted mt-2 text-right text-xs">
-                        {field.state.value.length} / 30
-                      </Text>
-                      <FieldError meta={field.state.meta} />
                     </>
                   )}
                 </form.Field>
@@ -123,12 +121,12 @@ export default function SignUp() {
                         keyboardType="email-address"
                         textContentType="emailAddress"
                         value={field.state.value}
+                        error={field.state.meta}
                         onChangeText={field.handleChange}
                         onBlur={field.handleBlur}
                         editable={!busy && !info}
                         returnKeyType="next"
                       />
-                      <FieldError meta={field.state.meta} />
                     </>
                   )}
                 </form.Field>
@@ -192,28 +190,28 @@ export default function SignUp() {
               </Button>
             </View>
             {nameStep && !info ? (
-              <Pressable
-                accessibilityRole="button"
+              <Button
+                variant="ghost"
                 disabled={busy}
                 onPress={() => void form.handleSubmit({ skipName: true })}
-                className="min-h-12 items-center justify-center"
+                className="min-h-12 rounded-none px-0 py-0"
               >
                 <Text className="text-foreground text-sm underline">
                   Skip for now
                 </Text>
-              </Pressable>
+              </Button>
             ) : !nameStep ? (
-              <Pressable
-                accessibilityRole="button"
+              <Button
+                variant="ghost"
                 disabled={busy}
                 onPress={() => router.push('/auth/sign-in')}
-                className="min-h-12 items-center justify-center"
+                className="min-h-12 rounded-none px-0 py-0"
               >
                 <Text className="text-foreground text-center text-sm">
                   Already have an account?{' '}
                   <Text className="underline">Log in</Text>
                 </Text>
-              </Pressable>
+              </Button>
             ) : null}
           </View>
         </AuthScreen>

@@ -14,6 +14,7 @@ const buttonVariantClasses = {
   outline: 'bg-background border-foreground border-2',
   surface: 'bg-surface',
   accent: 'bg-accent',
+  ghost: 'bg-transparent',
 } as const;
 
 type ButtonProps = PressableProps & {
