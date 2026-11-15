@@ -1,11 +1,15 @@
 import { useDeleteCard } from '@/client/cards';
+import { EmptyDeckState } from '@/components/screens/EmptyDeckScreen';
 import { SwipeableCard } from '@/components/ui/cards/SwipeableCard';
 import { Button } from '@/components/ui/common/Button';
+
 import { Lucide } from '@/components/ui/icons';
 import type { Card } from '@/types/card';
 import type { DeckPreview } from '@/types/deck';
 import { formatCardCount } from '@/utils/plural';
 import { Text, View } from 'react-native';
+import { ScreenError } from './ScreenError';
+import { ScreenLoading } from './ScreenLoading';
 
 type DeckCardsScreenProps = {
   deck: DeckPreview;
@@ -14,6 +18,9 @@ type DeckCardsScreenProps = {
   onSearch: () => void;
   onAddCard: () => void;
   onEditCard: (cardId: string) => void;
+  cardsLoading: boolean;
+  cardsError: boolean;
+  onRetryCards: () => void;
 };
 
 export function DeckCardsScreen({
@@ -23,8 +30,15 @@ export function DeckCardsScreen({
   onSearch,
   onAddCard,
   onEditCard,
+  cardsLoading,
+  cardsError,
+  onRetryCards,
 }: DeckCardsScreenProps) {
   const deleteCardMutation = useDeleteCard();
+
+  if (!cardsLoading && !cardsError && cards.length === 0) {
+    return <EmptyDeckState onAddCard={onAddCard} />;
+  }
 
   return (
     <View className="gap-6">
@@ -67,16 +81,22 @@ export function DeckCardsScreen({
           </View>
         </View>
 
-        <View className="gap-3">
-          {cards.map((card) => (
-            <SwipeableCard
-              key={card.id}
-              card={card}
-              onPress={() => onEditCard(card.id)}
-              onDelete={() => deleteCardMutation.mutateAsync({ id: card.id })}
-            />
-          ))}
-        </View>
+        {cardsLoading ? (
+          <ScreenLoading message="Loading cards..." />
+        ) : cardsError ? (
+          <ScreenError onRetry={onRetryCards} />
+        ) : (
+          <View className="gap-3">
+            {cards.map((card) => (
+              <SwipeableCard
+                key={card.id}
+                card={card}
+                onPress={() => onEditCard(card.id)}
+                onDelete={() => deleteCardMutation.mutateAsync({ id: card.id })}
+              />
+            ))}
+          </View>
+        )}
       </View>
     </View>
   );

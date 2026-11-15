@@ -1,7 +1,6 @@
 import { useCards } from '@/client/cards';
 import { useDeck } from '@/client/decks';
 import { DeckCardsScreen } from '@/components/screens/DeckCardsScreen';
-import { EmptyDeckState } from '@/components/screens/EmptyDeckScreen';
 import { Screen } from '@/components/screens/Screen';
 import { ScreenError } from '@/components/screens/ScreenError';
 import { ScreenHeader } from '@/components/screens/ScreenHeader';
@@ -69,22 +68,6 @@ export default function DeckScreen() {
     );
   }
 
-  if (areCardsPending) {
-    return (
-      <Screen contentContainerClassName="grow">
-        <ScreenLoading message="Loading cards..." />
-      </Screen>
-    );
-  }
-
-  if (areCardsError) {
-    return (
-      <Screen contentContainerClassName="grow">
-        <ScreenError onRetry={() => void refetchCards()} />
-      </Screen>
-    );
-  }
-
   return (
     <Screen contentContainerClassName="grow">
       <ScreenHeader onBack={() => router.back()}>
@@ -106,18 +89,17 @@ export default function DeckScreen() {
         </View>
       </ScreenHeader>
 
-      {cards.length === 0 ? (
-        <EmptyDeckState onAddCard={handleAddCard} />
-      ) : (
-        <DeckCardsScreen
-          deck={deck}
-          cards={cards}
-          onStartReview={handleStartReview}
-          onSearch={handleSearch}
-          onAddCard={handleAddCard}
-          onEditCard={handleEditCard}
-        />
-      )}
+      <DeckCardsScreen
+        deck={deck}
+        cards={cards}
+        onStartReview={handleStartReview}
+        onSearch={handleSearch}
+        onAddCard={handleAddCard}
+        onEditCard={handleEditCard}
+        cardsLoading={areCardsPending}
+        cardsError={areCardsError}
+        onRetryCards={() => void refetchCards()}
+      />
     </Screen>
   );
 }
