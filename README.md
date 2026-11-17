@@ -72,13 +72,42 @@ Run scripts with `npm run <script>`:
 | `android`       | Start Expo and open Android target.                                    |
 | `ios`           | Start Expo and open iOS target.                                        |
 | `web`           | Start Expo and open web target.                                        |
+| `test`          | Run Jest unit tests once.                                              |
+| `test:watch`    | Run Jest in watch mode.                                                |
+| `test:coverage` | Run Jest with SM2 coverage reports.                                    |
 | `typecheck`     | Run TypeScript checks without emitting files.                          |
 | `lint`          | Run ESLint through Expo.                                               |
 | `format`        | Format supported project files with Prettier.                          |
 | `format:check`  | Check formatting without changing files.                               |
 | `reset-project` | Move starter code to `app-example` and create a blank `app` directory. |
 
-CI runs `typecheck`, `format:check`, and `lint` on every push and on pull requests targeting `main`.
+CI runs Jest, `typecheck`, `format:check`, and `lint` on pull requests targeting `main`.
+
+## SM2 unit tests
+
+Tests: `src/utils/__tests__/sm2.test.ts`, using Jest and the `jest-expo` preset.
+
+```bash
+npm test
+npm run test:watch
+npm run test:coverage
+```
+
+Coverage is limited to `src/utils/sm2.ts`; there is no mandatory percentage
+threshold. The HTML report is `coverage/lcov-report/index.html` (ignored by Git).
+CI runs the tests and fails if no tests are found. Jest pins `Europe/Warsaw` to
+make local calendar-day and daylight-saving tests deterministic.
+
+The suite covers successful reviews, failures and recovery, all grades `0`–`5`,
+quality normalization, ease-factor and interval boundaries, dates, and input
+independence. Expectations follow the existing implementation. In particular,
+intervals use `Math.round`: `6 * 1.4 = 8.4` becomes `8`, while the
+[original SM-2 description](https://super-memory.com/english/ol/sm2.htm) specifies
+rounding up to `9`. This pre-existing difference is documented, not changed here.
+
+Missing state, `NaN`, and invalid dates have no runtime rejection contract.
+`ReviewLog.rating` uses `1`–`4`, so integration must define its mapping to SM2
+quality `0`–`5`; passing Hard (`2`) directly would count as a failed review.
 
 ## Get a fresh project
 

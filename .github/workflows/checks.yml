@@ -30,6 +30,9 @@ jobs:
         env:
           DIRECT_URL: postgresql://postgres:postgres@localhost:5432/postgres
 
+      - name: Unit tests
+        run: npm test -- --ci --runInBand
+
       - name: Typecheck
         run: npm run typecheck
 
