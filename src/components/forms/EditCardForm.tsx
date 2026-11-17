@@ -127,7 +127,7 @@ export function EditCardForm({ card }: { card: Card }) {
 
       <View className="mt-auto pt-8">
         <Button disabled={isBusy} onPress={() => void form.handleSubmit()}>
-          <Text className="text-background text-base font-medium">
+          <Text className="text-on-cta text-base font-medium">
             Save changes
           </Text>
         </Button>

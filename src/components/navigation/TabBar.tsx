@@ -1,6 +1,13 @@
 import Lucide from '@react-native-vector-icons/lucide';
 import { BottomTabBarProps } from 'expo-router/build/layouts/TabsClient.js';
-import { Platform, Pressable, StyleSheet, Text, View } from 'react-native';
+import {
+  Platform,
+  Pressable,
+  StyleSheet,
+  Text,
+  useColorScheme,
+  View,
+} from 'react-native';
 import { useSafeAreaInsets } from 'react-native-safe-area-context';
 
 interface NavBarProps {
@@ -25,6 +32,7 @@ const floatingButtonStyle = StyleSheet.create({
 
 export function TabBar({ props, handleAddButtonPress }: NavBarProps) {
   const insets = useSafeAreaInsets();
+  const isDark = useColorScheme() === 'dark';
   const bottomInset = Platform.OS === 'android' ? insets.bottom : 0;
 
   return (
@@ -40,8 +48,10 @@ export function TabBar({ props, handleAddButtonPress }: NavBarProps) {
           const options = props.descriptors[route.key].options;
           const navigation = props.descriptors[route.key].navigation;
           const color = isFocused
-            ? (options.tabBarActiveTintColor ?? '#6a5af9') // react native does not resolve css vars apparently ;)
-            : (options.tabBarInactiveTintColor ?? 'black');
+            ? (options.tabBarActiveTintColor ??
+              (isDark ? '#ffffff' : '#6a5af9')) // react native does not resolve css vars apparently ;)
+            : (options.tabBarInactiveTintColor ??
+              (isDark ? '#dad5f3' : 'black'));
           const label =
             typeof options.tabBarLabel === 'string'
               ? options.tabBarLabel
@@ -83,7 +93,7 @@ export function TabBar({ props, handleAddButtonPress }: NavBarProps) {
         className="bg-primary"
         style={floatingButtonStyle.button}
       >
-        <Lucide name="plus" size={28} color="white" />
+        <Lucide name="plus" size={28} color={isDark ? '#1e1450' : 'white'} />
       </Pressable>
     </View>
   );

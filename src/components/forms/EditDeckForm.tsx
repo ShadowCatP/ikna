@@ -135,7 +135,7 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
           }
           onPress={() => void form.handleSubmit()}
         >
-          <Text className="text-background text-base font-medium">
+          <Text className="text-on-cta text-base font-medium">
             Save changes
           </Text>
         </Button>

@@ -101,14 +101,14 @@ export function AddCardForm({
                   leading={
                     <View className="bg-primary size-12 items-center justify-center rounded-full">
                       {selectedDeck ? (
-                        <Text className="text-background text-base font-medium">
+                        <Text className="text-on-cta text-base font-medium">
                           {selectedDeck.title.slice(0, 2).toUpperCase()}
                         </Text>
                       ) : (
                         <Lucide
                           name="minus"
                           size={22}
-                          className="text-background"
+                          className="text-on-cta"
                         />
                       )}
                     </View>
@@ -199,7 +199,7 @@ export function AddCardForm({
           accessibilityLabel="Save card"
           onPress={() => void handleSubmit()}
         >
-          <Text className="text-background font-medium">Create card</Text>
+          <Text className="text-on-cta font-medium">Create card</Text>
         </Button>
       </View>
     </>

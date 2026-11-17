@@ -14,16 +14,16 @@ export function StudySummaryCard({
   onStartReview,
 }: StudySummaryCardProps) {
   return (
-    <View className="bg-accent overflow-hidden rounded-3xl px-5 pt-5">
+    <View className="bg-accent-container overflow-hidden rounded-3xl px-5 pt-5">
       <View className="flex-row items-stretch justify-between">
         <View className="w-1/2">
           <View className="bg-primary self-start rounded-full px-4 py-2">
             <Text className="text-background text-sm font-medium">Today</Text>
           </View>
-          <Text className="text-foreground mt-3 text-4xl font-bold">
+          <Text className="text-on-accent-container mt-3 text-4xl font-bold">
             {formatCardCount(dueCardCount)}
           </Text>
-          <Text className="text-foreground mt-1 text-base">
+          <Text className="text-on-accent-container mt-1 text-base">
             due today in {formatDeckCount(deckCount)}
           </Text>
         </View>
@@ -40,10 +40,10 @@ export function StudySummaryCard({
         accessibilityRole="button"
         accessibilityLabel="Start review"
         onPress={onStartReview}
-        className="bg-foreground mt-3 mb-5 min-h-14 flex-row items-center justify-center gap-2 rounded-2xl"
+        className="bg-cta-on-container mt-3 mb-5 min-h-14 flex-row items-center justify-center gap-2 rounded-2xl"
       >
-        <Lucide name="play" size={18} color="white" />
-        <Text className="text-background text-base font-medium">
+        <Lucide name="play" size={18} className="text-on-cta-on-container" />
+        <Text className="text-on-cta-on-container text-base font-medium">
           Start review
         </Text>
       </Pressable>

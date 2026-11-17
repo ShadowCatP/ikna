@@ -94,7 +94,7 @@ export function AddDeckForm() {
           disabled={createDeckMutation.isPending}
           onPress={() => void form.handleSubmit()}
         >
-          <Text className="text-background font-medium">Create deck</Text>
+          <Text className="text-on-cta font-medium">Create deck</Text>
         </Button>
       </View>
     </>

@@ -33,7 +33,7 @@ export function Input({
       {label && <Label>{label}</Label>}
       <View
         className={cn(
-          'bg-background border-border min-h-14 flex-row items-center rounded-2xl border px-2 py-1',
+          'bg-field border-field-border min-h-14 flex-row items-center rounded-2xl border px-2 py-1',
           className
         )}
       >

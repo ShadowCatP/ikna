@@ -48,8 +48,8 @@ export function DeckCardsScreen({
 
       <Button onPress={onStartReview}>
         <View className="flex-row items-center gap-2">
-          <Lucide name="play" size={20} color="white" />
-          <Text className="text-background text-base font-medium">
+          <Lucide name="play" size={20} className="text-on-cta" />
+          <Text className="text-on-cta text-base font-medium">
             Start review
           </Text>
         </View>

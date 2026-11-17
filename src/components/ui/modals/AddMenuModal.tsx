@@ -30,9 +30,15 @@ export function AddMenuModal({ visible, onClose }: AddMenuSheetProps) {
           className="bg-surface flex-row items-center gap-5 rounded-2xl px-5 py-2"
         >
           <View className="bg-accent size-14 items-center justify-center rounded-full">
-            <Lucide name="plus" size={26} />
+            <Lucide
+              name="plus"
+              size={26}
+              className="text-on-accent-container"
+            />
           </View>
-          <Text className="text-xl font-medium">Add a card</Text>
+          <Text className="text-foreground text-xl font-medium">
+            Add a card
+          </Text>
         </Pressable>
 
         <Pressable
@@ -45,9 +51,15 @@ export function AddMenuModal({ visible, onClose }: AddMenuSheetProps) {
           className="bg-surface flex-row items-center gap-5 rounded-2xl px-5 py-2"
         >
           <View className="bg-accent-secondary size-14 items-center justify-center rounded-full">
-            <Lucide name="layers" size={26} />
+            <Lucide
+              name="layers"
+              size={26}
+              className="text-on-accent-container"
+            />
           </View>
-          <Text className="text-xl font-medium">Create a deck</Text>
+          <Text className="text-foreground text-xl font-medium">
+            Create a deck
+          </Text>
         </Pressable>
       </View>
     </Modal>

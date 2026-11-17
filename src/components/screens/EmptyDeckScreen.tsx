@@ -27,10 +27,8 @@ export function EmptyDeckState({ onAddCard }: EmptyDeckStateProps) {
       </Text>
       <Button className="mt-8 w-full" onPress={onAddCard}>
         <View className="flex-row items-center gap-2">
-          <Lucide name="plus" size={22} color="white" />
-          <Text className="text-background text-base font-medium">
-            Add a card
-          </Text>
+          <Lucide name="plus" size={22} className="text-on-cta" />
+          <Text className="text-on-cta text-base font-medium">Add a card</Text>
         </View>
       </Button>
     </View>
