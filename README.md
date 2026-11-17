@@ -95,8 +95,9 @@ npm run test:coverage
 
 Coverage is limited to `src/utils/sm2.ts`; there is no mandatory percentage
 threshold. The HTML report is `coverage/lcov-report/index.html` (ignored by Git).
-CI runs the tests and fails if no tests are found. Jest pins `Europe/Warsaw` to
-make local calendar-day and daylight-saving tests deterministic.
+CI runs the tests and fails if no tests are found. Date expectations use local
+calendar dates without overriding the environment's timezone. The suite can also
+be checked under `TZ=UTC` and `TZ=Europe/Warsaw`.
 
 The suite covers successful reviews, failures and recovery, all grades `0`–`5`,
 quality normalization, ease-factor and interval boundaries, dates, and input

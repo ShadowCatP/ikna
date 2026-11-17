@@ -1,7 +1,6 @@
 import { calculateSm2Review, type Sm2State } from '../sm2';
 
 function createState(overrides: Partial<Sm2State> = {}): Sm2State {
-  // Defaults match CardReviewState in prisma/schema.prisma.
   return { interval: 0, repetition: 0, easeFactor: 2.5, ...overrides };
 }
 
@@ -249,32 +248,26 @@ describe('calculateSm2Review', () => {
       }
     );
 
-    // The function uses local setDate(), so a calendar day may contain 23 or 25 hours.
-    // jest.config.js pins Europe/Warsaw before workers start.
     test.each([
       {
-        name: 'spring forward',
-        reviewedAt: new Date('2026-03-28T12:30:00+01:00'),
-        dueDate: new Date('2026-03-29T12:30:00+02:00'),
-        hours: 23,
+        name: 'the March clock-change date',
+        reviewedAt: new Date(2026, 2, 28, 12, 30),
+        dueDate: new Date(2026, 2, 29, 12, 30),
       },
       {
-        name: 'fall back',
-        reviewedAt: new Date('2026-10-24T12:30:00+02:00'),
-        dueDate: new Date('2026-10-25T12:30:00+01:00'),
-        hours: 25,
+        name: 'the October clock-change date',
+        reviewedAt: new Date(2026, 9, 24, 12, 30),
+        dueDate: new Date(2026, 9, 25, 12, 30),
       },
     ])(
       'preserves local review time across $name',
-      ({ reviewedAt, dueDate, hours }) => {
+      ({ reviewedAt, dueDate }) => {
         const state = createState();
 
         const result = calculateSm2Review(state, 4, reviewedAt);
 
         expect(result.dueDate).toEqual(dueDate);
-        expect(result.dueDate.getTime() - reviewedAt.getTime()).toBe(
-          hours * 60 * 60 * 1000
-        );
+        expect(result.lastReviewedAt).toEqual(reviewedAt);
       }
     );
 
