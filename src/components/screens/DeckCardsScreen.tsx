@@ -68,7 +68,7 @@ export function DeckCardsScreen({
               accessibilityLabel="Search cards"
               onPress={onSearch}
             >
-              <Lucide name="search" size={23} />
+              <Lucide name="search" size={23} className="text-foreground" />
             </Button>
             <Button
               size="icon"
@@ -76,7 +76,11 @@ export function DeckCardsScreen({
               accessibilityLabel="Add a card"
               onPress={onAddCard}
             >
-              <Lucide name="plus" size={24} />
+              <Lucide
+                name="plus"
+                size={24}
+                className="text-on-accent-container"
+              />
             </Button>
           </View>
         </View>

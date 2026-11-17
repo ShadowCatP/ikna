@@ -93,7 +93,7 @@ export default function HomeScreen() {
               onPress={handleSearch}
               className="bg-surface size-11 items-center justify-center rounded-full"
             >
-              <Lucide name="search" size={22} />
+              <Lucide name="search" size={22} className="text-foreground" />
             </Pressable>
           </View>
         </View>

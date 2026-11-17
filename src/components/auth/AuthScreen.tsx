@@ -70,7 +70,7 @@ export function AuthScreen({
               accessibilityLabel="Go back"
               disabled={busy}
               onPress={onBack}
-              className={`size-11 items-center justify-center rounded-full ${nameStep ? 'bg-surface' : 'bg-background'}`}
+              className={`size-11 items-center justify-center rounded-full ${nameStep ? 'bg-surface' : 'bg-background dark:bg-surface dark:border-field-border dark:border'}`}
             >
               <Lucide
                 name="chevron-left"

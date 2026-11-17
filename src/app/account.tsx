@@ -133,7 +133,7 @@ export default function AccountScreen() {
             accessibilityLabel="Cancel delete account"
             onPress={() => setIsDeleteModalVisible(false)}
             disabled={deleteAccountMutation.isPending}
-            className="bg-surface min-h-14 items-center justify-center rounded-2xl"
+            className="bg-surface dark:border-foreground min-h-14 items-center justify-center rounded-2xl dark:border-2 dark:bg-transparent"
           >
             <Text className="text-foreground text-base font-medium">
               Cancel

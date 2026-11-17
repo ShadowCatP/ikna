@@ -101,14 +101,14 @@ export function AddCardForm({
                   leading={
                     <View className="bg-primary size-12 items-center justify-center rounded-full">
                       {selectedDeck ? (
-                        <Text className="text-on-cta text-base font-medium">
+                        <Text className="text-background text-base font-medium">
                           {selectedDeck.title.slice(0, 2).toUpperCase()}
                         </Text>
                       ) : (
                         <Lucide
                           name="minus"
                           size={22}
-                          className="text-on-cta"
+                          className="text-background"
                         />
                       )}
                     </View>
@@ -154,7 +154,7 @@ export function AddCardForm({
                 maxLength={MAX_FRONT_LENGTH}
                 multiline
                 textAlignVertical="top"
-                className="bg-surface min-h-32 border-0 px-4"
+                className="bg-surface min-h-32 border-0 px-4 dark:border"
                 maxCharacterLimit={MAX_FRONT_LENGTH}
                 error={field.state.meta}
               />
@@ -175,7 +175,7 @@ export function AddCardForm({
                 maxLength={MAX_BACK_LENGTH}
                 multiline
                 textAlignVertical="top"
-                className="bg-surface min-h-32 border-0 px-4"
+                className="bg-surface min-h-32 border-0 px-4 dark:border"
                 maxCharacterLimit={MAX_BACK_LENGTH}
                 error={field.state.meta}
               />

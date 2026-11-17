@@ -14,7 +14,7 @@ export function ScreenHeader({ children, onBack }: ScreenHeaderProps) {
         accessibilityRole="button"
         accessibilityLabel="Go back"
         onPress={onBack}
-        className="bg-surface size-12 items-center justify-center rounded-full"
+        className="bg-surface dark:border-field-border size-12 items-center justify-center rounded-full dark:border"
       >
         <Lucide name="chevron-left" size={24} className="text-foreground" />
       </Pressable>

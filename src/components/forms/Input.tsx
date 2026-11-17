@@ -40,7 +40,7 @@ export function Input({
         <TextInput
           {...props}
           value={value}
-          className="text-foreground flex-1"
+          className="text-foreground placeholder:text-muted flex-1"
           style={[style, { alignSelf: 'stretch' }]}
           textAlignVertical={props.textAlignVertical ?? 'center'}
         />

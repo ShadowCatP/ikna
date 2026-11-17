@@ -72,7 +72,7 @@ export function Modal({
           className="absolute inset-0"
         />
         <Animated.View
-          className="bg-background rounded-t-3xl px-5 pt-5"
+          className="bg-background dark:bg-surface rounded-t-3xl px-5 pt-5"
           style={{
             paddingBottom: insets.bottom + 24,
             transform: [

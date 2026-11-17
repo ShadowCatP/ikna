@@ -118,7 +118,7 @@ export default function ResetPassword() {
                   {(field) => (
                     <>
                       <TextInput
-                        className="bg-background text-foreground placeholder:text-muted mb-3 min-h-14 rounded-2xl px-4 py-3.5 text-base"
+                        className="bg-field dark:border-field-border text-foreground placeholder:text-muted mb-3 min-h-14 rounded-2xl px-4 py-3.5 text-base dark:border"
                         accessibilityLabel="New password"
                         placeholder="New password"
                         secureTextEntry
@@ -138,7 +138,7 @@ export default function ResetPassword() {
                   {(field) => (
                     <>
                       <TextInput
-                        className="bg-background text-foreground placeholder:text-muted mb-3 min-h-14 rounded-2xl px-4 py-3.5 text-base"
+                        className="bg-field dark:border-field-border text-foreground placeholder:text-muted mb-3 min-h-14 rounded-2xl px-4 py-3.5 text-base dark:border"
                         accessibilityLabel="Confirm password"
                         placeholder="Confirm password"
                         secureTextEntry
