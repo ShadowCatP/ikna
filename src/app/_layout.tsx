@@ -2,8 +2,10 @@ import { Screen } from '@/components/screens/Screen';
 import { ScreenError } from '@/components/screens/ScreenError';
 import { ScreenLoading } from '@/components/screens/ScreenLoading';
 import { useAuth } from '@/hooks/useAuth';
+import '@/lib/themeStore';
 import { QueryClientProvider } from '@tanstack/react-query';
 import { SplashScreen, Stack, type ErrorBoundaryProps } from 'expo-router';
+import { StatusBar } from 'expo-status-bar';
 import { useEffect } from 'react';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '../global.css';
@@ -38,6 +40,7 @@ export default function RootLayout() {
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>
+      <StatusBar style="auto" />
       <QueryClientProvider client={queryClient}>
         <Stack
           screenOptions={{
