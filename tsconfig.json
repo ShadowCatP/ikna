@@ -8,7 +8,8 @@
       "@/server/api": ["./src/server/api.ts"],
       "@/utils/*": ["./utils/*"],
       "@/assets/*": ["./assets/*"]
-    }
+    },
+    "types": ["jest", "node", "react"]
   },
   "include": [
     "**/*.ts",
