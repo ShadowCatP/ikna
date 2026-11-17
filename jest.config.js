@@ -1,4 +1,4 @@
-const path = require('node:path');
+import { path } from "node:path";
 
 // Pin the timezone before Jest starts workers so calendar-day and DST tests are stable.
 process.env.TZ = 'Europe/Warsaw';
