@@ -85,7 +85,7 @@ export function EditCardForm({ card }: { card: Card }) {
                 maxLength={MAX_FRONT_LENGTH}
                 multiline
                 textAlignVertical="top"
-                className="bg-surface min-h-32 border-0 px-4"
+                className="bg-surface min-h-32 border-0 px-4 dark:border"
                 maxCharacterLimit={MAX_FRONT_LENGTH}
                 error={field.state.meta}
               />
@@ -105,7 +105,7 @@ export function EditCardForm({ card }: { card: Card }) {
                 maxLength={MAX_BACK_LENGTH}
                 multiline
                 textAlignVertical="top"
-                className="bg-surface min-h-32 border-0 px-4"
+                className="bg-surface min-h-32 border-0 px-4 dark:border"
                 maxCharacterLimit={MAX_BACK_LENGTH}
                 error={field.state.meta}
               />
@@ -127,7 +127,7 @@ export function EditCardForm({ card }: { card: Card }) {
 
       <View className="mt-auto pt-8">
         <Button disabled={isBusy} onPress={() => void form.handleSubmit()}>
-          <Text className="text-background text-base font-medium">
+          <Text className="text-on-cta text-base font-medium">
             Save changes
           </Text>
         </Button>
@@ -159,7 +159,7 @@ export function EditCardForm({ card }: { card: Card }) {
             accessibilityLabel="Cancel delete card"
             onPress={() => setIsDeleteModalVisible(false)}
             disabled={deleteCardMutation.isPending}
-            className="bg-surface min-h-14 items-center justify-center rounded-2xl"
+            className="bg-surface dark:border-foreground min-h-14 items-center justify-center rounded-2xl dark:border-2 dark:bg-transparent"
           >
             <Text className="text-foreground text-base font-medium">
               Cancel

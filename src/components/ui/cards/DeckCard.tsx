@@ -27,7 +27,7 @@ export function DeckCard({ deck, onPress, onReview }: DeckCardProps) {
               {formatCardCount(deck.cardCount)}
             </Text>
             <View className="bg-accent rounded-full px-2 py-1">
-              <Text className="text-foreground text-xs font-medium">
+              <Text className="text-on-accent-container text-xs font-medium">
                 {deck.dueCardCount} due
               </Text>
             </View>
@@ -38,9 +38,9 @@ export function DeckCard({ deck, onPress, onReview }: DeckCardProps) {
         accessibilityRole="button"
         accessibilityLabel={`Review ${deck.title}`}
         onPress={onReview}
-        className="bg-foreground ml-2 size-12 items-center justify-center rounded-full"
+        className="bg-cta ml-2 size-12 items-center justify-center rounded-full"
       >
-        <Lucide name="play" size={18} color="white" />
+        <Lucide name="play" size={18} className="text-on-cta" />
       </Pressable>
     </View>
   );

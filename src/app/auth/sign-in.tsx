@@ -118,9 +118,9 @@ export default function SignIn() {
             <View className="">
               <Button disabled={busy} onPress={() => void form.handleSubmit()}>
                 {busy ? (
-                  <ActivityIndicator className="text-background" />
+                  <ActivityIndicator className="text-on-cta" />
                 ) : (
-                  <Text className="text-background text-base font-medium">
+                  <Text className="text-on-cta text-base font-medium">
                     Log in
                   </Text>
                 )}

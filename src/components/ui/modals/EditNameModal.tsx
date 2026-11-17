@@ -129,7 +129,7 @@ export function EditNameModal({
                 )}
               </Button>
               <Button
-                className="bg-surface flex-1"
+                className="bg-surface dark:border-foreground flex-1 dark:border-2 dark:bg-transparent"
                 onPress={handleClose}
                 disabled={busy}
               >

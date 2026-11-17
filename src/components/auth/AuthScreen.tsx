@@ -31,10 +31,10 @@ export function AuthScreen({
   const background = nameStep
     ? 'bg-background'
     : mode === 'signUp'
-      ? 'bg-accent'
+      ? 'bg-accent dark:bg-background'
       : mode === 'signIn'
-        ? 'bg-accent-secondary'
-        : 'bg-primary-soft';
+        ? 'bg-accent-secondary dark:bg-background'
+        : 'bg-primary-soft dark:bg-background';
 
   return (
     <KeyboardAvoidingView
@@ -70,7 +70,7 @@ export function AuthScreen({
               accessibilityLabel="Go back"
               disabled={busy}
               onPress={onBack}
-              className={`size-11 items-center justify-center rounded-full ${nameStep ? 'bg-surface' : 'bg-background'}`}
+              className={`size-11 items-center justify-center rounded-full ${nameStep ? 'bg-surface' : 'bg-background dark:bg-surface dark:border-field-border dark:border'}`}
             >
               <Lucide
                 name="chevron-left"
@@ -79,7 +79,9 @@ export function AuthScreen({
               />
             </Pressable>
             {mode === 'signUp' && step && (
-              <Text className="text-muted mr-1 text-xs">Step {step} of 2</Text>
+              <Text className="text-muted dark:text-on-accent-container mr-1 text-xs">
+                Step {step} of 2
+              </Text>
             )}
           </View>
           <AuthHero mode={mode} nameStep={nameStep} />

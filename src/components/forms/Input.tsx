@@ -33,14 +33,14 @@ export function Input({
       {label && <Label>{label}</Label>}
       <View
         className={cn(
-          'bg-background border-border min-h-14 flex-row items-center rounded-2xl border px-2 py-1',
+          'bg-field border-field-border min-h-14 flex-row items-center rounded-2xl border px-2 py-1',
           className
         )}
       >
         <TextInput
           {...props}
           value={value}
-          className="text-foreground flex-1"
+          className="text-foreground placeholder:text-muted flex-1"
           style={[style, { alignSelf: 'stretch' }]}
           textAlignVertical={props.textAlignVertical ?? 'center'}
         />

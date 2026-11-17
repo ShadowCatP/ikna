@@ -48,8 +48,8 @@ export function DeckCardsScreen({
 
       <Button onPress={onStartReview}>
         <View className="flex-row items-center gap-2">
-          <Lucide name="play" size={20} color="white" />
-          <Text className="text-background text-base font-medium">
+          <Lucide name="play" size={20} className="text-on-cta" />
+          <Text className="text-on-cta text-base font-medium">
             Start review
           </Text>
         </View>
@@ -68,7 +68,7 @@ export function DeckCardsScreen({
               accessibilityLabel="Search cards"
               onPress={onSearch}
             >
-              <Lucide name="search" size={23} />
+              <Lucide name="search" size={23} className="text-foreground" />
             </Button>
             <Button
               size="icon"
@@ -76,7 +76,11 @@ export function DeckCardsScreen({
               accessibilityLabel="Add a card"
               onPress={onAddCard}
             >
-              <Lucide name="plus" size={24} />
+              <Lucide
+                name="plus"
+                size={24}
+                className="text-on-accent-container"
+              />
             </Button>
           </View>
         </View>

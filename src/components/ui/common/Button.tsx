@@ -9,7 +9,7 @@ const buttonSizeClasses = {
 } as const;
 
 const buttonVariantClasses = {
-  default: 'bg-foreground',
+  default: 'bg-cta',
   destructive: 'bg-danger',
   outline: 'bg-background border-foreground border-2',
   surface: 'bg-surface',

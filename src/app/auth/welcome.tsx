@@ -44,7 +44,7 @@ export default function Welcome() {
   }
 
   return (
-    <View className="flex-1 items-center overflow-hidden bg-white">
+    <View className="bg-background flex-1 items-center overflow-hidden">
       <View
         className="flex-1 items-center overflow-hidden"
         style={{
@@ -81,9 +81,9 @@ export default function Welcome() {
             accessibilityRole="button"
             disabled={loading}
             onPress={() => router.push('/auth/sign-up')}
-            className="bg-foreground min-h-14 items-center justify-center rounded-2xl px-4 py-3.5 active:opacity-75"
+            className="bg-cta min-h-14 items-center justify-center rounded-2xl px-4 py-3.5 active:opacity-75"
           >
-            <Text className="text-base font-medium text-white">
+            <Text className="text-on-cta text-base font-medium">
               Create account
             </Text>
           </Pressable>

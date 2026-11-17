@@ -154,7 +154,7 @@ export function AddCardForm({
                 maxLength={MAX_FRONT_LENGTH}
                 multiline
                 textAlignVertical="top"
-                className="bg-surface min-h-32 border-0 px-4"
+                className="bg-surface min-h-32 border-0 px-4 dark:border"
                 maxCharacterLimit={MAX_FRONT_LENGTH}
                 error={field.state.meta}
               />
@@ -175,7 +175,7 @@ export function AddCardForm({
                 maxLength={MAX_BACK_LENGTH}
                 multiline
                 textAlignVertical="top"
-                className="bg-surface min-h-32 border-0 px-4"
+                className="bg-surface min-h-32 border-0 px-4 dark:border"
                 maxCharacterLimit={MAX_BACK_LENGTH}
                 error={field.state.meta}
               />
@@ -199,7 +199,7 @@ export function AddCardForm({
           accessibilityLabel="Save card"
           onPress={() => void handleSubmit()}
         >
-          <Text className="text-background font-medium">Create card</Text>
+          <Text className="text-on-cta font-medium">Create card</Text>
         </Button>
       </View>
     </>
