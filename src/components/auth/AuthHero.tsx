@@ -8,6 +8,13 @@ export function AuthHero({
   mode: AuthMode;
   nameStep: boolean;
 }) {
+  const darkCircle =
+    mode === 'signUp'
+      ? 'bg-accent-container'
+      : mode === 'signIn'
+        ? 'bg-accent-secondary'
+        : 'bg-primary-soft';
+
   return (
     <View
       pointerEvents="none"
@@ -15,6 +22,11 @@ export function AuthHero({
         nameStep ? 'mt-3 h-72 items-center' : '-mt-11 h-56 items-center'
       }
     >
+      {!nameStep && (
+        <View
+          className={`absolute bottom-5 hidden size-[460px] rounded-full dark:flex ${darkCircle}`}
+        />
+      )}
       <Image
         source={
           nameStep

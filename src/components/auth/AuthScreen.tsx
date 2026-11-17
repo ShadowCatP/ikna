@@ -31,10 +31,10 @@ export function AuthScreen({
   const background = nameStep
     ? 'bg-background'
     : mode === 'signUp'
-      ? 'bg-accent'
+      ? 'bg-accent dark:bg-background'
       : mode === 'signIn'
-        ? 'bg-accent-secondary'
-        : 'bg-primary-soft';
+        ? 'bg-accent-secondary dark:bg-background'
+        : 'bg-primary-soft dark:bg-background';
 
   return (
     <KeyboardAvoidingView
@@ -79,7 +79,9 @@ export function AuthScreen({
               />
             </Pressable>
             {mode === 'signUp' && step && (
-              <Text className="text-muted mr-1 text-xs">Step {step} of 2</Text>
+              <Text className="text-muted dark:text-on-accent-container mr-1 text-xs">
+                Step {step} of 2
+              </Text>
             )}
           </View>
           <AuthHero mode={mode} nameStep={nameStep} />
