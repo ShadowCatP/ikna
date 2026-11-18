@@ -1,4 +1,5 @@
 import { useDecks } from '@/client/decks';
+import { EmptyDecksScreen } from '@/components/screens/EmptyDecksScreen';
 import { Screen } from '@/components/screens/Screen';
 import { ScreenError } from '@/components/screens/ScreenError';
 import { ScreenLoading } from '@/components/screens/ScreenLoading';
@@ -34,6 +35,10 @@ export default function HomeScreen() {
 
   function handleSearch() {
     Alert.alert('Search decks', 'To be implemented', [{ text: 'OK' }]);
+  }
+
+  function handleCreateDeck() {
+    router.push('/add-deck');
   }
 
   if (isPending) {
@@ -75,44 +80,52 @@ export default function HomeScreen() {
           </Text>
         </View>
 
-        <StudySummaryCard
-          deckCount={decks.length}
-          dueCardCount={dueCardCount}
-          onStartReview={handleStartReview}
-        />
-
-        <View className="flex-row items-center justify-between">
-          <Text className="text-foreground text-2xl font-bold">Your decks</Text>
-          <View className="flex-row items-center gap-4">
-            <Text className="text-muted text-base">
-              {formatDeckCount(decks.length)}
-            </Text>
-            <Pressable
-              accessibilityRole="button"
-              accessibilityLabel="Search decks"
-              onPress={handleSearch}
-              className="bg-surface size-11 items-center justify-center rounded-full"
-            >
-              <Lucide name="search" size={22} className="text-foreground" />
-            </Pressable>
-          </View>
-        </View>
-
-        <View className="gap-3">
-          {decks.map((deck) => (
-            <DeckCard
-              key={deck.id}
-              deck={deck}
-              onPress={() =>
-                router.push({
-                  pathname: '/deck/[id]',
-                  params: { id: deck.id },
-                })
-              }
-              onReview={() => handleDeckReview(deck.title)}
+        {decks.length === 0 ? (
+          <EmptyDecksScreen onCreateDeck={handleCreateDeck} />
+        ) : (
+          <>
+            <StudySummaryCard
+              deckCount={decks.length}
+              dueCardCount={dueCardCount}
+              onStartReview={handleStartReview}
             />
-          ))}
-        </View>
+
+            <View className="flex-row items-center justify-between">
+              <Text className="text-foreground text-2xl font-bold">
+                Your decks
+              </Text>
+              <View className="flex-row items-center gap-4">
+                <Text className="text-muted text-base">
+                  {formatDeckCount(decks.length)}
+                </Text>
+                <Pressable
+                  accessibilityRole="button"
+                  accessibilityLabel="Search decks"
+                  onPress={handleSearch}
+                  className="bg-surface size-11 items-center justify-center rounded-full"
+                >
+                  <Lucide name="search" size={22} className="text-foreground" />
+                </Pressable>
+              </View>
+            </View>
+
+            <View className="gap-3">
+              {decks.map((deck) => (
+                <DeckCard
+                  key={deck.id}
+                  deck={deck}
+                  onPress={() =>
+                    router.push({
+                      pathname: '/deck/[id]',
+                      params: { id: deck.id },
+                    })
+                  }
+                  onReview={() => handleDeckReview(deck.title)}
+                />
+              ))}
+            </View>
+          </>
+        )}
       </View>
     </Screen>
   );
