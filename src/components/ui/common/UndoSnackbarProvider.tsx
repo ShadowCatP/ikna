@@ -3,7 +3,7 @@ import { useEffect } from 'react';
 import { AppState } from 'react-native';
 import { UndoSnackbar } from './UndoSnackbar';
 
-export function SnackbarProvider() {
+export function UndoSnackbarProvider() {
   const entries = useDeletionStore((state) => state.entries);
   const undoLast = useDeletionStore((state) => state.undoLast);
   const commitAll = useDeletionStore((state) => state.commitAll);

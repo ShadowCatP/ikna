@@ -1,6 +1,7 @@
 import { Screen } from '@/components/screens/Screen';
 import { ScreenError } from '@/components/screens/ScreenError';
 import { ScreenLoading } from '@/components/screens/ScreenLoading';
+import { UndoSnackbarProvider } from '@/components/ui/common/UndoSnackbarProvider';
 import { useAuth } from '@/hooks/useAuth';
 import '@/lib/themeStore';
 import { QueryClientProvider } from '@tanstack/react-query';
@@ -99,6 +100,7 @@ export default function RootLayout() {
               <Stack.Screen name="deck/[id]/edit" />
             </Stack.Protected>
           </Stack>
+          <UndoSnackbarProvider />
         </ThemeProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>
