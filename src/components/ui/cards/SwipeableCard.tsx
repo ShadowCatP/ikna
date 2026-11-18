@@ -1,4 +1,5 @@
 import type { Card } from '@/types/card';
+import { impactAsync, ImpactFeedbackStyle } from 'expo-haptics';
 import { Dimensions, Pressable, Text, View } from 'react-native';
 import { GestureDetector, usePanGesture } from 'react-native-gesture-handler';
 import Animated, {
@@ -21,12 +22,23 @@ type SwipeableCardProps = {
 
 export function SwipeableCard({ card, onDelete, onPress }: SwipeableCardProps) {
   const translateX = useSharedValue(0);
+  const hasVibrated = useSharedValue(false);
 
   const panGesture = usePanGesture({
     activeOffsetX: [-10, 10],
     failOffsetY: [-15, 15],
     onUpdate: (event) => {
       translateX.value = Math.min(0, event.translationX);
+      if (translateX.value <= -SWIPE_THRESHOLD) {
+        if (!hasVibrated.value) {
+          hasVibrated.set(true);
+          scheduleOnRN(() => {
+            impactAsync(ImpactFeedbackStyle.Medium);
+          });
+        }
+      } else {
+        hasVibrated.set(false);
+      }
     },
     onFinalize: () => {
       if (translateX.value <= -SWIPE_THRESHOLD) {
