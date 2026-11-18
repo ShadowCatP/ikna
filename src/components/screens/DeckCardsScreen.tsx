@@ -1,9 +1,13 @@
-import { useDeleteCard } from '@/client/cards';
 import { EmptyDeckState } from '@/components/screens/EmptyDeckScreen';
 import { SwipeableCard } from '@/components/ui/cards/SwipeableCard';
 import { Button } from '@/components/ui/common/Button';
 
 import { Lucide } from '@/components/ui/icons';
+import {
+  CARD_DELETION_KIND,
+  useUndoableDeleteCard,
+} from '@/hooks/useUndoableDeleteCard';
+import { usePendingDeletions } from '@/lib/deletionStore';
 import type { Card } from '@/types/card';
 import type { DeckPreview } from '@/types/deck';
 import { formatCardCount } from '@/utils/plural';
@@ -34,7 +38,14 @@ export function DeckCardsScreen({
   cardsError,
   onRetryCards,
 }: DeckCardsScreenProps) {
-  const deleteCardMutation = useDeleteCard();
+  const deleteCard = useUndoableDeleteCard();
+  const pendingCards = usePendingDeletions<Card>(CARD_DELETION_KIND);
+
+  const pendingIds = new Set(pendingCards.map((e) => e.id));
+  const visibleCards = cards.filter((c) => !pendingIds.has(c.id));
+  const cardCount =
+    deck.cardCount -
+    pendingCards.filter((e) => e.data.deckId === deck.id).length;
 
   if (!cardsLoading && !cardsError && cards.length === 0) {
     return <EmptyDeckState onAddCard={onAddCard} />;
@@ -60,7 +71,7 @@ export function DeckCardsScreen({
           <Text className="text-foreground text-2xl font-bold">Cards</Text>
           <View className="flex-row items-center gap-3">
             <Text className="text-muted text-base">
-              {formatCardCount(deck.cardCount)}
+              {formatCardCount(cardCount)}
             </Text>
             <Button
               size="icon"
@@ -91,12 +102,12 @@ export function DeckCardsScreen({
           <ScreenError onRetry={onRetryCards} />
         ) : (
           <View className="gap-3">
-            {cards.map((card) => (
+            {visibleCards.map((card) => (
               <SwipeableCard
                 key={card.id}
                 card={card}
                 onPress={() => onEditCard(card.id)}
-                onDelete={() => deleteCardMutation.mutateAsync({ id: card.id })}
+                onDelete={() => deleteCard(card)}
               />
             ))}
           </View>

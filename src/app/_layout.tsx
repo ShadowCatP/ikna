@@ -1,8 +1,9 @@
 import { Screen } from '@/components/screens/Screen';
 import { ScreenError } from '@/components/screens/ScreenError';
 import { ScreenLoading } from '@/components/screens/ScreenLoading';
+import { UndoSnackbarProvider } from '@/components/ui/common/UndoSnackbarProvider';
 import { useAuth } from '@/hooks/useAuth';
-import '@/lib/themeStore';
+import { useThemeStore } from '@/lib/themeStore';
 import { QueryClientProvider } from '@tanstack/react-query';
 import {
   DarkTheme,
@@ -15,7 +16,7 @@ import {
 import { StatusBar } from 'expo-status-bar';
 import * as SystemUI from 'expo-system-ui';
 import { useEffect } from 'react';
-import { useColorScheme } from 'react-native';
+import { Appearance, Platform, useColorScheme } from 'react-native';
 import { GestureHandlerRootView } from 'react-native-gesture-handler';
 import '../global.css';
 import { queryClient } from '../lib/queryClient';
@@ -59,14 +60,22 @@ export function SuspenseFallback() {
 
 export default function RootLayout() {
   const { session, ready } = useAuth();
+  const themeMode = useThemeStore((state) => state.mode);
   const isDark = useColorScheme() === 'dark';
+
+  useEffect(() => {
+    if (Platform.OS === 'web') return;
+    Appearance.setColorScheme(
+      themeMode === 'system' ? 'unspecified' : themeMode
+    );
+  }, [themeMode]);
 
   useEffect(() => {
     if (ready) SplashScreen.hideAsync();
   }, [ready]);
 
   useEffect(() => {
-    void SystemUI.setBackgroundColorAsync(isDark ? '#1e1450' : '#ffffff');
+    SystemUI.setBackgroundColorAsync('var(--color-background)');
   }, [isDark]);
 
   if (!ready) return null;
@@ -99,6 +108,7 @@ export default function RootLayout() {
               <Stack.Screen name="deck/[id]/edit" />
             </Stack.Protected>
           </Stack>
+          <UndoSnackbarProvider />
         </ThemeProvider>
       </QueryClientProvider>
     </GestureHandlerRootView>

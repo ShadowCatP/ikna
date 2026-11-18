@@ -1,6 +1,6 @@
 import type { Card } from '@/types/card';
-import { useState } from 'react';
-import { Alert, Dimensions, Pressable, Text, View } from 'react-native';
+import { impactAsync, ImpactFeedbackStyle } from 'expo-haptics';
+import { Dimensions, Pressable, Text, View } from 'react-native';
 import { GestureDetector, usePanGesture } from 'react-native-gesture-handler';
 import Animated, {
   LinearTransition,
@@ -16,33 +16,29 @@ const DISMISS_DISTANCE = Dimensions.get('window').width;
 
 type SwipeableCardProps = {
   card: Card;
-  onDelete: () => Promise<void>;
+  onDelete: () => void;
   onPress: () => void;
 };
 
 export function SwipeableCard({ card, onDelete, onPress }: SwipeableCardProps) {
   const translateX = useSharedValue(0);
-  const [isDeleting, setIsDeleting] = useState(false);
-
-  function handleDelete() {
-    setIsDeleting(true);
-    void onDelete().catch((error: unknown) => {
-      setIsDeleting(false);
-      translateX.value = withTiming(0, { duration: 180 });
-      Alert.alert(
-        'Could not delete card',
-        error instanceof Error ? error.message : 'Please try again.',
-        [{ text: 'OK' }]
-      );
-    });
-  }
+  const hasVibrated = useSharedValue(false);
 
   const panGesture = usePanGesture({
-    enabled: !isDeleting,
     activeOffsetX: [-10, 10],
     failOffsetY: [-15, 15],
     onUpdate: (event) => {
       translateX.value = Math.min(0, event.translationX);
+      if (translateX.value <= -SWIPE_THRESHOLD) {
+        if (!hasVibrated.value) {
+          hasVibrated.set(true);
+          scheduleOnRN(() => {
+            impactAsync(ImpactFeedbackStyle.Medium);
+          });
+        }
+      } else {
+        hasVibrated.set(false);
+      }
     },
     onFinalize: () => {
       if (translateX.value <= -SWIPE_THRESHOLD) {
@@ -50,7 +46,7 @@ export function SwipeableCard({ card, onDelete, onPress }: SwipeableCardProps) {
           -DISMISS_DISTANCE,
           { duration: 180 },
           (finished) => {
-            if (finished) scheduleOnRN(handleDelete);
+            if (finished) scheduleOnRN(onDelete);
           }
         );
       } else {
