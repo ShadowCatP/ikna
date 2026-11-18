@@ -133,7 +133,9 @@ export function EditNameModal({
                 onPress={handleClose}
                 disabled={busy}
               >
-                <Text className="text-base font-semibold">Cancel</Text>
+                <Text className="text-foreground text-base font-semibold">
+                  Cancel
+                </Text>
               </Button>
             </View>
           </View>
