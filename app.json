@@ -44,7 +44,8 @@
       "expo-status-bar",
       "expo-web-browser",
       "@react-native-vector-icons/lucide",
-      "expo-secure-store"
+      "expo-secure-store",
+      "expo-sqlite"
     ],
     "experiments": {
       "typedRoutes": true,
