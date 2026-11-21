@@ -1,4 +1,5 @@
 import { Screen } from '@/components/screens/Screen';
+import { SyncStatusSection } from '@/components/screens/SyncStatusSection';
 import { Lucide } from '@/components/ui/icons';
 import { useAuth } from '@/hooks/useAuth';
 import { useThemeStore, type ThemeMode } from '@/lib/themeStore';
@@ -33,10 +34,6 @@ export default function SettingsScreen() {
     }
     router.replace('/auth/welcome');
   }
-
-  const handleSync = () => {
-    Alert.alert('Sync', 'To be implemented', [{ text: 'OK' }]);
-  };
 
   return (
     <Screen contentContainerClassName="px-5">
@@ -114,31 +111,7 @@ export default function SettingsScreen() {
           </View>
         </View>
 
-        <View className="gap-2">
-          <Text className="text-muted text-xs font-medium tracking-wide uppercase">
-            Sync
-          </Text>
-          <View className="bg-surface overflow-hidden rounded-2xl">
-            <View className="min-h-12 flex-row items-center px-3">
-              <Lucide name="cloud" size={20} className="text-foreground" />
-              <Text className="text-foreground ml-3 flex-1 text-sm">
-                Synced
-              </Text>
-              <View className="flex-row items-center gap-1">
-                <View className="bg-success size-2 rounded-full" />
-                <Text className="text-muted text-sm">2 min ago</Text>
-              </View>
-            </View>
-            <View className="bg-border h-px" />
-            <Pressable
-              className="min-h-12 flex-row items-center px-3"
-              onPress={handleSync}
-            >
-              <Lucide name="refresh-cw" size={20} className="text-foreground" />
-              <Text className="text-foreground ml-3 text-sm">Sync now</Text>
-            </Pressable>
-          </View>
-        </View>
+        <SyncStatusSection userId={user?.id} />
 
         <Pressable
           accessibilityRole="button"

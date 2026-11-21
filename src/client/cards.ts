@@ -163,3 +163,14 @@ export function useCard(deckId: string, cardId: string) {
     },
   };
 }
+
+export function getLocalDeckCards$() {
+  return Array.from(deckCardsObservable.values());
+}
+
+export async function resetAllCardsStore() {
+  for (const cards$ of deckCardsObservable.values()) {
+    await syncState(cards$).clearPersist();
+  }
+  deckCardsObservable.clear();
+}
