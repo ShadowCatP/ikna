@@ -1,4 +1,5 @@
 import { apiFetch } from '@/client/api';
+import { adjustDeckCardCounts } from '@/client/decks';
 import type { Card } from '@/types/card';
 import { observable, Observable, syncState } from '@legendapp/state';
 import { useValue } from '@legendapp/state/react';
@@ -96,6 +97,7 @@ export async function createCard({
   };
 
   getDeckCards$(deckId)[card.id].set(card);
+  adjustDeckCardCounts(deckId, 1);
   return card;
 }
 
@@ -138,6 +140,7 @@ export async function deleteCard({
   const card$ = getDeckCards$(deckId)[id];
   if (!card$.peek()) return;
   card$.delete();
+  adjustDeckCardCounts(deckId, -1);
 }
 
 export function useCard(deckId: string, cardId: string) {

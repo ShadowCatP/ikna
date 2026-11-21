@@ -11,7 +11,7 @@ export default function EditDeckScreen() {
   const { id } = useLocalSearchParams<{
     id: string;
   }>();
-  const { data: deck, isPending, isError, refetch } = useDeck(id);
+  const { deck, isLoading: isPending, isError, refetch } = useDeck(id);
 
   return (
     <Screen

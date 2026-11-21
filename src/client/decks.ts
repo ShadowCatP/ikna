@@ -1,16 +1,87 @@
-import { apiFetch } from '@/client/api';
-import { queryClient } from '@/lib/queryClient';
-import type { DeckPreview } from '@/types/deck';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { ApiError, apiFetch } from '@/client/api';
+import type { Deck } from '@/types/deck';
+import { Observable, observable, syncState } from '@legendapp/state';
+import { useValue } from '@legendapp/state/react';
+import { syncedCrud } from '@legendapp/state/sync-plugins/crud';
+import { randomUUID } from 'expo-crypto';
 
-export const decksQueryKey = ['decks'] as const;
+type DecksMap = Record<string, Deck>;
 
-export async function fetchDecks(): Promise<DeckPreview[]> {
-  return apiFetch<DeckPreview[]>('/api/decks');
+let decksObservable: Observable<DecksMap> | null = null;
+
+export function decks$() {
+  if (decksObservable) return decksObservable;
+
+  decksObservable = observable<DecksMap>(
+    syncedCrud({
+      as: 'object',
+      initial: {},
+      mode: 'merge',
+      persist: {
+        name: 'decks',
+        retrySync: true,
+      },
+      list: async () => {
+        return apiFetch<Deck[]>('/api/decks');
+      },
+      create: async (input) => {
+        return apiFetch<Deck>('/api/decks', {
+          method: 'POST',
+          body: {
+            id: input.id,
+            title: input.title,
+            description: input.description,
+          },
+        });
+      },
+      update: async (input) => {
+        return apiFetch<Deck>(`/api/decks/${input.id}`, {
+          method: 'PATCH',
+          body: {
+            title: input.title,
+            description: input.description,
+          },
+        });
+      },
+      delete: async (input) => {
+        await apiFetch<{ success: boolean }>(`/api/decks/${input.id}`, {
+          method: 'DELETE',
+        });
+      },
+    })
+  );
+
+  return decksObservable;
+}
+export function useDecks() {
+  const decks = useValue(() => Object.values(decks$().get()));
+  const decksSync = useValue(() => syncState(decks$()).get());
+
+  return {
+    decks,
+    isLoading: !decksSync.isPersistLoaded || !decksSync.isLoaded,
+    isError: Boolean(decksSync.error),
+    error: decksSync.error,
+    refetch: () => {
+      void syncState(decks$()).sync();
+    },
+  };
 }
 
-export function fetchDeck(id: string): Promise<DeckPreview> {
-  return apiFetch<DeckPreview>(`/api/decks/${id}`);
+export function useDeck(id: string) {
+  const deck$ = id ? decks$()[id] : undefined;
+  const deck = useValue(() => deck$?.get());
+  const decksSync = useValue(() => syncState(decks$()).get());
+
+  return {
+    deck,
+    isLoading: id ? !decksSync.isPersistLoaded || !decksSync.isLoaded : false,
+    isError: Boolean(decksSync.error),
+    error: decksSync.error,
+    refetch: () => {
+      if (id) void syncState(decks$()).sync();
+    },
+  };
 }
 
 export async function createDeck({
@@ -19,11 +90,22 @@ export async function createDeck({
 }: {
   title: string;
   description: string;
-}): Promise<DeckPreview> {
-  return apiFetch<DeckPreview>('/api/decks', {
-    method: 'POST',
-    body: { title, description },
-  });
+}): Promise<Deck> {
+  const timestamp = new Date().toISOString();
+  const id = randomUUID();
+
+  const deck: Deck = {
+    id,
+    title,
+    description,
+    cardCount: 0,
+    dueCardCount: 0,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
+
+  decks$()[id].set(deck);
+  return deck;
 }
 
 export async function updateDeck({
@@ -34,60 +116,37 @@ export async function updateDeck({
   id: string;
   title: string;
   description: string;
-}): Promise<DeckPreview> {
-  return apiFetch<DeckPreview>(`/api/decks/${id}`, {
-    method: 'PATCH',
-    body: { title, description },
-  });
+}): Promise<Deck> {
+  const deck$ = decks$()[id];
+  const existing = deck$.peek();
+
+  if (!existing) throw new ApiError('Deck not found', 404);
+
+  const updated: Deck = {
+    ...existing,
+    title,
+    description,
+    updatedAt: new Date().toISOString(),
+  };
+
+  deck$.set(updated);
+  return updated;
 }
 
 export async function deleteDeck(id: string): Promise<void> {
-  await apiFetch<{ success: boolean }>(`/api/decks/${id}`, {
-    method: 'DELETE',
-  });
+  const deck$ = decks$()[id];
+  if (!decks$().peek()) return;
+  deck$.delete();
 }
 
-export function useDecks() {
-  return useQuery({
-    queryKey: decksQueryKey,
-    queryFn: fetchDecks,
-  });
-}
+export function adjustDeckCardCounts(deckId: string, delta: number): void {
+  const deck$ = decks$()[deckId];
+  const deck = deck$.peek();
 
-export function useDeck(id: string) {
-  return useQuery({
-    queryKey: [...decksQueryKey, id],
-    queryFn: () => fetchDeck(id),
-    enabled: Boolean(id),
-  });
-}
+  if (!deck) return;
 
-export function useCreateDeck() {
-  return useMutation({
-    mutationFn: createDeck,
-    onSuccess: () => {
-      return queryClient.invalidateQueries({ queryKey: decksQueryKey });
-    },
-  });
-}
-
-export function useUpdateDeck() {
-  return useMutation({
-    mutationFn: updateDeck,
-    onSuccess: (_deck, variables) => {
-      return queryClient.invalidateQueries({
-        queryKey: [...decksQueryKey, variables.id],
-      });
-    },
-  });
-}
-
-export function useDeleteDeck() {
-  return useMutation({
-    mutationFn: deleteDeck,
-    onSuccess: (_result, id) => {
-      queryClient.removeQueries({ queryKey: [...decksQueryKey, id] });
-      return queryClient.invalidateQueries({ queryKey: decksQueryKey });
-    },
+  deck$.assign({
+    cardCount: Math.max(0, deck.cardCount + delta),
+    dueCardCount: Math.max(0, deck.dueCardCount + delta),
   });
 }

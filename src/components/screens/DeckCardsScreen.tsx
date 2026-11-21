@@ -9,14 +9,14 @@ import {
 } from '@/hooks/useUndoableDeleteCard';
 import { usePendingDeletions } from '@/lib/deletionStore';
 import type { Card } from '@/types/card';
-import type { DeckPreview } from '@/types/deck';
+import type { Deck } from '@/types/deck';
 import { formatCardCount } from '@/utils/plural';
 import { Text, View } from 'react-native';
 import { ScreenError } from './ScreenError';
 import { ScreenLoading } from './ScreenLoading';
 
 type DeckCardsScreenProps = {
-  deck: DeckPreview;
+  deck: Deck;
   cards: Card[];
   onStartReview: () => void;
   onSearch: () => void;

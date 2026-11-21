@@ -1,9 +1,9 @@
-import { useDeleteDeck, useUpdateDeck } from '@/client/decks';
+import { deleteDeck, updateDeck } from '@/client/decks';
 import { Input } from '@/components/forms/Input';
 import { Button } from '@/components/ui/common/Button';
 import { Modal } from '@/components/ui/common/Modal';
 import { Lucide } from '@/components/ui/icons';
-import type { DeckPreview } from '@/types/deck';
+import type { Deck } from '@/types/deck';
 import { useForm } from '@tanstack/react-form';
 import { router } from 'expo-router';
 import { useState } from 'react';
@@ -31,9 +31,8 @@ const editDeckSchema = z.object({
     ),
 });
 
-export function EditDeckForm({ deck }: { deck: DeckPreview }) {
-  const updateDeckMutation = useUpdateDeck();
-  const deleteDeckMutation = useDeleteDeck();
+export function EditDeckForm({ deck }: { deck: Deck }) {
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   const form = useForm({
@@ -44,7 +43,8 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
     validators: { onSubmit: editDeckSchema },
     onSubmit: async ({ value }) => {
       try {
-        await updateDeckMutation.mutateAsync({
+        setIsSubmitting(true);
+        await updateDeck({
           id: deck.id,
           ...value,
         });
@@ -55,6 +55,8 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
           error instanceof Error ? error.message : 'Please try again.',
           [{ text: 'OK' }]
         );
+      } finally {
+        setIsSubmitting(false);
       }
     },
   });
@@ -65,8 +67,8 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
 
   function handleConfirmDelete() {
     setIsDeleteModalVisible(false);
-    void deleteDeckMutation
-      .mutateAsync(deck.id)
+    setIsSubmitting(true);
+    void deleteDeck(deck.id)
       .then(() => router.replace('/home'))
       .catch((error: unknown) => {
         Alert.alert(
@@ -74,7 +76,8 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
           error instanceof Error ? error.message : 'Please try again.',
           [{ text: 'OK' }]
         );
-      });
+      })
+      .finally(() => setIsSubmitting(false));
   }
 
   return (
@@ -126,7 +129,10 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
       </View>
 
       <View className="mt-auto pt-6">
-        <Button onPress={() => void form.handleSubmit()}>
+        <Button
+          disabled={isSubmitting}
+          onPress={() => void form.handleSubmit()}
+        >
           <Text className="text-on-cta text-base font-medium">
             Save changes
           </Text>

@@ -14,13 +14,7 @@ import { Alert, Pressable, RefreshControl, Text, View } from 'react-native';
 
 export default function HomeScreen() {
   const { user } = useAuth();
-  const {
-    data: decks = [],
-    isError,
-    isPending,
-    isRefetching,
-    refetch,
-  } = useDecks();
+  const { decks, isError, isLoading, refetch } = useDecks();
   const metadata = user?.user_metadata as UserMetadata | undefined;
   const name = metadata?.display_name || metadata?.name || metadata?.full_name;
   const greetingName = name || 'there';
@@ -41,7 +35,7 @@ export default function HomeScreen() {
     router.push('/add-deck');
   }
 
-  if (isPending) {
+  if (isLoading) {
     return (
       <Screen contentContainerClassName="grow">
         <ScreenLoading message="Loading decks..." />
@@ -66,7 +60,7 @@ export default function HomeScreen() {
     <Screen
       refreshControl={
         <RefreshControl
-          refreshing={isRefetching}
+          refreshing={isLoading}
           onRefresh={() => {
             refetch();
           }}

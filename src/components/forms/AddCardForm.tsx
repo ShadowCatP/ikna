@@ -43,7 +43,7 @@ export function AddCardForm({
 }: {
   initialDeckId?: string;
 }) {
-  const { data: decks = [], isPending, isError } = useDecks();
+  const { decks, isLoading: isPending, isError } = useDecks();
   const [isDeckModalVisible, setIsDeckModalVisible] = useState(false);
   const form = useForm({
     defaultValues: {

@@ -11,7 +11,7 @@ import { Alert, Pressable, Text, View } from 'react-native';
 
 export default function DeckScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
-  const { data: deck, isPending, isError, refetch } = useDeck(id);
+  const { deck, isLoading: isPending, isError, refetch } = useDeck(id);
 
   const {
     cards,

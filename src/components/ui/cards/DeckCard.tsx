@@ -1,10 +1,10 @@
 import { Lucide } from '@/components/ui/icons';
-import type { DeckPreview } from '@/types/deck';
+import type { Deck } from '@/types/deck';
 import { formatCardCount } from '@/utils/plural';
 import { Pressable, Text, View } from 'react-native';
 
 type DeckCardProps = {
-  deck: DeckPreview;
+  deck: Deck;
   onPress: () => void;
   onReview: () => void;
 };

@@ -4,6 +4,7 @@ import { prisma } from '@/server/prisma';
 import { z } from 'zod';
 
 const createDeckSchema = z.object({
+  id: z.string().uuid().optional(),
   title: z.string().trim().min(1).max(50),
   description: z.string().trim().max(150).optional(),
 });
@@ -77,6 +78,7 @@ export async function POST(request: Request) {
 
     const deck = await prisma.deck.create({
       data: {
+        id: result.data.id,
         userId: user.id,
         title: result.data.title,
         description: result.data.description || null,
