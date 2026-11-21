@@ -1,5 +1,6 @@
 import { apiFetch } from '@/client/api';
 import { adjustDeckCardCounts } from '@/client/decks';
+import { isOnline$ } from '@/lib/network';
 import type { Card } from '@/types/card';
 import { observable, Observable, syncState } from '@legendapp/state';
 import { useValue } from '@legendapp/state/react';
@@ -24,6 +25,7 @@ export function getDeckCards$(deckId: string): Observable<CardsMap> {
         name: `cards:${deckId}`,
         retrySync: true,
       },
+      waitFor: isOnline$,
       list: async () => {
         return apiFetch<Card[]>(`/api/decks/${deckId}/cards`);
       },

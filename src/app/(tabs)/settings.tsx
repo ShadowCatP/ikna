@@ -1,6 +1,6 @@
 import { Screen } from '@/components/screens/Screen';
-import { SyncStatusSection } from '@/components/screens/SyncStatusSection';
 import { Lucide } from '@/components/ui/icons';
+import { SyncStatusSection } from '@/components/ui/sections/SyncStatusSection';
 import { useAuth } from '@/hooks/useAuth';
 import { useThemeStore, type ThemeMode } from '@/lib/themeStore';
 import { supabase, type UserMetadata } from '@/utils/supabase';

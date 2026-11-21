@@ -1,4 +1,5 @@
 import { ApiError, apiFetch } from '@/client/api';
+import { isOnline$ } from '@/lib/network';
 import type { Deck } from '@/types/deck';
 import { Observable, observable, syncState } from '@legendapp/state';
 import { useValue } from '@legendapp/state/react';
@@ -21,6 +22,7 @@ export function decks$() {
         name: 'decks',
         retrySync: true,
       },
+      waitFor: isOnline$,
       list: async () => {
         return apiFetch<Deck[]>('/api/decks');
       },

@@ -22,9 +22,9 @@ configureObservableSync({
         ? (error.status as number | undefined)
         : undefined;
 
-    if (status !== undefined && NON_RETRYABLE_STATUSES.has(status)) return;
-
-    params.retry.cancelRetry = true;
+    if (status !== undefined && NON_RETRYABLE_STATUSES.has(status)) {
+      params.retry.cancelRetry = true;
+    }
 
     if (params.setParams) {
       const revert = createRevertChanges(
