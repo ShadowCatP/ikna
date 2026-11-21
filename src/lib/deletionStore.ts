@@ -42,7 +42,7 @@ export const useDeletionStore = create<DeletionState>()((set, get) => ({
     if (last) get().undo(last.key);
   },
   commitAll: () => {
-    for (const key in [...jobs.keys()]) commitEntry(key);
+    for (const key of [...jobs.keys()]) commitEntry(key);
   },
 }));
 

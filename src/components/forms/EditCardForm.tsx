@@ -1,4 +1,4 @@
-import { useDeleteCard, useUpdateCard } from '@/client/cards';
+import { deleteCard, updateCard } from '@/client/cards';
 import { Input } from '@/components/forms/Input';
 import { Button } from '@/components/ui/common/Button';
 import { Modal } from '@/components/ui/common/Modal';
@@ -27,9 +27,8 @@ const editCardSchema = z.object({
 });
 
 export function EditCardForm({ card }: { card: Card }) {
-  const updateCardMutation = useUpdateCard();
-  const deleteCardMutation = useDeleteCard();
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
+
   const form = useForm({
     defaultValues: {
       front: card.frontContent,
@@ -38,7 +37,13 @@ export function EditCardForm({ card }: { card: Card }) {
     validators: { onSubmit: editCardSchema },
     onSubmit: async ({ value }) => {
       try {
-        await updateCardMutation.mutateAsync({ id: card.id, ...value });
+        await updateCard({
+          id: card.id,
+          deckId: card.deckId,
+          front: value.front,
+          back: value.back,
+        });
+
         router.back();
       } catch (error) {
         Alert.alert(
@@ -54,21 +59,11 @@ export function EditCardForm({ card }: { card: Card }) {
     setIsDeleteModalVisible(true);
   }
 
-  function handleConfirmDelete() {
+  async function handleConfirmDelete() {
     setIsDeleteModalVisible(false);
-    void deleteCardMutation
-      .mutateAsync({ id: card.id })
-      .then(() => router.back())
-      .catch((error: unknown) => {
-        Alert.alert(
-          'Could not delete card',
-          error instanceof Error ? error.message : 'Please try again.',
-          [{ text: 'OK' }]
-        );
-      });
+    await deleteCard({ id: card.id, deckId: card.deckId });
+    router.back();
   }
-
-  const isBusy = updateCardMutation.isPending || deleteCardMutation.isPending;
 
   return (
     <>
@@ -117,7 +112,6 @@ export function EditCardForm({ card }: { card: Card }) {
           accessibilityRole="button"
           accessibilityLabel="Delete card"
           onPress={handleDelete}
-          disabled={isBusy}
           className="bg-surface min-h-14 flex-row items-center rounded-2xl px-4"
         >
           <Lucide name="trash-2" size={22} className="text-danger" />
@@ -126,7 +120,7 @@ export function EditCardForm({ card }: { card: Card }) {
       </View>
 
       <View className="mt-auto pt-8">
-        <Button disabled={isBusy} onPress={() => void form.handleSubmit()}>
+        <Button onPress={() => void form.handleSubmit()}>
           <Text className="text-on-cta text-base font-medium">
             Save changes
           </Text>
@@ -145,11 +139,7 @@ export function EditCardForm({ card }: { card: Card }) {
           This action cannot be undone.
         </Text>
         <View className="gap-3">
-          <Button
-            variant="destructive"
-            disabled={deleteCardMutation.isPending}
-            onPress={handleConfirmDelete}
-          >
+          <Button variant="destructive" onPress={handleConfirmDelete}>
             <Text className="text-background text-base font-medium">
               Delete card
             </Text>
@@ -158,7 +148,6 @@ export function EditCardForm({ card }: { card: Card }) {
             accessibilityRole="button"
             accessibilityLabel="Cancel delete card"
             onPress={() => setIsDeleteModalVisible(false)}
-            disabled={deleteCardMutation.isPending}
             className="bg-surface dark:border-foreground min-h-14 items-center justify-center rounded-2xl dark:border-2 dark:bg-transparent"
           >
             <Text className="text-foreground text-base font-medium">

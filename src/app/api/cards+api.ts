@@ -4,6 +4,7 @@ import { prisma } from '@/server/prisma';
 import { z } from 'zod';
 
 const createCardSchema = z.object({
+  id: z.uuid(),
   deckId: z.uuid(),
   frontContent: z.string().trim().min(1).max(150),
   backContent: z.string().trim().min(1).max(300),
@@ -38,9 +39,27 @@ export async function POST(request: Request) {
       return Response.json({ error: 'Deck not found' }, { status: 404 });
     }
 
-    const card = await prisma.card.create({
-      data: {
+    const existingCard = await prisma.card.findUnique({
+      where: { id: result.data.id },
+      select: { deckId: true },
+    });
+
+    if (existingCard && existingCard.deckId !== deck.id) {
+      return Response.json(
+        { error: 'Card already belongs to another deck' },
+        { status: 409 }
+      );
+    }
+
+    const card = await prisma.card.upsert({
+      where: { id: result.data.id },
+      create: {
+        id: result.data.id,
         deckId: deck.id,
+        frontContent: result.data.frontContent,
+        backContent: result.data.backContent,
+      },
+      update: {
         frontContent: result.data.frontContent,
         backContent: result.data.backContent,
       },

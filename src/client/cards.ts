@@ -1,41 +1,79 @@
 import { apiFetch } from '@/client/api';
-import { decksQueryKey } from '@/client/decks';
-import { queryClient } from '@/lib/queryClient';
 import type { Card } from '@/types/card';
-import { useMutation, useQuery } from '@tanstack/react-query';
+import { observable, Observable, syncState } from '@legendapp/state';
+import { useValue } from '@legendapp/state/react';
+import { syncedCrud } from '@legendapp/state/sync-plugins/crud';
+import { randomUUID } from 'expo-crypto';
 
-const cardsQueryRootKey = ['cards'] as const;
+type CardsMap = Record<string, Card>;
 
-export function cardsQueryKey(deckId: string) {
-  return [...cardsQueryRootKey, deckId] as const;
+const deckCardsObservable = new Map<string, Observable<CardsMap>>();
+
+export function getDeckCards$(deckId: string): Observable<CardsMap> {
+  const existing = deckCardsObservable.get(deckId);
+
+  if (existing) return existing;
+
+  const cards$ = observable<CardsMap>(
+    syncedCrud({
+      as: 'object',
+      initial: {},
+      mode: 'merge',
+      persist: {
+        name: `cards:${deckId}`,
+        retrySync: true,
+      },
+      list: async () => {
+        return apiFetch<Card[]>(`/api/decks/${deckId}/cards`);
+      },
+      create: async (input) => {
+        return apiFetch<Card>('/api/cards', {
+          method: 'POST',
+          body: {
+            id: input.id,
+            deckId: input.deckId,
+            frontContent: input.frontContent,
+            backContent: input.backContent,
+          },
+        });
+      },
+      update: async (input) => {
+        return apiFetch<Card>(`/api/cards/${input.id}`, {
+          method: 'PATCH',
+          body: {
+            frontContent: input.frontContent,
+            backContent: input.backContent,
+          },
+        });
+      },
+      delete: async (input) => {
+        await apiFetch(`/api/cards/${input.id}`, { method: 'DELETE' });
+      },
+    })
+  );
+
+  deckCardsObservable.set(deckId, cards$);
+  return cards$;
 }
 
-export function cardQueryKey(cardId: string) {
-  return [...cardsQueryRootKey, 'detail', cardId] as const;
-}
+export function useDeckCards(deckId: string) {
+  const cards$ = deckId ? getDeckCards$(deckId) : undefined;
+  const cards = useValue(() => Object.values(cards$?.get() ?? {}));
+  const cardsSync = useValue(() =>
+    cards$ ? syncState(cards$).get() : undefined
+  );
 
-export async function fetchCards(deckId: string): Promise<Card[]> {
-  return apiFetch<Card[]>(`/api/decks/${deckId}/cards`);
-}
-
-export function useCards(deckId: string) {
-  return useQuery({
-    queryKey: cardsQueryKey(deckId),
-    queryFn: () => fetchCards(deckId),
-    enabled: Boolean(deckId),
-  });
-}
-
-export async function fetchCard(cardId: string): Promise<Card> {
-  return apiFetch<Card>(`/api/cards/${cardId}`);
-}
-
-export function useCard(cardId: string) {
-  return useQuery({
-    queryKey: cardQueryKey(cardId),
-    queryFn: () => fetchCard(cardId),
-    enabled: Boolean(cardId),
-  });
+  return {
+    cards,
+    isLoading: cardsSync
+      ? !cardsSync.isPersistLoaded && !cardsSync.isLoaded
+      : true,
+    isError: Boolean(cardsSync?.error),
+    error: cardsSync?.error,
+    refetch: () => {
+      if (cards$) void syncState(cards$).sync();
+    },
+  };
 }
 
 export async function createCard({
@@ -47,94 +85,78 @@ export async function createCard({
   front: string;
   back: string;
 }): Promise<Card> {
-  return apiFetch<Card>('/api/cards', {
-    method: 'POST',
-    body: {
-      deckId,
-      frontContent: front,
-      backContent: back,
-    },
-  });
-}
+  const timestamp = new Date().toISOString();
+  const card: Card = {
+    id: randomUUID(),
+    deckId,
+    frontContent: front,
+    backContent: back,
+    createdAt: timestamp,
+    updatedAt: timestamp,
+  };
 
-export function useCreateCard() {
-  return useMutation({
-    mutationFn: createCard,
-    onSuccess: () => {
-      return Promise.all([
-        queryClient.invalidateQueries({ queryKey: decksQueryKey }),
-        queryClient.invalidateQueries({ queryKey: cardsQueryRootKey }),
-      ]);
-    },
-  });
+  getDeckCards$(deckId)[card.id].set(card);
+  return card;
 }
 
 export async function updateCard({
   id,
+  deckId,
   front,
   back,
 }: {
   id: string;
+  deckId: string;
   front: string;
   back: string;
 }): Promise<Card> {
-  return apiFetch<Card>(`/api/cards/${id}`, {
-    method: 'PATCH',
-    body: {
-      frontContent: front,
-      backContent: back,
-    },
-  });
+  const card$ = getDeckCards$(deckId)[id];
+  const existing = card$.peek();
+
+  if (!existing) {
+    throw new Error('Card not found');
+  }
+
+  const updated: Card = {
+    ...existing,
+    frontContent: front,
+    backContent: back,
+    updatedAt: new Date().toISOString(),
+  };
+
+  card$.set(updated);
+  return updated;
 }
 
-export function useUpdateCard() {
-  return useMutation({
-    mutationFn: updateCard,
-    onSuccess: (_card, variables) => {
-      return Promise.all([
-        queryClient.invalidateQueries({ queryKey: cardQueryKey(variables.id) }),
-        queryClient.invalidateQueries({ queryKey: cardsQueryRootKey }),
-        queryClient.invalidateQueries({ queryKey: decksQueryKey }),
-      ]);
-    },
-  });
+export async function deleteCard({
+  id,
+  deckId,
+}: {
+  id: string;
+  deckId: string;
+}): Promise<void> {
+  const card$ = getDeckCards$(deckId)[id];
+  if (!card$.peek()) return;
+  card$.delete();
 }
 
-export async function deleteCard({ id }: { id: string }): Promise<void> {
-  await apiFetch<{ success: boolean }>(`/api/cards/${id}`, {
-    method: 'DELETE',
-  });
-}
+export function useCard(deckId: string, cardId: string) {
+  const cards$ = deckId ? getDeckCards$(deckId) : undefined;
+  const card$ = cards$ && cardId ? cards$[cardId] : undefined;
+  const card = useValue(() => card$?.get());
+  const cardsSync = useValue(() =>
+    cards$ ? syncState(cards$).get() : undefined
+  );
 
-export function useDeleteCard() {
-  return useMutation({
-    mutationFn: deleteCard,
-    onMutate: async ({ id }) => {
-      await queryClient.cancelQueries({ queryKey: cardsQueryRootKey });
-      const previousCards = queryClient.getQueriesData<Card[]>({
-        queryKey: cardsQueryRootKey,
-      });
-
-      previousCards.forEach(([queryKey, cards]) => {
-        queryClient.setQueryData<Card[]>(
-          queryKey,
-          cards?.filter((card) => card.id !== id)
-        );
-      });
-
-      return { previousCards };
+  return {
+    card,
+    isLoading: cardsSync
+      ? !cardsSync.isPersistLoaded || !cardsSync.isLoaded
+      : true,
+    isError: Boolean(cardsSync?.error),
+    error: cardsSync?.error,
+    refetch: () => {
+      if (cards$) void syncState(cards$).sync();
     },
-    onError: (_error, _variables, context) => {
-      context?.previousCards.forEach(([queryKey, cards]) => {
-        queryClient.setQueryData(queryKey, cards);
-      });
-    },
-    onSettled: (_data, _error, variables) => {
-      return Promise.all([
-        queryClient.invalidateQueries({ queryKey: decksQueryKey }),
-        queryClient.invalidateQueries({ queryKey: cardsQueryRootKey }),
-        queryClient.removeQueries({ queryKey: cardQueryKey(variables.id) }),
-      ]);
-    },
-  });
+  };
 }

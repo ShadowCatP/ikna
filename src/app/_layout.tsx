@@ -3,6 +3,7 @@ import { ScreenError } from '@/components/screens/ScreenError';
 import { ScreenLoading } from '@/components/screens/ScreenLoading';
 import { UndoSnackbarProvider } from '@/components/ui/common/UndoSnackbarProvider';
 import { useAuth } from '@/hooks/useAuth';
+import '@/lib/legendState';
 import { useThemeStore } from '@/lib/themeStore';
 import { QueryClientProvider } from '@tanstack/react-query';
 import {

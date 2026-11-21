@@ -118,9 +118,6 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
           accessibilityRole="button"
           accessibilityLabel="Delete deck"
           onPress={handleDelete}
-          disabled={
-            updateDeckMutation.isPending || deleteDeckMutation.isPending
-          }
           className="bg-surface min-h-14 flex-row items-center rounded-2xl px-4"
         >
           <Lucide name="trash-2" size={22} className="text-danger" />
@@ -129,12 +126,7 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
       </View>
 
       <View className="mt-auto pt-6">
-        <Button
-          disabled={
-            updateDeckMutation.isPending || deleteDeckMutation.isPending
-          }
-          onPress={() => void form.handleSubmit()}
-        >
+        <Button onPress={() => void form.handleSubmit()}>
           <Text className="text-on-cta text-base font-medium">
             Save changes
           </Text>
@@ -153,11 +145,7 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
           Delete "{deck.title}"? This action cannot be undone.
         </Text>
         <View className="gap-3">
-          <Button
-            variant="destructive"
-            disabled={deleteDeckMutation.isPending}
-            onPress={handleConfirmDelete}
-          >
+          <Button variant="destructive" onPress={handleConfirmDelete}>
             <Text className="text-background text-base font-medium">
               Delete deck
             </Text>
@@ -166,7 +154,6 @@ export function EditDeckForm({ deck }: { deck: DeckPreview }) {
             accessibilityRole="button"
             accessibilityLabel="Cancel delete deck"
             onPress={() => setIsDeleteModalVisible(false)}
-            disabled={deleteDeckMutation.isPending}
             className="bg-surface dark:border-foreground min-h-14 items-center justify-center rounded-2xl dark:border-2 dark:bg-transparent"
           >
             <Text className="text-foreground text-base font-medium">

@@ -8,8 +8,15 @@ import { router, useLocalSearchParams } from 'expo-router';
 import { Text } from 'react-native';
 
 export default function EditCardScreen() {
-  const { id } = useLocalSearchParams<{ id: string }>();
-  const { data: card, isPending, isError, refetch } = useCard(id);
+  const { id, deckId } = useLocalSearchParams<{ id: string; deckId: string }>();
+
+  const {
+    card,
+    isLoading,
+    isError,
+    error,
+    refetch: refetchCards,
+  } = useCard(deckId, id);
 
   return (
     <Screen
@@ -20,12 +27,14 @@ export default function EditCardScreen() {
         <Text className="text-foreground text-2xl font-bold">Edit card</Text>
       </ScreenHeader>
 
-      {isPending ? (
+      {isLoading && !card ? (
         <ScreenLoading message="Loading card..." />
-      ) : isError || !card ? (
-        <ScreenError onRetry={() => void refetch()} />
-      ) : (
+      ) : isError && !card ? (
+        <ScreenError message={error?.message} onRetry={refetchCards} />
+      ) : card ? (
         <EditCardForm card={card} />
+      ) : (
+        <ScreenError message="Card not found." />
       )}
     </Screen>
   );

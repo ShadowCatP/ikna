@@ -1,4 +1,4 @@
-import { useCards } from '@/client/cards';
+import { useDeckCards } from '@/client/cards';
 import { useDeck } from '@/client/decks';
 import { DeckCardsScreen } from '@/components/screens/DeckCardsScreen';
 import { Screen } from '@/components/screens/Screen';
@@ -12,12 +12,13 @@ import { Alert, Pressable, Text, View } from 'react-native';
 export default function DeckScreen() {
   const { id } = useLocalSearchParams<{ id: string }>();
   const { data: deck, isPending, isError, refetch } = useDeck(id);
+
   const {
-    data: cards = [],
-    isPending: areCardsPending,
+    cards,
+    isLoading: areCardsPending,
     isError: areCardsError,
     refetch: refetchCards,
-  } = useCards(id);
+  } = useDeckCards(id);
 
   function handleEdit() {
     router.push({
@@ -45,10 +46,10 @@ export default function DeckScreen() {
     Alert.alert('Search cards', 'To be implemented', [{ text: 'OK' }]);
   }
 
-  function handleEditCard(cardId: string) {
+  function handleEditCard(cardId: string, deckId: string) {
     router.push({
       pathname: '/card/[id]/edit',
-      params: { id: cardId },
+      params: { id: cardId, deckId },
     });
   }
 
