@@ -1,6 +1,6 @@
-export type DeckPreview = {
+export type Deck = {
   id: string;
-  userId: string;
+  userId?: string;
   title: string;
   description: string | null;
   cardCount: number;

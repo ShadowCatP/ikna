@@ -1,8 +1,9 @@
-import { useCreateDeck } from '@/client/decks';
+import { createDeck } from '@/client/decks';
 import { Input } from '@/components/forms/Input';
 import { Button } from '@/components/ui/common/Button';
 import { useForm } from '@tanstack/react-form';
 import { router } from 'expo-router';
+import { useState } from 'react';
 import { Alert, Text, View } from 'react-native';
 import { z } from 'zod';
 
@@ -28,7 +29,7 @@ const addDeckSchema = z.object({
 });
 
 export function AddDeckForm() {
-  const createDeckMutation = useCreateDeck();
+  const [isSubmitting, setIsSubmitting] = useState(false);
   const form = useForm({
     defaultValues: {
       title: '',
@@ -37,7 +38,8 @@ export function AddDeckForm() {
     validators: { onSubmit: addDeckSchema },
     onSubmit: async ({ value }) => {
       try {
-        await createDeckMutation.mutateAsync(value);
+        setIsSubmitting(true);
+        await createDeck(value);
         router.back();
       } catch (error) {
         Alert.alert(
@@ -45,6 +47,8 @@ export function AddDeckForm() {
           error instanceof Error ? error.message : 'Please try again.',
           [{ text: 'OK' }]
         );
+      } finally {
+        setIsSubmitting(false);
       }
     },
   });
@@ -91,7 +95,7 @@ export function AddDeckForm() {
 
       <View className="mt-auto">
         <Button
-          disabled={createDeckMutation.isPending}
+          disabled={isSubmitting}
           onPress={() => void form.handleSubmit()}
         >
           <Text className="text-on-cta font-medium">Create deck</Text>

@@ -8,6 +8,26 @@ const updateDeckSchema = z.object({
   description: z.string().trim().max(150).optional(),
 });
 
+async function getDueCardCount(
+  deckId: string,
+  userId: string
+): Promise<number> {
+  const [group] = await prisma.card.groupBy({
+    by: ['deckId'],
+    where: {
+      deckId,
+      deck: { userId },
+      OR: [
+        { reviewState: null },
+        { reviewState: { is: { dueDate: { lte: new Date() } } } },
+      ],
+    },
+    _count: { _all: true },
+  });
+
+  return group?._count._all ?? 0;
+}
+
 export async function GET(request: Request, { id }: { id: string }) {
   try {
     const user = await getAuthenticatedUser(request);
@@ -37,15 +57,7 @@ export async function GET(request: Request, { id }: { id: string }) {
     }
 
     const { _count, ...deckPreview } = deck;
-    const dueCardCount = await prisma.card.count({
-      where: {
-        deckId: deck.id,
-        OR: [
-          { reviewState: null },
-          { reviewState: { is: { dueDate: { lte: new Date() } } } },
-        ],
-      },
-    });
+    const dueCardCount = await getDueCardCount(deck.id, user.id);
 
     return Response.json({
       ...deckPreview,
@@ -100,15 +112,7 @@ export async function PATCH(request: Request, { id }: { id: string }) {
     });
 
     const { _count, ...deckPreview } = deck;
-    const dueCardCount = await prisma.card.count({
-      where: {
-        deckId: deck.id,
-        OR: [
-          { reviewState: null },
-          { reviewState: { is: { dueDate: { lte: new Date() } } } },
-        ],
-      },
-    });
+    const dueCardCount = await getDueCardCount(deck.id, user.id);
 
     return Response.json({
       ...deckPreview,

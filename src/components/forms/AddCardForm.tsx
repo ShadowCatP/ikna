@@ -1,4 +1,4 @@
-import { useCreateCard } from '@/client/cards';
+import { createCard } from '@/client/cards';
 import { useDecks } from '@/client/decks';
 import { Input } from '@/components/forms/Input';
 import { Button } from '@/components/ui/common/Button';
@@ -43,8 +43,7 @@ export function AddCardForm({
 }: {
   initialDeckId?: string;
 }) {
-  const { data: decks = [], isPending, isError } = useDecks();
-  const createCardMutation = useCreateCard();
+  const { decks, isLoading: isPending, isError } = useDecks();
   const [isDeckModalVisible, setIsDeckModalVisible] = useState(false);
   const form = useForm({
     defaultValues: {
@@ -55,7 +54,7 @@ export function AddCardForm({
     validators: { onSubmit: addCardSchema },
     onSubmit: async ({ value }) => {
       try {
-        await createCardMutation.mutateAsync(value);
+        await createCard(value);
       } catch (error) {
         Alert.alert(
           'Could not create card',
@@ -187,7 +186,6 @@ export function AddCardForm({
       <View className="mt-auto gap-3 pt-8">
         <Button
           variant="outline"
-          disabled={createCardMutation.isPending}
           onPress={() => void handleSubmitAndAddAnother()}
         >
           <Text className="text-foreground font-medium">
@@ -195,7 +193,6 @@ export function AddCardForm({
           </Text>
         </Button>
         <Button
-          disabled={createCardMutation.isPending}
           accessibilityLabel="Save card"
           onPress={() => void handleSubmit()}
         >

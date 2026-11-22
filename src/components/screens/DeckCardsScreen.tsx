@@ -9,19 +9,19 @@ import {
 } from '@/hooks/useUndoableDeleteCard';
 import { usePendingDeletions } from '@/lib/deletionStore';
 import type { Card } from '@/types/card';
-import type { DeckPreview } from '@/types/deck';
+import type { Deck } from '@/types/deck';
 import { formatCardCount } from '@/utils/plural';
 import { Text, View } from 'react-native';
 import { ScreenError } from './ScreenError';
 import { ScreenLoading } from './ScreenLoading';
 
 type DeckCardsScreenProps = {
-  deck: DeckPreview;
+  deck: Deck;
   cards: Card[];
   onStartReview: () => void;
   onSearch: () => void;
   onAddCard: () => void;
-  onEditCard: (cardId: string) => void;
+  onEditCard: (cardId: string, deckId: string) => void;
   cardsLoading: boolean;
   cardsError: boolean;
   onRetryCards: () => void;
@@ -43,9 +43,7 @@ export function DeckCardsScreen({
 
   const pendingIds = new Set(pendingCards.map((e) => e.id));
   const visibleCards = cards.filter((c) => !pendingIds.has(c.id));
-  const cardCount =
-    deck.cardCount -
-    pendingCards.filter((e) => e.data.deckId === deck.id).length;
+  const cardCount = cardsLoading ? deck.cardCount : visibleCards.length;
 
   if (!cardsLoading && !cardsError && cards.length === 0) {
     return <EmptyDeckState onAddCard={onAddCard} />;
@@ -106,7 +104,7 @@ export function DeckCardsScreen({
               <SwipeableCard
                 key={card.id}
                 card={card}
-                onPress={() => onEditCard(card.id)}
+                onPress={() => onEditCard(card.id, card.deckId)}
                 onDelete={() => deleteCard(card)}
               />
             ))}

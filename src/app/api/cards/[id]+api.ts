@@ -8,8 +8,14 @@ const updateCardSchema = z.object({
   backContent: z.string().trim().min(1).max(300),
 });
 
+const cardIdSchema = z.uuid();
+
 export async function GET(request: Request, { id }: { id: string }) {
   try {
+    if (!cardIdSchema.safeParse(id).success) {
+      return Response.json({ error: 'Invalid card ID' }, { status: 400 });
+    }
+
     const user = await getAuthenticatedUser(request);
 
     if (!user) {
@@ -40,6 +46,10 @@ export async function GET(request: Request, { id }: { id: string }) {
 
 export async function PATCH(request: Request, { id }: { id: string }) {
   try {
+    if (!cardIdSchema.safeParse(id).success) {
+      return Response.json({ error: 'Invalid card ID' }, { status: 400 });
+    }
+
     const user = await getAuthenticatedUser(request);
 
     if (!user) {
@@ -85,6 +95,10 @@ export async function PATCH(request: Request, { id }: { id: string }) {
 
 export async function DELETE(request: Request, { id }: { id: string }) {
   try {
+    if (!cardIdSchema.safeParse(id).success) {
+      return Response.json({ error: 'Invalid card ID' }, { status: 400 });
+    }
+
     const user = await getAuthenticatedUser(request);
 
     if (!user) {
