@@ -1,74 +1,72 @@
 import { syncAll, useGlobalSyncStatus } from '@/client/sync';
 import { Lucide } from '@/components/ui/icons';
+import { isOnline$ } from '@/lib/network';
 import { formatRelativeTime } from '@/utils/date';
-import NetInfo from '@react-native-community/netinfo';
+import { useValue } from '@legendapp/state/react';
 import { useEffect, useState } from 'react';
-import { Alert, Animated, Easing, Pressable, Text, View } from 'react-native';
+import { Alert, Pressable, Text, View } from 'react-native';
+import Animated, {
+  cancelAnimation,
+  Easing,
+  useAnimatedStyle,
+  useSharedValue,
+  withRepeat,
+  withSequence,
+  withTiming,
+} from 'react-native-reanimated';
 
-const syncSpin = new Animated.Value(0);
-const syncSpinRotation = syncSpin.interpolate({
-  inputRange: [0, 1],
-  outputRange: ['0deg', '360deg'],
-});
+const SPIN_DURATION_MS = 500;
 
 export function SyncStatusSection({ userId }: { userId?: string }) {
   const [, setTick] = useState(0);
-  const [syncing, setSyncing] = useState(false);
-  const [isConnected, setIsConnected] = useState<boolean | null>(null);
-  const { lastSyncedAt, hasError } = useGlobalSyncStatus();
+  const isOnline = useValue(() => isOnline$.get());
+  const { lastSyncedAt, hasError, isSyncing } = useGlobalSyncStatus();
+  const rotation = useSharedValue(0);
+
+  const animatedIconStyle = useAnimatedStyle(() => ({
+    transform: [{ rotate: `${rotation.value}deg` }],
+  }));
+
+  useEffect(() => {
+    if (isSyncing) {
+      rotation.value = 0;
+      rotation.value = withSequence(
+        withTiming(360, {
+          duration: SPIN_DURATION_MS * 2,
+          easing: Easing.in(Easing.quad),
+        }),
+        withRepeat(
+          withTiming(720, {
+            duration: SPIN_DURATION_MS,
+            easing: Easing.linear,
+          }),
+          -1
+        )
+      );
+    } else if (rotation.value !== 0) {
+      const remaining = 360 - (rotation.value % 360);
+      rotation.value = withTiming(rotation.value + remaining, {
+        duration: (2 * remaining * SPIN_DURATION_MS) / 360,
+        easing: Easing.out(Easing.quad),
+      });
+    }
+
+    return () => cancelAnimation(rotation);
+  }, [isSyncing]);
 
   useEffect(() => {
     const timer = setInterval(() => setTick((tick) => tick + 1), 30_000);
-    const unsubscribe = NetInfo.addEventListener((state) => {
-      setIsConnected(state.isConnected);
-    });
 
-    void NetInfo.fetch().then((state) => {
-      setIsConnected(state.isConnected);
-    });
-
-    return () => {
-      clearInterval(timer);
-      unsubscribe();
-    };
+    return () => clearInterval(timer);
   }, []);
 
-  useEffect(() => {
-    if (!syncing) {
-      syncSpin.stopAnimation();
-      syncSpin.setValue(0);
-      return;
-    }
-
-    syncSpin.setValue(0);
-    const animation = Animated.loop(
-      Animated.timing(syncSpin, {
-        toValue: 1,
-        duration: 900,
-        easing: Easing.inOut(Easing.quad),
-        useNativeDriver: true,
-      })
-    );
-    animation.start();
-
-    return () => animation.stop();
-  }, [syncing]);
-
   async function handleSync() {
-    if (!userId || syncing || !isConnected) return;
+    if (!userId || isSyncing || !isOnline) return;
 
-    setSyncing(true);
-    const startedAt = Date.now();
     try {
       await syncAll(userId);
     } catch {
       Alert.alert('Sync failed');
-    } finally {
-      const elapsed = Date.now() - startedAt;
-      if (elapsed < 1000) {
-        await new Promise((resolve) => setTimeout(resolve, 1000 - elapsed));
-      }
-      setSyncing(false);
     }
   }
 
@@ -86,13 +84,13 @@ export function SyncStatusSection({ userId }: { userId?: string }) {
           <View className="flex-row items-center gap-1">
             <View
               className={
-                isConnected === false || hasError
+                isOnline === false || hasError
                   ? 'bg-danger size-2 rounded-full'
                   : 'bg-success size-2 rounded-full'
               }
             />
             <Text className="text-muted text-sm">
-              {isConnected === false
+              {isOnline === false
                 ? 'Offline'
                 : formatRelativeTime(lastSyncedAt)}
             </Text>
@@ -101,22 +99,10 @@ export function SyncStatusSection({ userId }: { userId?: string }) {
         <View className="bg-border h-px" />
         <Pressable
           className="min-h-12 flex-row items-center px-3"
-          disabled={syncing || !userId || isConnected === false}
+          disabled={isSyncing || !userId || !isOnline}
           onPress={() => void handleSync()}
         >
-          <Animated.View
-            style={
-              syncing
-                ? {
-                    transform: [
-                      {
-                        rotate: syncSpinRotation,
-                      },
-                    ],
-                  }
-                : undefined
-            }
-          >
+          <Animated.View style={animatedIconStyle}>
             <Lucide name="refresh-cw" size={20} className="text-foreground" />
           </Animated.View>
           <Text className="text-foreground ml-3 text-sm">Sync now</Text>

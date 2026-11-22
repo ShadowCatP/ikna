@@ -15,42 +15,51 @@ export const syncMeta$ = observable<SyncMeta>(
   })
 );
 
+export const isSyncing$ = observable(false);
+
 export function markSyncedNow() {
   syncMeta$.lastSyncedAt.set(new Date().toISOString());
 }
 
 export async function syncAll(userId?: string) {
-  if (!userId) return;
+  if (!userId || isSyncing$.peek()) return;
 
-  const observables = [decks$(), ...getLocalDeckCards$()];
-
-  await Promise.all(observables.map((obs$) => syncState(obs$).sync()));
-
-  const hasError = observables.some((obs$) =>
-    Boolean(syncState(obs$).error.peek())
-  );
-  if (!hasError) markSyncedNow();
-}
-
-export function useGlobalSyncStatus(enabled = true) {
-  const lastSyncedAt = useValue(() => syncMeta$.lastSyncedAt.get());
-
-  const status = useValue(() => {
-    if (!enabled) return { hasError: false, isPending: false };
+  isSyncing$.set(true);
+  try {
+    await new Promise((resolve) => setTimeout(resolve, 5600));
 
     const observables = [decks$(), ...getLocalDeckCards$()];
 
+    await Promise.all(observables.map((obs$) => syncState(obs$).sync()));
+
+    const hasError = observables.some((obs$) =>
+      Boolean(syncState(obs$).error.peek())
+    );
+    if (!hasError) markSyncedNow();
+  } finally {
+    isSyncing$.set(false);
+  }
+}
+
+export function useGlobalSyncStatus() {
+  const lastSyncedAt = useValue(() => syncMeta$.lastSyncedAt.get());
+  const isSyncing = useValue(() => isSyncing$.get());
+
+  const status = useValue(() => {
+    const observables = [decks$(), ...getLocalDeckCards$()];
+
     let hasError = false;
-    let isPending = false;
+    let hasUnsyncedChanges = false;
 
     for (const obs$ of observables) {
       const state = syncState(obs$).get();
+
       if (state.error) hasError = true;
       const pending = syncState(obs$).getPendingChanges?.();
-      if (pending && Object.keys(pending).length > 0) isPending = true;
+      if (pending && Object.keys(pending).length > 0) hasUnsyncedChanges = true;
     }
 
-    return { hasError, isPending };
+    return { hasError, hasUnsyncedChanges, isSyncing };
   });
 
   return {
