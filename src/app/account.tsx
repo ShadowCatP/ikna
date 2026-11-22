@@ -6,7 +6,9 @@ import { Modal } from '@/components/ui/common/Modal';
 import { Lucide } from '@/components/ui/icons';
 import { EditNameModal } from '@/components/ui/modals/EditNameModal';
 import { useAuth } from '@/hooks/useAuth';
+import { isOnline$ } from '@/lib/network';
 import { supabase, type UserMetadata } from '@/utils/supabase';
+import { useValue } from '@legendapp/state/react';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { Alert, Pressable, Text, View } from 'react-native';
@@ -17,14 +19,30 @@ export default function AccountScreen() {
   const name = metadata?.display_name || metadata?.name || metadata?.full_name;
   const email = user?.email || 'Guest account';
   const deleteAccountMutation = useDeleteAccount();
+  const isOnline = useValue(() => isOnline$.get());
   const [isNameModalVisible, setIsNameModalVisible] = useState(false);
   const [isDeleteModalVisible, setIsDeleteModalVisible] = useState(false);
 
   function handleDeleteAccount() {
+    if (!isOnline) {
+      Alert.alert(
+        'No internet connection',
+        'Connect to the internet to delete your account.'
+      );
+      return;
+    }
     setIsDeleteModalVisible(true);
   }
 
   async function handleConfirmDeleteAccount() {
+    if (!isOnline) {
+      Alert.alert(
+        'No internet connection',
+        'Connect to the internet to delete your account.'
+      );
+      return;
+    }
+
     try {
       await deleteAccountMutation.mutateAsync();
       setIsDeleteModalVisible(false);
@@ -92,7 +110,7 @@ export default function AccountScreen() {
             accessibilityRole="button"
             accessibilityLabel="Delete account"
             onPress={handleDeleteAccount}
-            disabled={deleteAccountMutation.isPending}
+            disabled={deleteAccountMutation.isPending || !isOnline}
             className="bg-surface min-h-12 flex-row items-center rounded-2xl px-4"
           >
             <Lucide name="trash-2" size={20} className="text-danger" />
@@ -121,7 +139,7 @@ export default function AccountScreen() {
         <View className="gap-3">
           <Button
             variant="destructive"
-            disabled={deleteAccountMutation.isPending}
+            disabled={deleteAccountMutation.isPending || !isOnline}
             onPress={() => void handleConfirmDeleteAccount()}
           >
             <Text className="text-background text-base font-medium">
