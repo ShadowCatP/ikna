@@ -80,7 +80,7 @@ export function EditCardForm({ card }: { card: Card }) {
                 maxLength={MAX_FRONT_LENGTH}
                 multiline
                 textAlignVertical="top"
-                className="bg-surface min-h-32 border-0 px-4 dark:border"
+                className="bg-surface min-h-32 border-0 dark:border"
                 maxCharacterLimit={MAX_FRONT_LENGTH}
                 error={field.state.meta}
               />
@@ -100,7 +100,7 @@ export function EditCardForm({ card }: { card: Card }) {
                 maxLength={MAX_BACK_LENGTH}
                 multiline
                 textAlignVertical="top"
-                className="bg-surface min-h-32 border-0 px-4 dark:border"
+                className="bg-surface min-h-32 border-0 dark:border"
                 maxCharacterLimit={MAX_BACK_LENGTH}
                 error={field.state.meta}
               />

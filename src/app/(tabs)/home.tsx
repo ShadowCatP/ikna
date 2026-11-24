@@ -2,6 +2,7 @@ import { useDecks } from '@/client/decks';
 import { EmptyDecksScreen } from '@/components/screens/EmptyDecksScreen';
 import { Screen } from '@/components/screens/Screen';
 import { ScreenError } from '@/components/screens/ScreenError';
+import { ScreenHeader } from '@/components/screens/ScreenHeader';
 import { ScreenLoading } from '@/components/screens/ScreenLoading';
 import { DeckCard } from '@/components/ui/cards/DeckCard';
 import { StudySummaryCard } from '@/components/ui/cards/StudySummaryCard';
@@ -75,12 +76,12 @@ export default function HomeScreen() {
         />
       }
     >
-      <View className="gap-7">
-        <View className="flex-row items-center justify-between">
+      <View className="gap-6">
+        <ScreenHeader>
           <Text className="text-foreground text-2xl font-bold">
             Hi, {greetingName}!
           </Text>
-        </View>
+        </ScreenHeader>
 
         {decks.length === 0 ? (
           <EmptyDecksScreen onCreateDeck={handleCreateDeck} />
@@ -92,19 +93,13 @@ export default function HomeScreen() {
               onStartReview={handleStartReview}
             />
 
-            <View className="flex-row items-center justify-between gap-3">
+            <View className="flex-row items-center justify-between">
               {!isSearchActive && (
                 <Text className="text-foreground shrink text-2xl font-bold">
                   Your decks
                 </Text>
               )}
-              <View
-                className={
-                  isSearchActive
-                    ? 'flex-1 flex-row items-center justify-end'
-                    : 'flex-row items-center gap-4'
-                }
-              >
+              <View className={'flex-row items-center gap-4'}>
                 {!isSearchActive && (
                   <Text className="text-muted text-base">
                     {formatDeckCount(decks.length)}

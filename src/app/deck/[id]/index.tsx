@@ -1,11 +1,13 @@
 import { useDeckCards } from '@/client/cards';
 import { useDeck } from '@/client/decks';
-import { DeckCardsScreen } from '@/components/screens/DeckCardsScreen';
 import { Screen } from '@/components/screens/Screen';
 import { ScreenError } from '@/components/screens/ScreenError';
 import { ScreenHeader } from '@/components/screens/ScreenHeader';
 import { ScreenLoading } from '@/components/screens/ScreenLoading';
+import { DeckCardsList } from '@/components/ui/cards/DeckCardsList';
+import { Button } from '@/components/ui/common/Button';
 import { Lucide } from '@/components/ui/icons';
+import { formatCardCount } from '@/utils/plural';
 import { router, useLocalSearchParams } from 'expo-router';
 import { Alert, Pressable, Text, View } from 'react-native';
 
@@ -31,22 +33,8 @@ export default function DeckScreen() {
     });
   }
 
-  function handleAddCard() {
-    router.push({
-      pathname: '/add-card',
-      params: { deckId: id },
-    });
-  }
-
   function handleStartReview() {
     Alert.alert('Start review', 'To be implemented', [{ text: 'OK' }]);
-  }
-
-  function handleEditCard(cardId: string, deckId: string) {
-    router.push({
-      pathname: '/card/[id]/edit',
-      params: { id: cardId, deckId },
-    });
   }
 
   if (isPending) {
@@ -86,16 +74,28 @@ export default function DeckScreen() {
         </View>
       </ScreenHeader>
 
-      <DeckCardsScreen
-        deck={deck}
-        cards={cards}
-        onStartReview={handleStartReview}
-        onAddCard={handleAddCard}
-        onEditCard={handleEditCard}
-        cardsLoading={areCardsPending}
-        cardsError={areCardsError}
-        onRetryCards={() => void refetchCards()}
-      />
+      <View className="gap-6">
+        <Text className="text-muted text-base">
+          {deck.dueCardCount} due of {formatCardCount(deck.cardCount)}
+        </Text>
+
+        <Button onPress={handleStartReview}>
+          <View className="flex-row items-center gap-2">
+            <Lucide name="play" size={20} className="text-on-cta" />
+            <Text className="text-on-cta text-base font-medium">
+              Start review
+            </Text>
+          </View>
+        </Button>
+
+        <DeckCardsList
+          deck={deck}
+          cards={cards}
+          cardsLoading={areCardsPending}
+          cardsError={areCardsError}
+          onRetryCards={() => void refetchCards()}
+        />
+      </View>
     </Screen>
   );
 }
