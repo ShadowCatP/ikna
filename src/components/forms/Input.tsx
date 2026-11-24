@@ -2,6 +2,7 @@ import { FieldError } from '@/components/forms/FieldError';
 import { Label } from '@/components/forms/Label';
 import { cn } from '@/utils/cn';
 import { errorText } from '@/utils/form';
+import type { ReactNode } from 'react';
 import { Text, TextInput, View, type TextInputProps } from 'react-native';
 
 type InputProps = TextInputProps & {
@@ -12,6 +13,8 @@ type InputProps = TextInputProps & {
     errors: readonly unknown[];
   };
   maxCharacterLimit?: number;
+  leftChild?: ReactNode;
+  rightChild?: ReactNode;
 };
 
 export function Input({
@@ -20,6 +23,8 @@ export function Input({
   error,
   label,
   maxCharacterLimit,
+  leftChild,
+  rightChild,
   style,
   value,
   ...props
@@ -33,10 +38,11 @@ export function Input({
       {label && <Label>{label}</Label>}
       <View
         className={cn(
-          'bg-field border-field-border min-h-14 flex-row items-center rounded-2xl border px-2 py-1',
+          'bg-field border-field-border flex-row items-center rounded-2xl border px-2 py-1',
           className
         )}
       >
+        {leftChild}
         <TextInput
           {...props}
           value={value}
@@ -44,6 +50,7 @@ export function Input({
           style={[style, { alignSelf: 'stretch' }]}
           textAlignVertical={props.textAlignVertical ?? 'center'}
         />
+        {rightChild}
       </View>
       {(hasError || maxCharacterLimit !== undefined) && (
         <View className="min-h-6 flex-row items-center justify-between">
