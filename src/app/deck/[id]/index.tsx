@@ -42,10 +42,6 @@ export default function DeckScreen() {
     Alert.alert('Start review', 'To be implemented', [{ text: 'OK' }]);
   }
 
-  function handleSearch() {
-    Alert.alert('Search cards', 'To be implemented', [{ text: 'OK' }]);
-  }
-
   function handleEditCard(cardId: string, deckId: string) {
     router.push({
       pathname: '/card/[id]/edit',
@@ -94,7 +90,6 @@ export default function DeckScreen() {
         deck={deck}
         cards={cards}
         onStartReview={handleStartReview}
-        onSearch={handleSearch}
         onAddCard={handleAddCard}
         onEditCard={handleEditCard}
         cardsLoading={areCardsPending}

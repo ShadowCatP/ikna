@@ -1,7 +1,7 @@
 import { useMemo } from 'react';
 import { create } from 'zustand';
 
-const UNDO_WINDOW_MS = 5000;
+const UNDO_WINDOW_MS = 2500;
 
 export type PendingDeletion<TData = unknown> = {
   key: string;

@@ -5,12 +5,13 @@ import { ScreenError } from '@/components/screens/ScreenError';
 import { ScreenLoading } from '@/components/screens/ScreenLoading';
 import { DeckCard } from '@/components/ui/cards/DeckCard';
 import { StudySummaryCard } from '@/components/ui/cards/StudySummaryCard';
-import { Lucide } from '@/components/ui/icons';
+import { Search } from '@/components/ui/common/Search';
 import { useAuth } from '@/hooks/useAuth';
 import { formatDeckCount } from '@/utils/plural';
 import type { UserMetadata } from '@/utils/supabase';
 import { router } from 'expo-router';
-import { Alert, Pressable, RefreshControl, Text, View } from 'react-native';
+import { useState } from 'react';
+import { Alert, RefreshControl, Text, View } from 'react-native';
 
 export default function HomeScreen() {
   const { user } = useAuth();
@@ -18,6 +19,17 @@ export default function HomeScreen() {
   const metadata = user?.user_metadata as UserMetadata | undefined;
   const name = metadata?.display_name || metadata?.name || metadata?.full_name;
   const greetingName = name || 'there';
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchActive, setIsSearchActive] = useState(false);
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+
+  const visibleDecks = normalizedQuery
+    ? decks.filter((deck) => {
+        const searchableText =
+          `${deck.title} ${deck.description ?? ''}`.toLowerCase();
+        return searchableText.includes(normalizedQuery);
+      })
+    : decks;
 
   function handleStartReview() {
     Alert.alert('Start review', 'To be implemented', [{ text: 'OK' }]);
@@ -25,10 +37,6 @@ export default function HomeScreen() {
 
   function handleDeckReview(title: string) {
     Alert.alert(`Review ${title}`, 'To be implemented', [{ text: 'OK' }]);
-  }
-
-  function handleSearch() {
-    Alert.alert('Search decks', 'To be implemented', [{ text: 'OK' }]);
   }
 
   function handleCreateDeck() {
@@ -84,40 +92,55 @@ export default function HomeScreen() {
               onStartReview={handleStartReview}
             />
 
-            <View className="flex-row items-center justify-between">
-              <Text className="text-foreground text-2xl font-bold">
-                Your decks
-              </Text>
-              <View className="flex-row items-center gap-4">
-                <Text className="text-muted text-base">
-                  {formatDeckCount(decks.length)}
+            <View className="flex-row items-center justify-between gap-3">
+              {!isSearchActive && (
+                <Text className="text-foreground shrink text-2xl font-bold">
+                  Your decks
                 </Text>
-                <Pressable
-                  accessibilityRole="button"
+              )}
+              <View
+                className={
+                  isSearchActive
+                    ? 'flex-1 flex-row items-center justify-end'
+                    : 'flex-row items-center gap-4'
+                }
+              >
+                {!isSearchActive && (
+                  <Text className="text-muted text-base">
+                    {formatDeckCount(decks.length)}
+                  </Text>
+                )}
+                <Search
+                  value={searchQuery}
+                  onChangeText={setSearchQuery}
+                  onStartSearch={setIsSearchActive}
                   accessibilityLabel="Search decks"
-                  onPress={handleSearch}
-                  className="bg-surface size-11 items-center justify-center rounded-full"
-                >
-                  <Lucide name="search" size={22} className="text-foreground" />
-                </Pressable>
+                  placeholder="Search decks"
+                />
               </View>
             </View>
 
-            <View className="gap-3">
-              {decks.map((deck) => (
-                <DeckCard
-                  key={deck.id}
-                  deck={deck}
-                  onPress={() =>
-                    router.push({
-                      pathname: '/deck/[id]',
-                      params: { id: deck.id },
-                    })
-                  }
-                  onReview={() => handleDeckReview(deck.title)}
-                />
-              ))}
-            </View>
+            {normalizedQuery && visibleDecks.length === 0 ? (
+              <Text className="text-muted text-base">
+                No decks match “{searchQuery.trim()}”.
+              </Text>
+            ) : (
+              <View className="gap-3">
+                {visibleDecks.map((deck) => (
+                  <DeckCard
+                    key={deck.id}
+                    deck={deck}
+                    onPress={() =>
+                      router.push({
+                        pathname: '/deck/[id]',
+                        params: { id: deck.id },
+                      })
+                    }
+                    onReview={() => handleDeckReview(deck.title)}
+                  />
+                ))}
+              </View>
+            )}
           </>
         )}
       </View>

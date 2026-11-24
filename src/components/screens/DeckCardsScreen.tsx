@@ -1,6 +1,7 @@
 import { EmptyDeckState } from '@/components/screens/EmptyDeckScreen';
 import { SwipeableCard } from '@/components/ui/cards/SwipeableCard';
 import { Button } from '@/components/ui/common/Button';
+import { Search } from '@/components/ui/common/Search';
 
 import { Lucide } from '@/components/ui/icons';
 import {
@@ -11,6 +12,7 @@ import { usePendingDeletions } from '@/lib/deletionStore';
 import type { Card } from '@/types/card';
 import type { Deck } from '@/types/deck';
 import { formatCardCount } from '@/utils/plural';
+import { useState } from 'react';
 import { Text, View } from 'react-native';
 import { ScreenError } from './ScreenError';
 import { ScreenLoading } from './ScreenLoading';
@@ -19,7 +21,6 @@ type DeckCardsScreenProps = {
   deck: Deck;
   cards: Card[];
   onStartReview: () => void;
-  onSearch: () => void;
   onAddCard: () => void;
   onEditCard: (cardId: string, deckId: string) => void;
   cardsLoading: boolean;
@@ -31,7 +32,6 @@ export function DeckCardsScreen({
   deck,
   cards,
   onStartReview,
-  onSearch,
   onAddCard,
   onEditCard,
   cardsLoading,
@@ -40,9 +40,19 @@ export function DeckCardsScreen({
 }: DeckCardsScreenProps) {
   const deleteCard = useUndoableDeleteCard();
   const pendingCards = usePendingDeletions<Card>(CARD_DELETION_KIND);
+  const [searchQuery, setSearchQuery] = useState('');
+  const [isSearchActive, setIsSearchActive] = useState(false);
 
   const pendingIds = new Set(pendingCards.map((e) => e.id));
-  const visibleCards = cards.filter((c) => !pendingIds.has(c.id));
+  const normalizedQuery = searchQuery.trim().toLowerCase();
+  const visibleCards = cards.filter((card) => {
+    if (pendingIds.has(card.id)) return false;
+    if (!normalizedQuery) return true;
+
+    return `${card.frontContent} ${card.backContent}`
+      .toLowerCase()
+      .includes(normalizedQuery);
+  });
   const cardCount = cardsLoading ? deck.cardCount : visibleCards.length;
 
   if (!cardsLoading && !cardsError && cards.length === 0) {
@@ -64,33 +74,40 @@ export function DeckCardsScreen({
         </View>
       </Button>
 
-      <View className="gap-3">
-        <View className="flex-row items-center justify-between">
-          <Text className="text-foreground text-2xl font-bold">Cards</Text>
-          <View className="flex-row items-center gap-3">
-            <Text className="text-muted text-base">
-              {formatCardCount(cardCount)}
+      <View className="gap-6">
+        <View className="flex-row items-center justify-between gap-3">
+          {!isSearchActive && (
+            <Text className="text-foreground shrink text-2xl font-bold">
+              Cards
             </Text>
-            <Button
-              size="icon"
-              variant="surface"
+          )}
+          <View className={'flex-row items-center gap-3'}>
+            {!isSearchActive && (
+              <Text className="text-muted text-base">
+                {formatCardCount(cardCount)}
+              </Text>
+            )}
+            <Search
+              value={searchQuery}
+              onChangeText={setSearchQuery}
+              onStartSearch={setIsSearchActive}
               accessibilityLabel="Search cards"
-              onPress={onSearch}
-            >
-              <Lucide name="search" size={23} className="text-foreground" />
-            </Button>
-            <Button
-              size="icon"
-              variant="accent"
-              accessibilityLabel="Add a card"
-              onPress={onAddCard}
-            >
-              <Lucide
-                name="plus"
-                size={24}
-                className="text-on-accent-container"
-              />
-            </Button>
+              placeholder="Search cards"
+            />
+            {!isSearchActive && (
+              <Button
+                size="icon"
+                variant="accent"
+                accessibilityLabel="Add a card"
+                onPress={onAddCard}
+              >
+                <Lucide
+                  name="plus"
+                  size={24}
+                  className="text-on-accent-container"
+                />
+              </Button>
+            )}
           </View>
         </View>
 
@@ -98,6 +115,10 @@ export function DeckCardsScreen({
           <ScreenLoading message="Loading cards..." />
         ) : cardsError ? (
           <ScreenError onRetry={onRetryCards} />
+        ) : normalizedQuery && visibleCards.length === 0 ? (
+          <Text className="text-muted">
+            No cards match “{searchQuery.trim()}”.
+          </Text>
         ) : (
           <View className="gap-3">
             {visibleCards.map((card) => (
