@@ -1,5 +1,5 @@
 import { deleteCard, updateCard } from '@/client/cards';
-import { Input } from '@/components/forms/Input';
+import { FormInput } from '@/components/forms/FormInput';
 import { Button } from '@/components/ui/common/Button';
 import { Modal } from '@/components/ui/common/Modal';
 import { Lucide } from '@/components/ui/icons';
@@ -71,7 +71,7 @@ export function EditCardForm({ card }: { card: Card }) {
         <form.Field name="front">
           {(field) => (
             <View>
-              <Input
+              <FormInput
                 label="Front"
                 accessibilityLabel="Card front"
                 value={field.state.value}
@@ -80,7 +80,7 @@ export function EditCardForm({ card }: { card: Card }) {
                 maxLength={MAX_FRONT_LENGTH}
                 multiline
                 textAlignVertical="top"
-                className="bg-surface min-h-32 border-0 dark:border"
+                containerClassName="bg-surface min-h-32 border-0 dark:border"
                 maxCharacterLimit={MAX_FRONT_LENGTH}
                 error={field.state.meta}
               />
@@ -91,7 +91,7 @@ export function EditCardForm({ card }: { card: Card }) {
         <form.Field name="back">
           {(field) => (
             <View>
-              <Input
+              <FormInput
                 label="Back"
                 accessibilityLabel="Card back"
                 value={field.state.value}
@@ -100,7 +100,7 @@ export function EditCardForm({ card }: { card: Card }) {
                 maxLength={MAX_BACK_LENGTH}
                 multiline
                 textAlignVertical="top"
-                className="bg-surface min-h-32 border-0 dark:border"
+                containerClassName="bg-surface min-h-32 border-0 dark:border"
                 maxCharacterLimit={MAX_BACK_LENGTH}
                 error={field.state.meta}
               />

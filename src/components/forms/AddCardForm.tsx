@@ -1,6 +1,6 @@
 import { createCard } from '@/client/cards';
 import { useDecks } from '@/client/decks';
-import { Input } from '@/components/forms/Input';
+import { FormInput } from '@/components/forms/FormInput';
 import { Button } from '@/components/ui/common/Button';
 import {
   DropdownMenu,
@@ -143,7 +143,7 @@ export function AddCardForm({
         <form.Field name="front">
           {(field) => (
             <View>
-              <Input
+              <FormInput
                 label="Front"
                 accessibilityLabel="Card front"
                 placeholder="Word or phrase"
@@ -153,7 +153,7 @@ export function AddCardForm({
                 maxLength={MAX_FRONT_LENGTH}
                 multiline
                 textAlignVertical="top"
-                className="bg-surface min-h-32 border-0 px-4 dark:border"
+                containerClassName="bg-surface min-h-32 border-0 px-4 dark:border"
                 maxCharacterLimit={MAX_FRONT_LENGTH}
                 error={field.state.meta}
               />
@@ -164,7 +164,7 @@ export function AddCardForm({
         <form.Field name="back">
           {(field) => (
             <View>
-              <Input
+              <FormInput
                 label="Back"
                 accessibilityLabel="Card back"
                 placeholder="Meaning or translation"
@@ -174,7 +174,7 @@ export function AddCardForm({
                 maxLength={MAX_BACK_LENGTH}
                 multiline
                 textAlignVertical="top"
-                className="bg-surface min-h-32 border-0 px-4 dark:border"
+                containerClassName="bg-surface min-h-32 border-0 px-4 dark:border"
                 maxCharacterLimit={MAX_BACK_LENGTH}
                 error={field.state.meta}
               />

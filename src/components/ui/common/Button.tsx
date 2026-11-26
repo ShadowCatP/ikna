@@ -1,10 +1,11 @@
 import { cn } from '@/utils/cn';
 import { Pressable, type PressableProps } from 'react-native';
 
-const buttonBaseClasses = 'items-center justify-center active:opacity-60';
+const buttonBaseClasses =
+  'flex-row items-center justify-center active:opacity-60';
 
 const buttonSizeClasses = {
-  default: 'min-h-14 rounded-2xl px-4 py-3.5',
+  default: 'min-h-14 rounded-2xl px-3 py-2',
   icon: 'size-12 rounded-full p-0',
 } as const;
 

@@ -1,5 +1,5 @@
 import { createDeck } from '@/client/decks';
-import { Input } from '@/components/forms/Input';
+import { FormInput } from '@/components/forms/FormInput';
 import { Button } from '@/components/ui/common/Button';
 import { useForm } from '@tanstack/react-form';
 import { router } from 'expo-router';
@@ -59,7 +59,7 @@ export function AddDeckForm() {
         <form.Field name="title">
           {(field) => (
             <View>
-              <Input
+              <FormInput
                 label="Name"
                 accessibilityLabel="Deck name"
                 placeholder="What is your deck name?"
@@ -77,7 +77,7 @@ export function AddDeckForm() {
         <form.Field name="description">
           {(field) => (
             <View>
-              <Input
+              <FormInput
                 label="Description"
                 accessibilityLabel="Deck description"
                 placeholder="What is this deck about? (optional)"

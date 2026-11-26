@@ -1,7 +1,7 @@
 import { AuthScreen } from '@/components/auth/AuthScreen';
 import { PasswordInput } from '@/components/auth/PasswordInput';
 import { FieldError } from '@/components/forms/FieldError';
-import { Input } from '@/components/forms/Input';
+import { FormInput } from '@/components/forms/FormInput';
 import { Button } from '@/components/ui/common/Button';
 import { getAuthSchema, type AuthStep } from '@/utils/auth-schemas';
 import { errorText } from '@/utils/form';
@@ -87,8 +87,8 @@ export default function SignUp() {
                 <form.Field name="name">
                   {(field) => (
                     <>
-                      <Input
-                        className="bg-surface"
+                      <FormInput
+                        containerClassName="bg-surface"
                         accessibilityLabel="Your name"
                         placeholder="Your name"
                         value={field.state.value}
@@ -112,7 +112,7 @@ export default function SignUp() {
                 <form.Field name="email">
                   {(field) => (
                     <>
-                      <Input
+                      <FormInput
                         accessibilityLabel="Email"
                         placeholder="Email"
                         autoCapitalize="none"

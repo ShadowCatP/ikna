@@ -1,5 +1,5 @@
 import { deleteDeck, updateDeck } from '@/client/decks';
-import { Input } from '@/components/forms/Input';
+import { FormInput } from '@/components/forms/FormInput';
 import { Button } from '@/components/ui/common/Button';
 import { Modal } from '@/components/ui/common/Modal';
 import { Lucide } from '@/components/ui/icons';
@@ -86,7 +86,7 @@ export function EditDeckForm({ deck }: { deck: Deck }) {
         <form.Field name="title">
           {(field) => (
             <View>
-              <Input
+              <FormInput
                 label="Name"
                 accessibilityLabel="Deck name"
                 value={field.state.value}
@@ -103,7 +103,7 @@ export function EditDeckForm({ deck }: { deck: Deck }) {
         <form.Field name="description">
           {(field) => (
             <View>
-              <Input
+              <FormInput
                 label="Description"
                 accessibilityLabel="Deck description"
                 value={field.state.value}

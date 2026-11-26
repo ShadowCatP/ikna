@@ -14,7 +14,6 @@ export function PasswordInput(props: TextInputProps) {
         autoCorrect={false}
         {...props}
         secureTextEntry={!visible}
-        className="flex-1"
       />
       <Pressable
         accessibilityRole="button"

@@ -1,4 +1,6 @@
+import { useAccountProfile } from '@/client/account';
 import { Screen } from '@/components/screens/Screen';
+import { Button } from '@/components/ui/common/Button';
 import { Lucide } from '@/components/ui/icons';
 import { SyncStatusSection } from '@/components/ui/sections/SyncStatusSection';
 import { useAuth } from '@/hooks/useAuth';
@@ -7,6 +9,7 @@ import { supabase, type UserMetadata } from '@/utils/supabase';
 import { router } from 'expo-router';
 import { useState } from 'react';
 import { ActivityIndicator, Alert, Pressable, Text, View } from 'react-native';
+import { Section } from '../../components/ui/common/Section';
 
 const themeOptions: { mode: ThemeMode; label: string }[] = [
   { mode: 'system', label: 'System' },
@@ -16,6 +19,7 @@ const themeOptions: { mode: ThemeMode; label: string }[] = [
 
 export default function SettingsScreen() {
   const { user } = useAuth();
+  const { data: profile } = useAccountProfile(user?.id);
   const themeMode = useThemeStore((state) => state.mode);
   const setThemeMode = useThemeStore((state) => state.setMode);
   const [loggingOut, setLoggingOut] = useState(false);
@@ -43,7 +47,7 @@ export default function SettingsScreen() {
         <Pressable
           accessibilityRole="button"
           accessibilityLabel="Open account settings"
-          onPress={() => router.push('/account')}
+          onPress={() => router.push('/settings/account')}
           className="bg-accent-secondary flex-row items-center rounded-2xl px-4 py-3"
         >
           <View className="bg-background size-14 items-center justify-center rounded-full">
@@ -74,10 +78,7 @@ export default function SettingsScreen() {
           />
         </Pressable>
 
-        <View className="gap-2">
-          <Text className="text-muted text-xs font-medium tracking-wide uppercase">
-            Appearance
-          </Text>
+        <Section title="Appearance">
           <View className="bg-surface flex-row items-center rounded-2xl px-3 py-2">
             <Lucide name="eye" size={20} className="text-foreground" />
             <Text className="text-foreground ml-3 flex-1 text-sm">Theme</Text>
@@ -109,24 +110,38 @@ export default function SettingsScreen() {
               })}
             </View>
           </View>
-        </View>
+        </Section>
+
+        {profile?.allowDevTools && (
+          <Section title="Dev Tools">
+            <Button
+              variant="surface"
+              className="justify-start gap-3"
+              onPress={() => router.push('/settings/dev-tools')}
+            >
+              <Lucide name="code-xml" size={20} className="text-foreground" />
+              <Text className="text-foreground">Dev Tools</Text>
+            </Button>
+          </Section>
+        )}
 
         <SyncStatusSection userId={user?.id} />
 
-        <Pressable
+        <Button
+          variant="destructive"
           accessibilityRole="button"
           accessibilityLabel="Log out"
           disabled={loggingOut}
           onPress={() => void handleLogout()}
-          className="bg-surface min-h-12 flex-row items-center rounded-2xl px-3"
+          className="bg-surface min-h-12 justify-start gap-3"
         >
           {loggingOut ? (
             <ActivityIndicator className="text-danger" />
           ) : (
             <Lucide name="log-out" size={20} className="text-danger" />
           )}
-          <Text className="text-danger ml-3 text-sm">Log out</Text>
-        </Pressable>
+          <Text className="text-danger text-sm">Log out</Text>
+        </Button>
       </View>
     </Screen>
   );

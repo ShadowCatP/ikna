@@ -1,18 +1,9 @@
-import { FieldError } from '@/components/forms/FieldError';
-import { Label } from '@/components/forms/Label';
 import { cn } from '@/utils/cn';
-import { errorText } from '@/utils/form';
 import type { ReactNode } from 'react';
-import { Text, TextInput, View, type TextInputProps } from 'react-native';
+import { TextInput, View, type TextInputProps } from 'react-native';
 
-type InputProps = TextInputProps & {
-  label?: string;
+export type InputProps = TextInputProps & {
   containerClassName?: string;
-  error?: {
-    isTouched: boolean;
-    errors: readonly unknown[];
-  };
-  maxCharacterLimit?: number;
   leftChild?: ReactNode;
   rightChild?: ReactNode;
 };
@@ -20,49 +11,31 @@ type InputProps = TextInputProps & {
 export function Input({
   className,
   containerClassName,
-  error,
-  label,
-  maxCharacterLimit,
   leftChild,
   rightChild,
   style,
   value,
   ...props
 }: InputProps) {
-  const hasError = Boolean(
-    error?.isTouched && errorText(error.errors) !== undefined
-  );
-
   return (
-    <View className={cn(label && 'gap-2', containerClassName)}>
-      {label && <Label>{label}</Label>}
-      <View
+    <View
+      className={cn(
+        'bg-field border-field-border flex-row items-center rounded-2xl border px-2 py-1',
+        containerClassName
+      )}
+    >
+      {leftChild}
+      <TextInput
+        {...props}
+        value={value}
         className={cn(
-          'bg-field border-field-border flex-row items-center rounded-2xl border px-2 py-1',
+          'text-foreground placeholder:text-muted flex-1',
           className
         )}
-      >
-        {leftChild}
-        <TextInput
-          {...props}
-          value={value}
-          className="text-foreground placeholder:text-muted flex-1"
-          style={[style, { alignSelf: 'stretch' }]}
-          textAlignVertical={props.textAlignVertical ?? 'center'}
-        />
-        {rightChild}
-      </View>
-      {(hasError || maxCharacterLimit !== undefined) && (
-        <View className="min-h-6 flex-row items-center justify-between">
-          <View className="flex-1">{error && <FieldError meta={error} />}</View>
-          {maxCharacterLimit !== undefined && (
-            <Text className="text-muted shrink-0 text-xs">
-              {typeof value === 'string' ? value.length : 0} /{' '}
-              {maxCharacterLimit}
-            </Text>
-          )}
-        </View>
-      )}
+        style={[style, { alignSelf: 'stretch' }]}
+        textAlignVertical={props.textAlignVertical ?? 'center'}
+      />
+      {rightChild}
     </View>
   );
 }

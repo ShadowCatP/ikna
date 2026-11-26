@@ -102,7 +102,8 @@ export default function RootLayout() {
             <Stack.Screen name="auth/reset-password" />
             <Stack.Protected guard={!!session}>
               <Stack.Screen name="(tabs)" options={{ gestureEnabled: false }} />
-              <Stack.Screen name="account" />
+              <Stack.Screen name="settings/account" />
+              <Stack.Screen name="settings/dev-tools" />
               <Stack.Screen name="add-deck" />
               <Stack.Screen name="card/[id]/edit" />
               <Stack.Screen name="deck/[id]" />

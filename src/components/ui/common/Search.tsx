@@ -55,8 +55,7 @@ export function Search({
       placeholder={placeholder}
       returnKeyType="search"
       accessibilityLabel={accessibilityLabel}
-      containerClassName="flex-1 h-16 "
-      className="rounded-full px-4"
+      containerClassName="flex-1 h-16 rounded-full px-4"
       leftChild={<Lucide name="search" size={20} className="text-muted mr-2" />}
       rightChild={
         <Pressable

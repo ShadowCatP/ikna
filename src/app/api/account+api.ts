@@ -3,6 +3,25 @@ import { getAuthenticatedUser } from '@/server/auth';
 import { prisma } from '@/server/prisma';
 import { createClient } from '@supabase/supabase-js';
 
+export async function GET(request: Request) {
+  try {
+    const user = await getAuthenticatedUser(request);
+
+    if (!user) {
+      return unauthorizedError();
+    }
+
+    const profile = await prisma.userProfile.findUnique({
+      where: { id: user.id },
+      select: { allowDevTools: true },
+    });
+
+    return Response.json({ allowDevTools: profile?.allowDevTools ?? false });
+  } catch {
+    return internalServerError();
+  }
+}
+
 export async function DELETE(request: Request) {
   try {
     const user = await getAuthenticatedUser(request);

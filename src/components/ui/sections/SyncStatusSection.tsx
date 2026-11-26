@@ -1,10 +1,11 @@
 import { syncAll, useGlobalSyncStatus } from '@/client/sync';
+import { Section } from '@/components/ui/common/Section';
 import { Lucide } from '@/components/ui/icons';
 import { isOnline$ } from '@/lib/network';
 import { formatRelativeTime } from '@/utils/date';
 import { useValue } from '@legendapp/state/react';
 import { useEffect, useState } from 'react';
-import { Alert, Pressable, Text, View } from 'react-native';
+import { Alert, Text, View } from 'react-native';
 import Animated, {
   cancelAnimation,
   Easing,
@@ -14,6 +15,7 @@ import Animated, {
   withSequence,
   withTiming,
 } from 'react-native-reanimated';
+import { Button } from '../common/Button';
 
 const SPIN_DURATION_MS = 500;
 
@@ -71,10 +73,7 @@ export function SyncStatusSection({ userId }: { userId?: string }) {
   }
 
   return (
-    <View className="gap-2">
-      <Text className="text-muted text-xs font-medium tracking-wide uppercase">
-        Sync
-      </Text>
+    <Section title="Sync">
       <View className="bg-surface overflow-hidden rounded-2xl">
         <View className="min-h-12 flex-row items-center px-3">
           <Lucide name="cloud" size={20} className="text-foreground" />
@@ -97,8 +96,9 @@ export function SyncStatusSection({ userId }: { userId?: string }) {
           </View>
         </View>
         <View className="bg-border h-px" />
-        <Pressable
-          className="min-h-12 flex-row items-center px-3"
+        <Button
+          variant="surface"
+          className="h-12 min-h-12 justify-start py-0"
           disabled={isSyncing || !userId || !isOnline}
           onPress={() => void handleSync()}
         >
@@ -106,8 +106,8 @@ export function SyncStatusSection({ userId }: { userId?: string }) {
             <Lucide name="refresh-cw" size={20} className="text-foreground" />
           </Animated.View>
           <Text className="text-foreground ml-3 text-sm">Sync now</Text>
-        </Pressable>
+        </Button>
       </View>
-    </View>
+    </Section>
   );
 }
