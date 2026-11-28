@@ -4,11 +4,13 @@ import { ScreenLoading } from '@/components/screens/ScreenLoading';
 import { UndoSnackbarProvider } from '@/components/ui/common/UndoSnackbarProvider';
 import { useAuth } from '@/hooks/useAuth';
 import '@/lib/legendState';
+import {
+  darkNavigationTheme,
+  lightNavigationTheme,
+} from '@/lib/navigation/navigationTheme';
 import { useThemeStore } from '@/lib/themeStore';
 import { QueryClientProvider } from '@tanstack/react-query';
 import {
-  DarkTheme,
-  DefaultTheme,
   SplashScreen,
   Stack,
   ThemeProvider,
@@ -23,25 +25,6 @@ import '../global.css';
 import { queryClient } from '../lib/queryClient';
 
 SplashScreen.preventAutoHideAsync();
-
-const lightNavigationTheme = {
-  ...DefaultTheme,
-  colors: {
-    ...DefaultTheme.colors,
-    background: '#ffffff',
-    card: '#ffffff',
-  },
-};
-
-const darkNavigationTheme = {
-  ...DarkTheme,
-  colors: {
-    ...DarkTheme.colors,
-    background: '#1e1450',
-    card: '#1e1450',
-    border: '#3a2e7a',
-  },
-};
 
 export function ErrorBoundary({ error, retry }: ErrorBoundaryProps) {
   return (
@@ -63,6 +46,7 @@ export default function RootLayout() {
   const { session, isReady } = useAuth();
   const themeMode = useThemeStore((state) => state.mode);
   const isDark = useColorScheme() === 'dark';
+  const navigationTheme = isDark ? darkNavigationTheme : lightNavigationTheme;
 
   useEffect(() => {
     if (Platform.OS === 'web') return;
@@ -76,8 +60,8 @@ export default function RootLayout() {
   }, [isReady]);
 
   useEffect(() => {
-    SystemUI.setBackgroundColorAsync('var(--color-background)');
-  }, [isDark]);
+    SystemUI.setBackgroundColorAsync(navigationTheme.colors.background);
+  }, [navigationTheme]);
 
   if (!isReady) return null;
 
@@ -85,9 +69,7 @@ export default function RootLayout() {
     <GestureHandlerRootView style={{ flex: 1 }}>
       <StatusBar style="auto" />
       <QueryClientProvider client={queryClient}>
-        <ThemeProvider
-          value={isDark ? darkNavigationTheme : lightNavigationTheme}
-        >
+        <ThemeProvider value={navigationTheme}>
           <Stack
             screenOptions={{
               headerShown: false,
