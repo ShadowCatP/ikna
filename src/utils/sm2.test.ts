@@ -1,4 +1,4 @@
-import { calculateSm2Review, type Sm2State } from './sm2';
+import { calculateSm2Review, ReviewQuality, type Sm2State } from './sm2';
 
 function createState(overrides: Partial<Sm2State> = {}): Sm2State {
   return { interval: 0, repetition: 0, easeFactor: 2.5, ...overrides };
@@ -11,9 +11,9 @@ function reviewDate(): Date {
 describe('calculateSm2Review', () => {
   describe('successful reviews', () => {
     test.each([
-      { quality: 3, easeFactor: 2.36 },
-      { quality: 4, easeFactor: 2.5 },
-      { quality: 5, easeFactor: 2.6 },
+      { quality: ReviewQuality.Hard, easeFactor: 2.36 },
+      { quality: ReviewQuality.Good, easeFactor: 2.5 },
+      { quality: ReviewQuality.Easy, easeFactor: 2.6 },
     ])(
       'schedules the first successful review for quality $quality',
       ({ quality, easeFactor }) => {
@@ -40,7 +40,11 @@ describe('calculateSm2Review', () => {
         easeFactor: 2.6,
       });
 
-      const result = calculateSm2Review(state, 5, reviewDate());
+      const result = calculateSm2Review(
+        state,
+        ReviewQuality.Easy,
+        reviewDate()
+      );
 
       expect(result.interval).toBe(6);
       expect(result.repetition).toBe(2);
@@ -52,10 +56,26 @@ describe('calculateSm2Review', () => {
       const initialState = createState();
       const reviewedAt = reviewDate();
 
-      const first = calculateSm2Review(initialState, 5, reviewedAt);
-      const second = calculateSm2Review(first, 5, first.dueDate);
-      const third = calculateSm2Review(second, 5, second.dueDate);
-      const fourth = calculateSm2Review(third, 5, third.dueDate);
+      const first = calculateSm2Review(
+        initialState,
+        ReviewQuality.Easy,
+        reviewedAt
+      );
+      const second = calculateSm2Review(
+        first,
+        ReviewQuality.Easy,
+        first.dueDate
+      );
+      const third = calculateSm2Review(
+        second,
+        ReviewQuality.Easy,
+        second.dueDate
+      );
+      const fourth = calculateSm2Review(
+        third,
+        ReviewQuality.Easy,
+        third.dueDate
+      );
 
       expect([
         first.interval,
@@ -79,12 +99,30 @@ describe('calculateSm2Review', () => {
 
   describe('quality ratings', () => {
     test.each([
-      { quality: 0, easeFactor: 1.7, repetition: 0, interval: 1 },
-      { quality: 1, easeFactor: 1.96, repetition: 0, interval: 1 },
-      { quality: 2, easeFactor: 2.18, repetition: 0, interval: 1 },
-      { quality: 3, easeFactor: 2.36, repetition: 5, interval: 25 },
-      { quality: 4, easeFactor: 2.5, repetition: 5, interval: 25 },
-      { quality: 5, easeFactor: 2.6, repetition: 5, interval: 25 },
+      {
+        quality: ReviewQuality.Again,
+        easeFactor: 1.7,
+        repetition: 0,
+        interval: 1,
+      },
+      {
+        quality: ReviewQuality.Hard,
+        easeFactor: 2.36,
+        repetition: 5,
+        interval: 25,
+      },
+      {
+        quality: ReviewQuality.Good,
+        easeFactor: 2.5,
+        repetition: 5,
+        interval: 25,
+      },
+      {
+        quality: ReviewQuality.Easy,
+        easeFactor: 2.6,
+        repetition: 5,
+        interval: 25,
+      },
     ])(
       'updates ease factor and progress for quality $quality',
       ({ quality, easeFactor, repetition, interval }) => {
@@ -101,35 +139,44 @@ describe('calculateSm2Review', () => {
   });
 
   describe('failed reviews and recovery', () => {
-    test.each([0, 1, 2])(
-      'resets an established review sequence for quality %s',
-      (quality) => {
-        const state = createState({ interval: 30, repetition: 7 });
-        const reviewedAt = reviewDate();
+    it('resets an established review sequence after Again', () => {
+      const state = createState({ interval: 30, repetition: 7 });
+      const reviewedAt = reviewDate();
 
-        const result = calculateSm2Review(state, quality, reviewedAt);
+      const result = calculateSm2Review(state, ReviewQuality.Again, reviewedAt);
 
-        expect(result.repetition).toBe(0);
-        expect(result.interval).toBe(1);
-        expect(result.dueDate).toEqual(new Date(2026, 0, 16, 10, 30, 45, 123));
-        expect(result.lastReviewedAt).toEqual(reviewedAt);
-      }
-    );
+      expect(result.repetition).toBe(0);
+      expect(result.interval).toBe(1);
+      expect(result.dueDate).toEqual(new Date(2026, 0, 16, 10, 30, 45, 123));
+      expect(result.lastReviewedAt).toEqual(reviewedAt);
+    });
 
     it('restarts the one-day and six-day intervals after a failed review', () => {
       const state = createState({ interval: 30, repetition: 7 });
 
-      const failed = calculateSm2Review(state, 2, reviewDate());
-      const recovered = calculateSm2Review(failed, 4, failed.dueDate);
-      const secondSuccess = calculateSm2Review(recovered, 4, recovered.dueDate);
+      const failed = calculateSm2Review(
+        state,
+        ReviewQuality.Again,
+        reviewDate()
+      );
+      const recovered = calculateSm2Review(
+        failed,
+        ReviewQuality.Good,
+        failed.dueDate
+      );
+      const secondSuccess = calculateSm2Review(
+        recovered,
+        ReviewQuality.Good,
+        recovered.dueDate
+      );
 
-      expect(failed.easeFactor).toBeCloseTo(2.18, 10);
+      expect(failed.easeFactor).toBeCloseTo(1.7, 10);
       expect(recovered.repetition).toBe(1);
       expect(recovered.interval).toBe(1);
-      expect(recovered.easeFactor).toBeCloseTo(2.18, 10);
+      expect(recovered.easeFactor).toBeCloseTo(1.7, 10);
       expect(secondSuccess.repetition).toBe(2);
       expect(secondSuccess.interval).toBe(6);
-      expect(secondSuccess.easeFactor).toBeCloseTo(2.18, 10);
+      expect(secondSuccess.easeFactor).toBeCloseTo(1.7, 10);
       expect(secondSuccess.dueDate).toEqual(
         new Date(2026, 0, 23, 10, 30, 45, 123)
       );
@@ -138,8 +185,16 @@ describe('calculateSm2Review', () => {
     it('keeps progress reset across repeated failures', () => {
       const state = createState({ interval: 30, repetition: 7 });
 
-      const first = calculateSm2Review(state, 0, reviewDate());
-      const second = calculateSm2Review(first, 0, first.dueDate);
+      const first = calculateSm2Review(
+        state,
+        ReviewQuality.Again,
+        reviewDate()
+      );
+      const second = calculateSm2Review(
+        first,
+        ReviewQuality.Again,
+        first.dueDate
+      );
 
       expect(second.repetition).toBe(0);
       expect(second.interval).toBe(1);
@@ -148,26 +203,40 @@ describe('calculateSm2Review', () => {
     });
   });
 
-  describe('quality normalization', () => {
+  describe('rating to SM-2 quality mapping', () => {
     test.each([
-      { quality: -10, normalized: 0, easeFactor: 1.7, repetition: 0 },
-      { quality: 10, normalized: 5, easeFactor: 2.6, repetition: 1 },
-      { quality: -0.5, normalized: 0, easeFactor: 1.7, repetition: 0 },
-      { quality: 0.49, normalized: 0, easeFactor: 1.7, repetition: 0 },
-      { quality: 0.5, normalized: 1, easeFactor: 1.96, repetition: 0 },
-      { quality: 2.49, normalized: 2, easeFactor: 2.18, repetition: 0 },
-      { quality: 2.5, normalized: 3, easeFactor: 2.36, repetition: 1 },
-      { quality: 4.49, normalized: 4, easeFactor: 2.5, repetition: 1 },
-      { quality: 4.5, normalized: 5, easeFactor: 2.6, repetition: 1 },
-      { quality: 5.5, normalized: 5, easeFactor: 2.6, repetition: 1 },
+      {
+        name: 'Again',
+        quality: ReviewQuality.Again,
+        easeFactor: 1.7,
+        repetition: 0,
+      },
+      {
+        name: 'Hard',
+        quality: ReviewQuality.Hard,
+        easeFactor: 2.36,
+        repetition: 1,
+      },
+      {
+        name: 'Good',
+        quality: ReviewQuality.Good,
+        easeFactor: 2.5,
+        repetition: 1,
+      },
+      {
+        name: 'Easy',
+        quality: ReviewQuality.Easy,
+        easeFactor: 2.6,
+        repetition: 1,
+      },
     ])(
-      'normalizes quality $quality to $normalized before scheduling',
-      ({ quality, normalized, easeFactor, repetition }) => {
+      'maps $name rating before scheduling',
+      ({ quality, easeFactor, repetition }) => {
         const state = createState();
 
         const result = calculateSm2Review(state, quality, reviewDate());
 
-        expect(result.quality).toBe(normalized);
+        expect(result.quality).toBe(quality);
         expect(result.easeFactor).toBeCloseTo(easeFactor, 10);
         expect(result.repetition).toBe(repetition);
         expect(result.interval).toBe(1);
@@ -176,8 +245,8 @@ describe('calculateSm2Review', () => {
   });
 
   describe('ease factor and interval boundaries', () => {
-    test.each([0, 1, 2, 3, 4])(
-      'does not let ease factor drop below 1.3 for quality %s',
+    test.each([ReviewQuality.Again, ReviewQuality.Hard, ReviewQuality.Good])(
+      'does not let ease factor drop below 1.3 for rating %s',
       (quality) => {
         const state = createState({ easeFactor: 1.3 });
 
@@ -190,7 +259,11 @@ describe('calculateSm2Review', () => {
     it('allows ease factor to increase from the lower bound', () => {
       const state = createState({ easeFactor: 1.3 });
 
-      const result = calculateSm2Review(state, 5, reviewDate());
+      const result = calculateSm2Review(
+        state,
+        ReviewQuality.Easy,
+        reviewDate()
+      );
 
       expect(result.easeFactor).toBeCloseTo(1.4, 10);
     });
@@ -206,7 +279,11 @@ describe('calculateSm2Review', () => {
       ({ interval, easeFactor, expected }) => {
         const state = createState({ interval, easeFactor, repetition: 2 });
 
-        const result = calculateSm2Review(state, 4, reviewDate());
+        const result = calculateSm2Review(
+          state,
+          ReviewQuality.Good,
+          reviewDate()
+        );
 
         expect(result.interval).toBe(expected);
         expect(result.repetition).toBe(3);
@@ -241,7 +318,11 @@ describe('calculateSm2Review', () => {
       ({ reviewedAt, dueDate }) => {
         const state = createState();
 
-        const result = calculateSm2Review(state, 4, reviewedAt);
+        const result = calculateSm2Review(
+          state,
+          ReviewQuality.Good,
+          reviewedAt
+        );
 
         expect(result.dueDate).toEqual(dueDate);
         expect(result.lastReviewedAt).toEqual(reviewedAt);
@@ -264,7 +345,11 @@ describe('calculateSm2Review', () => {
       ({ reviewedAt, dueDate }) => {
         const state = createState();
 
-        const result = calculateSm2Review(state, 4, reviewedAt);
+        const result = calculateSm2Review(
+          state,
+          ReviewQuality.Good,
+          reviewedAt
+        );
 
         expect(result.dueDate).toEqual(dueDate);
         expect(result.lastReviewedAt).toEqual(reviewedAt);
@@ -278,7 +363,7 @@ describe('calculateSm2Review', () => {
       jest.setSystemTime(now);
 
       try {
-        const result = calculateSm2Review(state, 4);
+        const result = calculateSm2Review(state, ReviewQuality.Good);
 
         expect(result.lastReviewedAt).toEqual(now);
         expect(result.dueDate).toEqual(new Date(2026, 0, 16, 10, 30, 45, 123));
@@ -293,7 +378,7 @@ describe('calculateSm2Review', () => {
       const state = Object.freeze(createState({ interval: 6, repetition: 2 }));
       const reviewedAt = reviewDate();
 
-      const result = calculateSm2Review(state, 5, reviewedAt);
+      const result = calculateSm2Review(state, ReviewQuality.Easy, reviewedAt);
 
       expect(state).toEqual({ interval: 6, repetition: 2, easeFactor: 2.5 });
       expect(reviewedAt).toEqual(new Date(2026, 0, 15, 10, 30, 45, 123));
@@ -307,8 +392,8 @@ describe('calculateSm2Review', () => {
     it('returns independent results when called with the same inputs', () => {
       const state = createState();
       const reviewedAt = reviewDate();
-      const first = calculateSm2Review(state, 4, reviewedAt);
-      const second = calculateSm2Review(state, 4, reviewedAt);
+      const first = calculateSm2Review(state, ReviewQuality.Good, reviewedAt);
+      const second = calculateSm2Review(state, ReviewQuality.Good, reviewedAt);
 
       first.dueDate.setFullYear(2000);
       first.lastReviewedAt.setFullYear(2000);
@@ -317,7 +402,7 @@ describe('calculateSm2Review', () => {
         interval: 1,
         repetition: 1,
         easeFactor: 2.5,
-        quality: 4,
+        quality: ReviewQuality.Good,
         dueDate: new Date(2026, 0, 16, 10, 30, 45, 123),
         lastReviewedAt: new Date(2026, 0, 15, 10, 30, 45, 123),
       });
