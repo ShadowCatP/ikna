@@ -6,7 +6,7 @@
       "@/*": ["./src/*"],
       "@/server/*": ["./src/server/*"],
       "@/server/api": ["./src/server/api.ts"],
-      "@/utils/*": ["./utils/*"],
+      "@/utils/*": ["./src/utils/*"],
       "@/assets/*": ["./assets/*"]
     },
     "types": ["jest", "node", "react"]

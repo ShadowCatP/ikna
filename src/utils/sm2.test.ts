@@ -1,4 +1,4 @@
-import { calculateSm2Review, type Sm2State } from '../sm2';
+import { calculateSm2Review, type Sm2State } from './sm2';
 
 function createState(overrides: Partial<Sm2State> = {}): Sm2State {
   return { interval: 0, repetition: 0, easeFactor: 2.5, ...overrides };
