@@ -60,7 +60,7 @@ export function SuspenseFallback() {
 }
 
 export default function RootLayout() {
-  const { session, ready } = useAuth();
+  const { session, isReady } = useAuth();
   const themeMode = useThemeStore((state) => state.mode);
   const isDark = useColorScheme() === 'dark';
 
@@ -72,14 +72,14 @@ export default function RootLayout() {
   }, [themeMode]);
 
   useEffect(() => {
-    if (ready) SplashScreen.hideAsync();
-  }, [ready]);
+    if (isReady) SplashScreen.hideAsync();
+  }, [isReady]);
 
   useEffect(() => {
     SystemUI.setBackgroundColorAsync('var(--color-background)');
   }, [isDark]);
 
-  if (!ready) return null;
+  if (!isReady) return null;
 
   return (
     <GestureHandlerRootView style={{ flex: 1 }}>

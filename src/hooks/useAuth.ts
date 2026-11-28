@@ -4,28 +4,28 @@ import { useEffect, useState } from 'react';
 
 export function useAuth() {
   const [session, setSession] = useState<Session | null>(null);
-  const [ready, setReady] = useState(false);
+  const [isReady, setIsReady] = useState(false);
 
   useEffect(() => {
-    let active = true;
+    let isActive = true;
 
     void supabase.auth.getSession().then(({ data }) => {
-      if (!active) return;
+      if (!isActive) return;
       setSession(data.session);
-      setReady(true);
+      setIsReady(true);
     });
 
     const { data: subscription } = supabase.auth.onAuthStateChange(
       (_event, nextSession) => {
-        if (active) setSession(nextSession);
+        if (isActive) setSession(nextSession);
       }
     );
 
     return () => {
-      active = false;
+      isActive = false;
       subscription.subscription.unsubscribe();
     };
   }, []);
 
-  return { session, user: session?.user ?? null, ready };
+  return { session, user: session?.user ?? null, isReady };
 }

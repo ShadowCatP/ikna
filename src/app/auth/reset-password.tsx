@@ -24,7 +24,7 @@ export default function ResetPassword() {
   const url = useLinkingURL();
   const insets = useSafeAreaInsets();
   const [verifiedUrl, setVerifiedUrl] = useState<string | null>(null);
-  const ready = !!url && verifiedUrl === url;
+  const isReady = !!url && verifiedUrl === url;
   const [linkError, setLinkError] = useState<{
     url: string;
     message: string;
@@ -33,16 +33,16 @@ export default function ResetPassword() {
 
   useEffect(() => {
     if (!url) return;
-    let active = true;
+    let isActive = true;
     void verifyRecoveryLink(url, supabase.auth)
       .then(() => {
-        if (active) {
+        if (isActive) {
           setLinkError(null);
           setVerifiedUrl(url);
         }
       })
       .catch(() => {
-        if (active)
+        if (isActive)
           setLinkError({
             url,
             message:
@@ -50,7 +50,7 @@ export default function ResetPassword() {
           });
       });
     return () => {
-      active = false;
+      isActive = false;
     };
   }, [url]);
 
@@ -58,7 +58,7 @@ export default function ResetPassword() {
     defaultValues: { password: '', confirm: '' },
     validators: { onSubmit: resetPasswordSchema },
     onSubmit: async ({ value, formApi }) => {
-      if (!ready) return;
+      if (!isReady) return;
       formApi.setErrorMap({ onSubmit: undefined });
       try {
         const { error: authError } = await supabase.auth.updateUser({
@@ -108,11 +108,11 @@ export default function ResetPassword() {
               Open the password reset link from your email to continue.
             </Text>
           )}
-          {!!url && !ready && !currentLinkError && (
+          {!!url && !isReady && !currentLinkError && (
             <ActivityIndicator className="text-primary" />
           )}
           <form.Subscribe selector={(state) => state.isSubmitting}>
-            {(busy) => (
+            {(isSubmitting) => (
               <>
                 <form.Field name="password">
                   {(field) => (
@@ -128,7 +128,7 @@ export default function ResetPassword() {
                         value={field.state.value}
                         onChangeText={field.handleChange}
                         onBlur={field.handleBlur}
-                        editable={ready && !busy}
+                        editable={isReady && !isSubmitting}
                       />
                       <FieldError meta={field.state.meta} />
                     </>
@@ -147,7 +147,7 @@ export default function ResetPassword() {
                         value={field.state.value}
                         onChangeText={field.handleChange}
                         onBlur={field.handleBlur}
-                        editable={ready && !busy}
+                        editable={isReady && !isSubmitting}
                         onSubmitEditing={() => void form.handleSubmit()}
                       />
                       <FieldError meta={field.state.meta} />
@@ -174,10 +174,10 @@ export default function ResetPassword() {
                 </form.Subscribe>
                 <View className="mt-7">
                   <Button
-                    disabled={!ready || busy}
+                    disabled={!isReady || isSubmitting}
                     onPress={() => void form.handleSubmit()}
                   >
-                    {busy ? (
+                    {isSubmitting ? (
                       <ActivityIndicator className="text-on-cta" />
                     ) : (
                       <Text className="text-on-cta text-base font-medium">
@@ -188,7 +188,7 @@ export default function ResetPassword() {
                 </View>
                 <Pressable
                   accessibilityRole="button"
-                  disabled={busy}
+                  disabled={isSubmitting}
                   onPress={() => router.replace('/auth/sign-in')}
                   className="min-h-12 items-center justify-center"
                 >

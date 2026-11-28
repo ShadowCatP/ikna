@@ -52,11 +52,11 @@ export default function SignUp() {
       }
     },
   });
-  const nameStep = step === 2;
+  const isNameStep = step === 2;
 
   function goBack() {
     if (form.state.isSubmitting) return;
-    if (nameStep && !info) {
+    if (isNameStep && !info) {
       setStep(1);
       form.setErrorMap({ onSubmit: undefined });
     } else {
@@ -66,19 +66,19 @@ export default function SignUp() {
 
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
-      {(busy) => (
+      {(isSubmitting) => (
         <AuthScreen
           mode="signUp"
-          nameStep={nameStep}
+          isNameStep={isNameStep}
           step={step}
-          busy={busy}
+          isBusy={isSubmitting}
           onBack={goBack}
         >
           <View className="px-8">
             <Text className="text-foreground mt-5 mb-4 text-2xl leading-9 font-bold tracking-tight">
-              {nameStep ? 'Nice to meet you!' : 'Ready to remember more?'}
+              {isNameStep ? 'Nice to meet you!' : 'Ready to remember more?'}
             </Text>
-            {nameStep ? (
+            {isNameStep ? (
               <>
                 <Text className="text-muted -mt-2 mb-4 text-base leading-6">
                   Ikna will use it to greet you. Optional. You can change it
@@ -99,7 +99,7 @@ export default function SignUp() {
                         error={field.state.meta}
                         autoComplete="given-name"
                         textContentType="givenName"
-                        editable={!busy && !info}
+                        editable={!isSubmitting && !info}
                         returnKeyType="done"
                         onSubmitEditing={() => void form.handleSubmit()}
                       />
@@ -124,7 +124,7 @@ export default function SignUp() {
                         error={field.state.meta}
                         onChangeText={field.handleChange}
                         onBlur={field.handleBlur}
-                        editable={!busy && !info}
+                        editable={!isSubmitting && !info}
                         returnKeyType="next"
                       />
                     </>
@@ -140,7 +140,7 @@ export default function SignUp() {
                         value={field.state.value}
                         onChangeText={field.handleChange}
                         onBlur={field.handleBlur}
-                        editable={!busy && !info}
+                        editable={!isSubmitting && !info}
                         returnKeyType="go"
                         onSubmitEditing={() => void form.handleSubmit()}
                       />
@@ -177,22 +177,22 @@ export default function SignUp() {
             )}
             <View className="mt-4">
               <Button
-                disabled={busy || !!info}
+                disabled={isSubmitting || !!info}
                 onPress={() => void form.handleSubmit()}
               >
-                {busy ? (
+                {isSubmitting ? (
                   <ActivityIndicator className="text-on-cta" />
                 ) : (
                   <Text className="text-on-cta text-base font-medium">
-                    {nameStep ? 'Create account' : 'Continue'}
+                    {isNameStep ? 'Create account' : 'Continue'}
                   </Text>
                 )}
               </Button>
             </View>
-            {nameStep && !info ? (
+            {isNameStep && !info ? (
               <Button
                 variant="ghost"
-                disabled={busy}
+                disabled={isSubmitting}
                 onPress={() => void form.handleSubmit({ skipName: true })}
                 className="min-h-12 rounded-none px-0 py-0"
               >
@@ -200,10 +200,10 @@ export default function SignUp() {
                   Skip for now
                 </Text>
               </Button>
-            ) : !nameStep ? (
+            ) : !isNameStep ? (
               <Button
                 variant="ghost"
-                disabled={busy}
+                disabled={isSubmitting}
                 onPress={() => router.push('/auth/sign-in')}
                 className="min-h-12 rounded-none px-0 py-0"
               >

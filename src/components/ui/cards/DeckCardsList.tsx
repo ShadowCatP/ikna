@@ -21,16 +21,16 @@ import { ScreenLoading } from '../../screens/ScreenLoading';
 type DeckCardsListProps = {
   deck: Deck;
   cards: Card[];
-  cardsLoading: boolean;
-  cardsError: boolean;
+  isCardsLoading: boolean;
+  hasCardsError: boolean;
   onRetryCards: () => void;
 };
 
 export function DeckCardsList({
   deck,
   cards,
-  cardsLoading,
-  cardsError,
+  isCardsLoading,
+  hasCardsError,
   onRetryCards,
 }: DeckCardsListProps) {
   const deleteCard = useUndoableDeleteCard();
@@ -48,7 +48,7 @@ export function DeckCardsList({
       .toLowerCase()
       .includes(normalizedQuery);
   });
-  const cardCount = cardsLoading ? deck.cardCount : visibleCards.length;
+  const cardCount = isCardsLoading ? deck.cardCount : visibleCards.length;
 
   function handleAddCard() {
     router.push({
@@ -64,7 +64,7 @@ export function DeckCardsList({
     });
   }
 
-  if (!cardsLoading && !cardsError && cards.length === 0) {
+  if (!isCardsLoading && !hasCardsError && cards.length === 0) {
     return <EmptyDeckState onAddCard={handleAddCard} />;
   }
 
@@ -106,9 +106,9 @@ export function DeckCardsList({
         </View>
       </View>
 
-      {cardsLoading ? (
+      {isCardsLoading ? (
         <ScreenLoading message="Loading cards..." />
-      ) : cardsError ? (
+      ) : hasCardsError ? (
         <ScreenError onRetry={onRetryCards} />
       ) : normalizedQuery && visibleCards.length === 0 ? (
         <Text className="text-muted">

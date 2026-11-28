@@ -22,18 +22,18 @@ export default function SettingsScreen() {
   const { data: profile } = useAccountProfile(user?.id);
   const themeMode = useThemeStore((state) => state.mode);
   const setThemeMode = useThemeStore((state) => state.setMode);
-  const [loggingOut, setLoggingOut] = useState(false);
+  const [isLoggingOut, setIsLoggingOut] = useState(false);
   const metadata = user?.user_metadata as UserMetadata | undefined;
   const name = metadata?.display_name || metadata?.name || metadata?.full_name;
   const email = user?.email || 'Guest account';
 
   async function handleLogout() {
-    if (loggingOut) return;
-    setLoggingOut(true);
+    if (isLoggingOut) return;
+    setIsLoggingOut(true);
     const { error } = await supabase.auth.signOut({ scope: 'local' });
     if (error) {
       Alert.alert('Could not log out', error.message);
-      setLoggingOut(false);
+      setIsLoggingOut(false);
       return;
     }
     router.replace('/auth/welcome');
@@ -131,11 +131,11 @@ export default function SettingsScreen() {
           variant="destructive"
           accessibilityRole="button"
           accessibilityLabel="Log out"
-          disabled={loggingOut}
+          disabled={isLoggingOut}
           onPress={() => void handleLogout()}
           className="bg-surface min-h-12 justify-start gap-3"
         >
-          {loggingOut ? (
+          {isLoggingOut ? (
             <ActivityIndicator className="text-danger" />
           ) : (
             <Lucide name="log-out" size={20} className="text-danger" />

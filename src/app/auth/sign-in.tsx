@@ -45,8 +45,8 @@ export default function SignIn() {
 
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
-      {(busy) => (
-        <AuthScreen mode="signIn" busy={busy} onBack={goBack}>
+      {(isSubmitting) => (
+        <AuthScreen mode="signIn" isBusy={isSubmitting} onBack={goBack}>
           <View className="px-8">
             <Text className="text-foreground mt-5 mb-4 text-2xl leading-9 font-bold tracking-tight">
               {"Hey, you're back!"}
@@ -66,7 +66,7 @@ export default function SignIn() {
                       value={field.state.value}
                       onChangeText={field.handleChange}
                       onBlur={field.handleBlur}
-                      editable={!busy}
+                      editable={!isSubmitting}
                       returnKeyType="next"
                     />
                     <FieldError meta={field.state.meta} />
@@ -83,7 +83,7 @@ export default function SignIn() {
                       value={field.state.value}
                       onChangeText={field.handleChange}
                       onBlur={field.handleBlur}
-                      editable={!busy}
+                      editable={!isSubmitting}
                       returnKeyType="go"
                       onSubmitEditing={() => void form.handleSubmit()}
                     />
@@ -107,7 +107,7 @@ export default function SignIn() {
             </form.Subscribe>
             <Pressable
               accessibilityRole="button"
-              disabled={busy}
+              disabled={isSubmitting}
               onPress={() => router.push('/auth/forgot-password')}
               className="my-4 items-end justify-center"
             >
@@ -116,8 +116,11 @@ export default function SignIn() {
               </Text>
             </Pressable>
             <View className="">
-              <Button disabled={busy} onPress={() => void form.handleSubmit()}>
-                {busy ? (
+              <Button
+                disabled={isSubmitting}
+                onPress={() => void form.handleSubmit()}
+              >
+                {isSubmitting ? (
                   <ActivityIndicator className="text-on-cta" />
                 ) : (
                   <Text className="text-on-cta text-base font-medium">
@@ -128,7 +131,7 @@ export default function SignIn() {
             </View>
             <Pressable
               accessibilityRole="button"
-              disabled={busy}
+              disabled={isSubmitting}
               onPress={() => router.push('/auth/sign-up')}
               className="min-h-12 items-center justify-center"
             >

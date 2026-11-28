@@ -74,7 +74,7 @@ export function EditNameModal({
       closeAccessibilityLabel="Close edit name"
     >
       <form.Subscribe selector={(state) => state.isSubmitting}>
-        {(busy) => (
+        {(isSubmitting) => (
           <View className="gap-4">
             <Text className="text-foreground text-2xl font-bold">
               Edit name
@@ -92,7 +92,7 @@ export function EditNameModal({
                     autoCorrect={false}
                     autoComplete="name"
                     textContentType="name"
-                    editable={!busy}
+                    editable={!isSubmitting}
                     returnKeyType="done"
                     onSubmitEditing={() => void form.handleSubmit()}
                     accessibilityLabel="Display name"
@@ -118,9 +118,9 @@ export function EditNameModal({
               <Button
                 className="bg-accent flex-1"
                 onPress={() => void form.handleSubmit()}
-                disabled={busy}
+                disabled={isSubmitting}
               >
-                {busy ? (
+                {isSubmitting ? (
                   <ActivityIndicator />
                 ) : (
                   <Text className="text-surface text-base font-semibold">
@@ -131,7 +131,7 @@ export function EditNameModal({
               <Button
                 className="bg-surface dark:border-foreground flex-1 dark:border-2 dark:bg-transparent"
                 onPress={handleClose}
-                disabled={busy}
+                disabled={isSubmitting}
               >
                 <Text className="text-foreground text-base font-semibold">
                   Cancel

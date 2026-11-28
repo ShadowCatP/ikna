@@ -3,10 +3,10 @@ import { Image, View } from 'react-native';
 
 export function AuthHero({
   mode,
-  nameStep,
+  isNameStep,
 }: {
   mode: AuthMode;
-  nameStep: boolean;
+  isNameStep: boolean;
 }) {
   const darkCircle =
     mode === 'signUp'
@@ -19,17 +19,17 @@ export function AuthHero({
     <View
       pointerEvents="none"
       className={
-        nameStep ? 'mt-3 h-72 items-center' : '-mt-11 h-56 items-center'
+        isNameStep ? 'mt-3 h-72 items-center' : '-mt-11 h-56 items-center'
       }
     >
-      {!nameStep && (
+      {!isNameStep && (
         <View
           className={`absolute bottom-5 hidden size-[460px] rounded-full dark:flex ${darkCircle}`}
         />
       )}
       <Image
         source={
-          nameStep
+          isNameStep
             ? require('@/assets/images/ikna-happy.png')
             : mode === 'forgot'
               ? require('@/assets/images/ikna-thinking.png')
@@ -38,12 +38,12 @@ export function AuthHero({
                 : require('@/assets/images/ikna-excited.png')
         }
         className={
-          nameStep ? 'absolute bottom-4 left-[18%] h-52 w-48' : 'h-56 w-56'
+          isNameStep ? 'absolute bottom-4 left-[18%] h-52 w-48' : 'h-56 w-56'
         }
         resizeMode="contain"
         accessible={false}
       />
-      {nameStep && (
+      {isNameStep && (
         <Image
           source={require('@/assets/images/ikna-speech-bubble.png')}
           className="absolute top-4 right-[11%] h-24 w-32"

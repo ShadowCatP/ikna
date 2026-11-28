@@ -44,12 +44,12 @@ export default function ForgotPassword() {
 
   return (
     <form.Subscribe selector={(state) => state.isSubmitting}>
-      {(busy) => (
+      {(isSubmitting) => (
         <AuthScreen
           mode="forgot"
-          busy={busy}
+          isBusy={isSubmitting}
           onBack={() => {
-            if (!busy) router.back();
+            if (!isSubmitting) router.back();
           }}
         >
           <View className="px-8">
@@ -73,7 +73,7 @@ export default function ForgotPassword() {
                     value={field.state.value}
                     onChangeText={field.handleChange}
                     onBlur={field.handleBlur}
-                    editable={!busy && !info}
+                    editable={!isSubmitting && !info}
                     returnKeyType="send"
                     onSubmitEditing={() => void form.handleSubmit()}
                   />
@@ -104,10 +104,10 @@ export default function ForgotPassword() {
             )}
             <View className="mt-4">
               <Button
-                disabled={busy || !!info}
+                disabled={isSubmitting || !!info}
                 onPress={() => void form.handleSubmit()}
               >
-                {busy ? (
+                {isSubmitting ? (
                   <ActivityIndicator className="text-on-cta" />
                 ) : (
                   <Text className="text-on-cta text-base font-medium">

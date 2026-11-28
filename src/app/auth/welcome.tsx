@@ -17,12 +17,12 @@ export default function Welcome() {
   const { height, width } = useWindowDimensions();
   const contentWidth = Math.min(width, 440);
   const scale = contentWidth / 408;
-  const [loading, setLoading] = useState(false);
+  const [isLoading, setIsLoading] = useState(false);
 
   async function continueAsGuest() {
-    if (loading) return;
+    if (isLoading) return;
 
-    setLoading(true);
+    setIsLoading(true);
     try {
       const { data } = await supabase.auth.getSession();
       if (data.session) {
@@ -39,7 +39,7 @@ export default function Welcome() {
     } catch {
       Alert.alert('Connection error', 'Please try again.');
     } finally {
-      setLoading(false);
+      setIsLoading(false);
     }
   }
 
@@ -79,7 +79,7 @@ export default function Welcome() {
 
           <Pressable
             accessibilityRole="button"
-            disabled={loading}
+            disabled={isLoading}
             onPress={() => router.push('/auth/sign-up')}
             className="bg-cta min-h-14 items-center justify-center rounded-2xl px-4 py-3.5 active:opacity-75"
           >
@@ -90,7 +90,7 @@ export default function Welcome() {
 
           <Pressable
             accessibilityRole="button"
-            disabled={loading}
+            disabled={isLoading}
             onPress={() => router.push('/auth/sign-in')}
             className="border-foreground bg-background mt-3 min-h-14 items-center justify-center rounded-2xl border-2 px-4 py-3.5 active:opacity-75"
           >
@@ -102,11 +102,11 @@ export default function Welcome() {
           <Pressable
             accessibilityRole="button"
             accessibilityLabel="Continue as guest"
-            disabled={loading}
+            disabled={isLoading}
             onPress={continueAsGuest}
             className="mt-0.5 min-h-12 items-center justify-center"
           >
-            {loading ? (
+            {isLoading ? (
               <ActivityIndicator className="text-foreground" />
             ) : (
               <Text className="text-foreground text-base underline">

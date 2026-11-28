@@ -4,7 +4,7 @@ import { useState } from 'react';
 import { Pressable, View, type TextInputProps } from 'react-native';
 
 export function PasswordInput(props: TextInputProps) {
-  const [visible, setVisible] = useState(false);
+  const [isVisible, setIsVisible] = useState(false);
   return (
     <View className="relative min-h-14 flex-row items-center">
       <Input
@@ -13,16 +13,16 @@ export function PasswordInput(props: TextInputProps) {
         autoCapitalize="none"
         autoCorrect={false}
         {...props}
-        secureTextEntry={!visible}
+        secureTextEntry={!isVisible}
       />
       <Pressable
         accessibilityRole="button"
-        accessibilityLabel={visible ? 'Hide password' : 'Show password'}
-        onPress={() => setVisible(!visible)}
+        accessibilityLabel={isVisible ? 'Hide password' : 'Show password'}
+        onPress={() => setIsVisible(!isVisible)}
         className="absolute right-0 min-h-14 w-12 items-center justify-center"
       >
         <Lucide
-          name={visible ? 'eye' : 'eye-off'}
+          name={isVisible ? 'eye' : 'eye-off'}
           size={20}
           className="text-muted"
         />

@@ -16,7 +16,7 @@ export function Modal({
   closeAccessibilityLabel = 'Close modal',
 }: ModalProps) {
   const insets = useSafeAreaInsets();
-  const [mounted, setMounted] = useState(visible);
+  const [isMounted, setIsMounted] = useState(visible);
   const [backdropOpacity] = useState(() => new Animated.Value(0));
   const [sheetOffset] = useState(() => new Animated.Value(1));
 
@@ -25,8 +25,8 @@ export function Modal({
   }
 
   useEffect(() => {
-    if (visible && !mounted) {
-      const frame = requestAnimationFrame(() => setMounted(true));
+    if (visible && !isMounted) {
+      const frame = requestAnimationFrame(() => setIsMounted(true));
       return () => cancelAnimationFrame(frame);
     }
 
@@ -43,12 +43,12 @@ export function Modal({
       }),
     ]).start(({ finished }) => {
       if (finished && !visible) {
-        setMounted(false);
+        setIsMounted(false);
       }
     });
-  }, [backdropOpacity, mounted, sheetOffset, visible]);
+  }, [backdropOpacity, isMounted, sheetOffset, visible]);
 
-  if (!mounted) {
+  if (!isMounted) {
     return null;
   }
 

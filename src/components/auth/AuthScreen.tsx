@@ -14,21 +14,21 @@ import { AuthHero } from './AuthHero';
 
 export function AuthScreen({
   mode,
-  nameStep = false,
+  isNameStep = false,
   step,
-  busy,
+  isBusy,
   onBack,
   children,
 }: {
   mode: AuthMode;
-  nameStep?: boolean;
+  isNameStep?: boolean;
   step?: number;
-  busy: boolean;
+  isBusy: boolean;
   onBack: () => void;
   children: ReactNode;
 }) {
   const insets = useSafeAreaInsets();
-  const background = nameStep
+  const background = isNameStep
     ? 'bg-background'
     : mode === 'signUp'
       ? 'bg-accent dark:bg-background'
@@ -52,7 +52,7 @@ export function AuthScreen({
         showsVerticalScrollIndicator={false}
       >
         <View className="w-full max-w-md">
-          {nameStep && (
+          {isNameStep && (
             <>
               <View
                 pointerEvents="none"
@@ -68,9 +68,9 @@ export function AuthScreen({
             <Pressable
               accessibilityRole="button"
               accessibilityLabel="Go back"
-              disabled={busy}
+              disabled={isBusy}
               onPress={onBack}
-              className={`size-11 items-center justify-center rounded-full ${nameStep ? 'bg-surface' : 'bg-background dark:bg-surface dark:border-field-border dark:border'}`}
+              className={`size-11 items-center justify-center rounded-full ${isNameStep ? 'bg-surface' : 'bg-background dark:bg-surface dark:border-field-border dark:border'}`}
             >
               <Lucide
                 name="chevron-left"
@@ -84,7 +84,7 @@ export function AuthScreen({
               </Text>
             )}
           </View>
-          <AuthHero mode={mode} nameStep={nameStep} />
+          <AuthHero mode={mode} isNameStep={isNameStep} />
           {children}
         </View>
       </ScrollView>

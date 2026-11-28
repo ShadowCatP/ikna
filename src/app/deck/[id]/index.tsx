@@ -91,8 +91,8 @@ export default function DeckScreen() {
         <DeckCardsList
           deck={deck}
           cards={cards}
-          cardsLoading={areCardsPending}
-          cardsError={areCardsError}
+          isCardsLoading={areCardsPending}
+          hasCardsError={areCardsError}
           onRetryCards={() => void refetchCards()}
         />
       </View>
